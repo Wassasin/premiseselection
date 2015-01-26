@@ -1,0 +1,52 @@
+% Generic packages
+\documentclass[a4paper,titlepage,twoside]{article}
+\usepackage[british]{babel}
+\usepackage[T1]{fontenc}        % UTF8 support
+\usepackage[a4paper]{geometry}  % Force PDF papersize
+
+% Features
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{xspace}
+\usepackage{mfirstuc}
+\usepackage{diagbox}
+\usepackage{rotating}
+\usepackage{multirow}
+\usepackage{appendix}
+\usepackage{booktabs}
+\usepackage{lipsum}             % TODO remove
+
+% Math packages
+\usepackage[sc]{mathpazo}
+\usepackage{amsthm}
+\usepackage{algorithmic}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% Code listings
+\usepackage{listings}
+\usepackage{prettylistings}
+
+\usepackage{color}
+\definecolor{green}{rgb}{0.0,0.5,0.0}
+\definecolor{red}{rgb}{0.5,0.0,0.0}
+\definecolor{purple}{rgb}{0.5,0.0,0.3}
+
+\newcommand{\todo}[1]{\textcolor{red}{TODO: \textbf{#1}}}
+
+\input{terminology}
+
+\title{\Premiseselection in \coq}
+\author{Wouter Geraedts}
+\date{\today}
+
+\begin{document}
+	\maketitle
+	
+	\section{Test}
+	
+    \bibliographystyle{plain}
+    \bibliography{literature}
+\end{document}

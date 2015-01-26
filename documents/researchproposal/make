@@ -1,0 +1,28 @@
+#!/bin/bash
+echo -e "\033[32mDeploying assets\033[0m"
+mkdir -p "build"
+cp -R "assets" "build"
+cp *.tex "build"
+cp *.sty "build"
+cp *.bib "build"
+
+echo -e "\033[32mBuilding assets [Graphviz files to PDF]\033[0m"
+find build/assets/ -name \*.dot -exec dot -O -Tpdf {} \; -exec prename -f 's/dot.pdf$/pdf/' {}.pdf \;
+
+echo -e "\033[32mBuilding assets [SVG to EPS with Inkscape]\033[0m"
+find build/assets/ -name \*.svg -exec inkscape {} -E {}.eps \; -exec prename -f 's/svg.eps$/eps/' {}.eps \;
+
+echo -e "\033[32mBuilding assets [EPS to PDF with Ghostscript]\033[0m"
+find build/assets/ -name \*.eps -exec epstopdf {} \; -exec echo {} \;
+
+pushd "build" 1>/dev/null
+rm -f "document.aux"
+echo -e "\033[32mBuilding latex [Pass 1/4: pdflatex preprocess]\033[0m"
+pdflatex -halt-on-error -file-line-error "document.tex" || exit 1
+echo -e "\033[32mBuilding latex [Pass 2/4: bibtex]\033[0m"
+bibtex "document" || exit 1
+echo -e "\033[32mBuilding latex [Pass 3/4: pdflatex references]\033[0m"
+pdflatex -halt-on-error -file-line-error "document.tex" | grep -i ".*:[0-9]*:.*\|warning"
+echo -e "\033[32mBuilding latex [Pass 4/4: pdflatex crossreferences]\033[0m"
+pdflatex -halt-on-error -interaction=batchmode "document.tex"
+popd 1>/dev/null
