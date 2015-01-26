@@ -1,7 +1,23 @@
+The goal of the \premiseselection tool is to:
+\begin{itemize}
+    \item Support offline learning and analysis of \machinelearning on the various corpora.
+    \item Enable integration in the \coqide GUI. (Think Clippy for \coq)
+    \item Enable merging of the premise selection tool in the \coq main branch as a plugin.
+\end{itemize}
+In order to achieve this, I decided to implement the tool on the \acic datastructures
+as exported by the \xml plugin in \coq.
+As far as reasonable the \premiseselection tooling will be written in \ocaml.
+I foresee that some effort will be required to interface \ocaml with existing implementations
+of canonical \machinelearning algorithms.
+The \machinelearning field favours \python and \matlab as the preferred development environments.
+
+
+
+\subsection{Extraction}
 The following \coq objects are exported and used:
 \begin{description}
     \item[Variables]
-        Objects with only a type.
+        These objects consist of only a name and a type.
         A variable becomes a parameter when a theory which uses the variable is applied.
     
     \item[(Co)Inductive definitions]
@@ -10,7 +26,7 @@ The following \coq objects are exported and used:
         Each constructor also is composed of a name and a type.
         Such a definition may also depend on variables as parameters.
 
-    \item[Constants (definitions/theorems/axioms)]
+    \item[Constants (definitions / theorems / axioms)]
         The types and bodies of constants are defined separately, as needed.
         Theorems are proof-irrelevant, whilst definitions need to be substituted when applied.
         When dumping these objects they become undistinguishable.
@@ -33,3 +49,14 @@ If time permits, also the following could be used:
         A proof consisting of tactics can thus become invalid given another \coq version.
         For premise selection these tactics can help solve proofs more quickly, because the proofs they form are smaller.
 \end{description}
+
+\subsection{Corpora}
+\begin{description}
+    \item[CompCert]
+    \item[Formalin]
+    \item[CORN]
+    \item[Mathematical Components]
+\end{description}
+
+\subsection{Metrics}
+
