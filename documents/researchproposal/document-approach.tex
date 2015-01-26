@@ -1,17 +1,29 @@
-The goal of the \premiseselection tool is to:
+The goal of this thesis is achieved by executing the following steps:
+\begin{itemize}
+    \item Dump \coq objects for corpora.
+    \item Extract different kinds of features.
+    \item Combine different \machinelearning methods, forming various solution to the \premiseselection problem.
+    \item Split each corpus into different sets using \crossvalidation.
+        A corpus is loaded as a \dagraph, and this graph is split such that the definitions remain valid.
+    \item Analyse which combination of features and \machinelearning methods work best for which corpus, and how it well generalizes.
+\end{itemize}
+
+The selection of features and \machinelearning techniques will occur during the research itself.
+The corpora used are determined beforehand.
+
+\subsection{Tooling}
+Various goals of the \premiseselection tool are to:
 \begin{itemize}
     \item Support offline learning and analysis of \machinelearning on the various corpora.
     \item Enable integration in the \coqide GUI. (Think Clippy for \coq)
     \item Enable merging of the premise selection tool in the \coq main branch as a plugin.
 \end{itemize}
-In order to achieve this, I decided to implement the tool on the \acic datastructures
+In order to achieve this, I decided to implement the tool on top of the \acic datastructures
 as exported by the \xml plugin in \coq.
 As far as reasonable the \premiseselection tooling will be written in \ocaml.
 I foresee that some effort will be required to interface \ocaml with existing implementations
 of canonical \machinelearning algorithms.
 The \machinelearning field favours \python and \matlab as the preferred development environments.
-
-
 
 \subsection{Extraction}
 The following \coq objects are exported and used:
@@ -31,18 +43,13 @@ The following \coq objects are exported and used:
         Theorems are proof-irrelevant, whilst definitions need to be substituted when applied.
         When dumping these objects they become undistinguishable.
         Axioms are assumed, and thus do not have a body, only a type.
-    
-    \item[Proof in progress]
-        Consists of a name, a type, a body and a list of dependencies.
-        These dependencies still need to be satisfied to complete the proof.
 \end{description}
-
-Proofs in progress are the input of the premise selection.
-For validation of the premise selection, these objects are also constructed on the fly.
-A complete proof will thus need to be dissected into several proofs in progress.
 
 If time permits, also the following could be used:
 \begin{description}
+    \item[Proof in progress]
+        Consists of a name, a type, a body and a list of dependencies.
+        These dependencies still need to be satisfied to complete the proof.
     \item[Tactics application]
         On a higher level, tactics can be applied in order to form a proof.
         These higher level constructs are dependant on the proof engine.
@@ -50,13 +57,33 @@ If time permits, also the following could be used:
         For premise selection these tactics can help solve proofs more quickly, because the proofs they form are smaller.
 \end{description}
 
+\subsection{Features and output}
+Initially only proofs without a body (only their type) are used as inputs of the \premiseselection.
+Lemma's are returned as suggestions, along with an ordering of likelyness.
+
+A difficult questions is what a lemma is.
+This depends on what is defined or proven at the moment.
+Normally only theorems, or definitions of kind \prop, need to be considered.
+However in the case of \corn the propositions are of type \cprop, which is of kind \kindtype.
+
+Instead I will initially use a heuristic as defined by Kaliszyk \cite{kaliszyk2014machine}.
+\todo{quote heuristic}
+
+The used features may consist of the other definitions, the type of the proof, previously used lemma's
+or some other unthought of property of the corpus.
+I leave this open for the actual research. \todo{phrasing}
+
 \subsection{Corpora}
 \begin{description}
-    \item[CompCert]
-    \item[Formalin]
-    \item[CORN]
-    \item[Mathematical Components]
+    \item[\compcert]
+    \item[\formalin]
+    \item[\corn]
+    \item[\mathcomp]
 \end{description}
 
 \subsection{Metrics}
-
+% Cross validation on Corpora
+% `Proof in Progress` -> step (aconstr)
+% Subset corpora (Train) -> Corpus (Test) -> Rating
+% A corpus is divided into Proofs in Progress (each substep)
+% Ratio of guessed steps 
