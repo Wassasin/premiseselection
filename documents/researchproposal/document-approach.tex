@@ -1,0 +1,35 @@
+The following \coq objects are exported and used:
+\begin{description}
+    \item[Variables]
+        Objects with only a type.
+        A variable becomes a parameter when a theory which uses the variable is applied.
+    
+    \item[(Co)Inductive definitions]
+        \coq allows for (co)inductive definitions.
+        These definitions are composed of a name, a type, and a list of constructors.
+        Each constructor also is composed of a name and a type.
+        Such a definition may also depend on variables as parameters.
+
+    \item[Constants (definitions/theorems/axioms)]
+        The types and bodies of constants are defined separately, as needed.
+        Theorems are proof-irrelevant, whilst definitions need to be substituted when applied.
+        When dumping these objects they become undistinguishable.
+        Axioms are assumed, and thus do not have a body, only a type.
+    
+    \item[Proof in progress]
+        Consists of a name, a type, a body and a list of dependencies.
+        These dependencies still need to be satisfied to complete the proof.
+\end{description}
+
+Proofs in progress are the input of the premise selection.
+For validation of the premise selection, these objects are also constructed on the fly.
+A complete proof will thus need to be dissected into several proofs in progress.
+
+If time permits, also the following could be used:
+\begin{description}
+    \item[Tactics application]
+        On a higher level, tactics can be applied in order to form a proof.
+        These higher level constructs are dependant on the proof engine.
+        A proof consisting of tactics can thus become invalid given another \coq version.
+        For premise selection these tactics can help solve proofs more quickly, because the proofs they form are smaller.
+\end{description}

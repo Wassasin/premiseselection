@@ -1,5 +1,5 @@
 % Generic packages
-\documentclass[a4paper,titlepage,twoside]{article}
+\documentclass[a4paper,oneside]{article}
 \usepackage[british]{babel}
 \usepackage[T1]{fontenc}        % UTF8 support
 \usepackage[a4paper]{geometry}  % Force PDF papersize
@@ -38,14 +38,22 @@
 
 \input{terminology}
 
-\title{\Premiseselection in \coq}
+\title{\Premiseselection for \coq}
 \author{Wouter Geraedts}
 \date{\today}
 
 \begin{document}
 	\maketitle
 	
-	\section{Test}
+	\section{Background}
+	\input{document-background}
+	
+	\section{Purpose}
+	\input{document-purpose}
+	
+	\section{Approach}
+	\input{document-approach}
+	
 	
     \bibliographystyle{plain}
     \bibliography{literature}
