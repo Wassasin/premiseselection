@@ -1,0 +1,3 @@
+[submodule "src/coqy"]
+	path = src/coqy
+	url = git@github.com:Wassasin/coqy
