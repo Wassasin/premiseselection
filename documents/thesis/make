@@ -18,11 +18,11 @@ find build/assets/ -name \*.eps -exec epstopdf {} \; -exec echo {} \;
 pushd "build" 1>/dev/null
 rm -f "document.aux"
 echo -e "\033[32mBuilding latex [Pass 1/4: pdflatex preprocess]\033[0m"
-pdflatex -halt-on-error -file-line-error "document.tex" || exit 1
+xelatex -halt-on-error -file-line-error "document.tex" || exit 1
 echo -e "\033[32mBuilding latex [Pass 2/4: bibtex]\033[0m"
 bibtex "document" || exit 1
 echo -e "\033[32mBuilding latex [Pass 3/4: pdflatex references]\033[0m"
-pdflatex -halt-on-error -file-line-error "document.tex" | grep -i ".*:[0-9]*:.*\|warning"
+xelatex -halt-on-error -file-line-error "document.tex" | grep -i ".*:[0-9]*:.*\|warning"
 echo -e "\033[32mBuilding latex [Pass 4/4: pdflatex crossreferences]\033[0m"
-pdflatex -halt-on-error -interaction=batchmode "document.tex"
+xelatex -halt-on-error -interaction=batchmode "document.tex"
 popd 1>/dev/null

@@ -1,0 +1,16 @@
+Started implementing with OCaml
+	Best choice for implementing due to easy integration with CoqIDE in later stage.
+	Problems arose during implementation:
+		- Serialization and deserialization takes an unacceptable amount of time. (3 minutes vs 1 second in C++)
+		- Not ideal standard library implementation for List etc. (not tail recursive), resulting in stack overflows for large objects.
+		- 3rd party libraries using the standard library thus becoming unsuitable without patches
+Chose to re-implement everything except Parser + Interpreter in C++.
+	Quite a bit faster for everything.
+	Currently KNN CV takes 4.5 minutes
+
+Unclear how to implement AUC-curve
+	The AUC (Area under the ROC Curve) is the probability that, given a randomly drawn
+	used premise and a randomly drawn unused premise, the used premise is ranked higher than
+	the unused premise. Values closer to 1 show better performance.
+
+

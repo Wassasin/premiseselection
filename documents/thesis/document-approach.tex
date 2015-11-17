@@ -17,24 +17,29 @@ The corpora used are determined beforehand.
 		\node[main] (coq) {Coq term\\inside coq};
 		\node[main] (xml) [below of=coq] {XML\\representation};
 		\node[main] (term) [below of=xml] {Coq term $S$};
-		\node[main] (definitions) [below right of=term] {Definitions $D$};
-		\node[main] (theorems) [below left of=term] {Theorems $T$};
+		\node[main] (summary) [below of=term] {Summary\\$<p, B, D>$};
+		\node[main] (mapping) [left=1cm of summary] {Mapping\\$p \rightarrow p'$};
+		\node[main] (definitions) [below right=2cm and 0cm of summary] {Definitions $D$};
+		\node[main] (theorems) [below left=2cm and 0cm of summary] {Theorems $T$};
 		\node[main] (features) [below of=definitions] {Features\\of theorems};
 		\node[main] (dependencies) [below of=theorems] {Dependencies\\of theorems};
 		\node[main] (prediction) [below left of=features] {Prediction};
 
-		\path [->]
-			(coq) edge node {Coq XML export} (xml)
-			(xml) edge node {Parser} (term)
-			(term) edge node {} (definitions)
-			(term) edge node {Kaliszyk} (theorems)
-			(definitions) edge node {} (theorems)
-			(theorems) edge node {} (features)
-			(theorems) edge node {} (dependencies)
-			(features) edge node {(External) learner} (prediction)
-			(dependencies) edge node {} (prediction);
+		\draw[->] (coq) edge node {Coq XML export} (xml);
+		\draw[->] (xml) edge node {Parser} (term);
+		\draw[->] (term) edge node {Resolver} (summary);
+		\draw[->] (term) edge node {} (mapping);
+		\draw[->] (mapping) edge node {} (summary);
+		\draw[->] (summary) edge node [right] {$D$} (definitions);
+		\draw[->] (summary) edge node [left] {$\text{dom}(S) / D$} (theorems);
+		\draw[->] (definitions) edge node {} (theorems);
+		\draw[->] (theorems) edge node {} (features);
+		\draw[->] (theorems) edge node {} (dependencies);
+		\draw[->] (features) edge node {(External) learner} (prediction);
+		\draw[->] (dependencies) edge node {} (prediction);
 		
-		\draw [dashed] (definitions) -- (features);
+		\draw[dashed] (definitions) edge node [sloped, above] {$=$} (features);
+		\draw[dashed] (summary) edge [bend left, pos=0.19] node {$B$} (dependencies);
 	\end{tikzpicture}
 	\caption{Transformations performed by the \premiseselection tooling.}
 \end{figure}
