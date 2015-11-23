@@ -1,10 +1,34 @@
-The implementation of the tools and the subsequent comparison is done using the following steps in the following order:
+The premise selection tool works as follows, and can be summarised as in table \ref{table:transformations}:
 \begin{itemize}
-    \item Export all \coq objects from the standard library and the selected corpora.
-    \item Distinguish theorems from other definitions.
+    \item Export all \coq objects from the standard library and the selected corpora to XML.
+		\coq has an XML export functionality built in, until version 8.4pl5.
+	\item Parse these objects back into canonical \acic format.
+	\item From each Coq term $S$ of the form $p = t : A$, yield a summary $<p, p_t, p_A>$:
+		where $p$ is the canonical name (uri) of the term,
+		$p_t$ the names of all objects in the proof body (the proof itself),
+		and $p_A$ all names in the type of the proof (what is proven).
+		These canonical names are not yet human readable as they are composed of internal identifiers.
+		Therefor we separately yield a mapping $p \rightarrow p'$, where $p'$ is a human readible canonical name for the term.
+	\item These summaries are written to disk, and read again in the next half of the pipeline due to problems as described in section \ref{section:report}.
+	\item Distinguish theorems from other definitions, which yields the features and dependencies.
+		For this I use a heuristic as defined by Kaliszyk \cite{kaliszyk2014machine}:
+		the set of allowed features follows directly from splitting the set of all objects into either theorems $T$ or definitions $D$.
+		We consider $D = p_t$, and $T = p_A \setminus p_T$.
+		This is more extensively explained in section \ref{section:features}.
     \item Generate a \dagraph of dependencies for all \coq objects.
-    \item Select and extract various features.
-    \item Select and perhaps combine various \machinelearning methods.
+		This is especially useful when determining the performance of our solution as our predictions may not use
+		knowledge from future (yet unproven) proofs.
+	\item These features and dependencies can now be used to predict, using for example \knn.
+	\item Predictions are subsequently augmented by further traversing the \dagraph of dependencies.
+\end{itemize}
+
+The implementation of the tools and the subsequent comparison is done using the following steps in the following order, and can be summarised as in table \ref{table:approach}:
+\begin{itemize}
+	\item Implemented base premise selection tool.
+	\item Implemented various performance metrics, as described by Kaliszyk \cite{kaliszyk2014machine}.
+	\item Implemented \crossvalidation in order to make proper performance analysis.
+    \item Select and perhaps combine various \machinelearning methods, such as \nb or \ensemble.
+	\item Select and extract various other features, such as number of conjunctions.
     \item Analyse which combination of features and \machinelearning methods work best for which corpus, and how well these configurations generalize.
 \end{itemize}
 
@@ -17,7 +41,7 @@ The corpora used are determined beforehand.
 		\node[main] (coq) {Coq term\\inside coq};
 		\node[main] (xml) [below of=coq] {XML\\representation};
 		\node[main] (term) [below of=xml] {Coq term $S$};
-		\node[main] (summary) [below of=term] {Summary\\$<p, B, D>$};
+		\node[main] (summary) [below of=term] {Summary\\$<p, p_t, p_A>$};
 		\node[main] (mapping) [left=1cm of summary] {Mapping\\$p \rightarrow p'$};
 		\node[main] (definitions) [below right=2cm and 0cm of summary] {Definitions $D$};
 		\node[main] (theorems) [below left=2cm and 0cm of summary] {Theorems $T$};
@@ -30,8 +54,8 @@ The corpora used are determined beforehand.
 		\draw[->] (term) edge node {Resolver} (summary);
 		\draw[->] (term) edge node {} (mapping);
 		\draw[->] (mapping) edge node {} (summary);
-		\draw[->] (summary) edge node [right] {$D$} (definitions);
-		\draw[->] (summary) edge node [left] {$\text{dom}(S) / D$} (theorems);
+		\draw[->] (summary) edge node [right] {$p_A$} (definitions);
+		\draw[->] (summary) edge node [left] {$p_t / p_A$} (theorems);
 		\draw[->] (definitions) edge node {} (theorems);
 		\draw[->] (theorems) edge node {} (features);
 		\draw[->] (theorems) edge node {} (dependencies);
@@ -39,8 +63,9 @@ The corpora used are determined beforehand.
 		\draw[->] (dependencies) edge node {} (prediction);
 		
 		\draw[dashed] (definitions) edge node [sloped, above] {$=$} (features);
-		\draw[dashed] (summary) edge [bend left, pos=0.19] node {$B$} (dependencies);
+		\draw[dashed] (summary) edge [bend left, pos=0.19] node {$p_t$} (dependencies);
 	\end{tikzpicture}
+	\label{table:transformations}
 	\caption{Transformations performed by the \premiseselection tooling.}
 \end{figure}
 
@@ -98,6 +123,7 @@ A variable consists of a name and a type, and becomes a parameter when a theory 
 Thusfar there is no use for these variables within this project.
 
 \subsection{Features and output}
+\label{section:features}
 When performing \premiseselection, only theorems are regarded.
 For other definitions selecting premises is conceptually problematic.
 As the training set, for each proven theorem the features are computed from the type.
