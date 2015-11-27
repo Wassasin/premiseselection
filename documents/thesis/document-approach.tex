@@ -3,8 +3,8 @@ The premise selection tool works as follows, and can be summarised as in table \
     \item Export all \coq objects from the standard library and the selected corpora to XML.
 		\coq has an XML export functionality built in, until version 8.4pl5.
 	\item Parse these objects back into canonical \acic format.
-	\item From each Coq term $s$ of the form $s := t : A$, yield a summary $<p_s, t_s, A_s>$:
-		where $p_s$ is the canonical name (uri) of the term,
+	\item From each Coq term $s$ of the form $l_s := t : A$, yield a summary $<p_s, t_s, A_s>$:
+		where $l_s$ is the human readable term as written in the Coq source file, $p_s$ is the canonical name (uri) of the term,
 		$t_s$ the names of all objects in the proof body (the proof itself),
 		and $A_s$ all names in the type of the proof (what is proven).
 		These canonical names are not yet human readable as they are composed of internal identifiers.
@@ -12,9 +12,9 @@ The premise selection tool works as follows, and can be summarised as in table \
 	\item These summaries are written to disk, and read again in the next half of the pipeline due to problems as described in section \ref{section:report}.
 	\item Distinguish theorems from other definitions, which yields the features and dependencies.
 		For this I use a heuristic as defined by Kaliszyk \cite{kaliszyk2014machine}:
-		the set of allowed features follows directly from splitting the set of all objects into either theorems $T$ or definitions $D$.
+		the set of allowed features follows directly from splitting the set of all objects into either theorems $\thms$ or definitions $\defs$.
 		Were we consider $S$ to be the set of all coq terms, we consider
-		$$D = \bigcup_{s \in S} t_s ~~\text{and}~~ T = \bigcup_{s \in S} A_s \setminus D \text{.}$$
+		$$\defs = \bigcup_{s \in S} A_s ~~\text{and}~~ \thms = \bigcup_{s \in S} t_s \setminus \defs \text{.}$$
 		This is more extensively explained in section \ref{section:features}.
     \item Generate a \dagraph of dependencies for all \coq objects.
 		This is especially useful when determining the performance of our solution as our predictions may not use
@@ -41,8 +41,8 @@ The corpora used are determined beforehand.
 	\begin{tikzpicture}[auto, node distance=2.5cm, main/.style={draw,align=center}]
 		\node[main] (coq) {Coq term\\inside coq};
 		\node[main] (xml) [below of=coq] {XML\\representation};
-		\node[main] (term) [below of=xml] {Coq term $S$};
-		\node[main] (summary) [below of=term] {Summary\\$<p, p_t, p_A>$};
+		\node[main] (term) [below of=xml] {Coq term $s$};
+		\node[main] (summary) [below of=term] {Summary\\$<p_s, t_s, A_s>$};
 		\node[main] (mapping) [left=1cm of summary] {Mapping\\$p \rightarrow p'$};
 		\node[main] (definitions) [below right=2cm and 0cm of summary] {Definitions $D$};
 		\node[main] (theorems) [below left=2cm and 0cm of summary] {Theorems $T$};
@@ -55,8 +55,8 @@ The corpora used are determined beforehand.
 		\draw[->] (term) edge node {Resolver} (summary);
 		\draw[->] (term) edge node {} (mapping);
 		\draw[->] (mapping) edge node {} (summary);
-		\draw[->] (summary) edge node [right] {$p_A$} (definitions);
-		\draw[->] (summary) edge node [left] {$p_t / p_A$} (theorems);
+		\draw[->] (summary) edge node [right] {$A_s$} (definitions);
+		\draw[->] (summary) edge node [left] {$t_s / A_s$} (theorems);
 		\draw[->] (definitions) edge node {} (theorems);
 		\draw[->] (theorems) edge node {} (features);
 		\draw[->] (theorems) edge node {} (dependencies);
@@ -64,7 +64,7 @@ The corpora used are determined beforehand.
 		\draw[->] (dependencies) edge node {} (prediction);
 		
 		\draw[dashed] (definitions) edge node [sloped, above] {$=$} (features);
-		\draw[dashed] (summary) edge [bend left, pos=0.19] node {$p_t$} (dependencies);
+		\draw[dashed] (summary) edge [bend left, pos=0.19] node {$t_s$} (dependencies);
 	\end{tikzpicture}
 	\label{table:transformations}
 	\caption{Transformations performed by the \premiseselection tooling.}
@@ -164,7 +164,26 @@ $$
 $$
 $$ \text{dist}(x, y) = \left( \sum_t^T \left( F_x(t) - F_y(t) \right)^2 \right)^{\frac{1}{2}} $$
 
+For each conjecture $c \in T_\text{test}$ the distance is computed with each term $t \in T_\text{train}$.
+Then the closest $K$ terms $t$ are selected, which we call $\text{closest}_K(c)$.
+Their dependencies $\phi \in D_t$ are then suggested; the likelyhood dependant on the distance of their parents to conjecture $c$.
+\[ r_\text{knn}(\phi, c) = \sum_{t \in \text{closest}_K(c)} D^\#_t(\phi) \times \text{dist}(c, t) \]
+
 \subsubsection{\nb}
+
+Given dependency candidate $\phi$, we compute for all terms $t \in T$:
+\[
+	w_t = \tau + \sum_{\psi \in P_\phi} F_\psi(t) ~~\text{with}~~ W = \tau + \sum_{t \in T} w_t - \tau
+\]
+
+Now we can compute the likelyhood of candidate $\phi$ given some constants $\pi, \sigma, \tau$:
+\[
+	r_\text{nb}(\phi, c) = \ln W +
+	\sum_{t | w_t = 0} F_c(t) \times \sigma +
+	\sum_{t | w_t \neq 0} F_c(t) \times \left( \ln(\pi \times w_t) - \ln(W) \right)
+\]
+
+By K\"uhlwein \cite{kuhlwein2013mash} it is suggested to use $\pi = 10$, $\sigma = -15$ and $\tau = 20$.
 
 \subsection{Example}
 \begin{lstlisting}[language=Coq, mathescape]
