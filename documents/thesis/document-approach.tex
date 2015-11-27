@@ -3,17 +3,18 @@ The premise selection tool works as follows, and can be summarised as in table \
     \item Export all \coq objects from the standard library and the selected corpora to XML.
 		\coq has an XML export functionality built in, until version 8.4pl5.
 	\item Parse these objects back into canonical \acic format.
-	\item From each Coq term $S$ of the form $p = t : A$, yield a summary $<p, p_t, p_A>$:
-		where $p$ is the canonical name (uri) of the term,
-		$p_t$ the names of all objects in the proof body (the proof itself),
-		and $p_A$ all names in the type of the proof (what is proven).
+	\item From each Coq term $s$ of the form $s := t : A$, yield a summary $<p_s, t_s, A_s>$:
+		where $p_s$ is the canonical name (uri) of the term,
+		$t_s$ the names of all objects in the proof body (the proof itself),
+		and $A_s$ all names in the type of the proof (what is proven).
 		These canonical names are not yet human readable as they are composed of internal identifiers.
-		Therefor we separately yield a mapping $p \rightarrow p'$, where $p'$ is a human readible canonical name for the term.
+		Therefor we separately yield a mapping $p_s \rightarrow p'_s$, where $p'_s$ is a human readible canonical name for the term.
 	\item These summaries are written to disk, and read again in the next half of the pipeline due to problems as described in section \ref{section:report}.
 	\item Distinguish theorems from other definitions, which yields the features and dependencies.
 		For this I use a heuristic as defined by Kaliszyk \cite{kaliszyk2014machine}:
 		the set of allowed features follows directly from splitting the set of all objects into either theorems $T$ or definitions $D$.
-		We consider $D = p_t$, and $T = p_A \setminus p_T$.
+		Were we consider $S$ to be the set of all coq terms, we consider
+		$$D = \bigcup_{s \in S} t_s ~~\text{and}~~ T = \bigcup_{s \in S} A_s \setminus D \text{.}$$
 		This is more extensively explained in section \ref{section:features}.
     \item Generate a \dagraph of dependencies for all \coq objects.
 		This is especially useful when determining the performance of our solution as our predictions may not use
@@ -152,31 +153,18 @@ The predictor can now, for a unproven theorem, compute the features from the typ
 After the prototype is completed additional features will be considered and implemented.
 Most notably some corpus specific features will be tried.
 
-\subsection{Types}
-As a computer science student I like to give the transformations within the tool types:
-\[
-	\begin{array}{lclcl}
-		\mathbf{depanalysis} & : & \text{aobj} & \longrightarrow & [\text{id} \times [\text{id}] \times [\text{id}]] \\
-			& & \text{object} & \longmapsto & [\text{theorem} \times [\text{feature}] \times [\text{dependency}]]
-	\end{array}
-\]
+\subsection{Machine learning}
 
+\subsubsection{\knn}
+$$
+\begin{array}{lcl}
+	F_s & : & T \rightarrow \mathbb{R} \\
+	F_s(t) & = & T_s^\#(t)
+\end{array}
+$$
+$$ \text{dist}(x, y) = \left( \sum_t^T \left( F_x(t) - F_y(t) \right)^2 \right)^{\frac{1}{2}} $$
 
-\[
-	\begin{array}{lclclcl}
-		\mathbf{featuregen} & : & [\text{id}] & \times & [[\text{id}]] & \longrightarrow & 2^{\text{id} \times \text{id}} \\
-			& & \text{all\_features} & \times & \text{features\_per\_theorem} & \longmapsto & \text{feature matrix}~F
-	\end{array}
-\]
-
-Similarly \textbf{dependencygen}.
-
-\[
-	\begin{array}{lclclclcl}
-		\mathbf{predict} & : & 2^{\text{id} \times \text{id}} & \times & 2^{\text{id} \times \text{id}} & \times & 2^{\text{id}} & \longrightarrow & [\text{id}] \\
-			 & & \text{feature matrix}~F & \times & \text{dependency matrix}~D & \times & \text{feature vector}~V & \longmapsto & \text{prediction}
-	\end{array}
-\]
+\subsubsection{\nb}
 
 \subsection{Example}
 \begin{lstlisting}[language=Coq, mathescape]
@@ -226,9 +214,23 @@ $T = \mathtt{dom}(S) \setminus D = \{$nat_ind$,$ plus_0_r$\}$
     \item[\mathcomp]
 \end{description}
 
-%\subsection{Metrics}
-%The performance of a predictor is measured using \texttt{Recall}:
+\subsection{Metrics}
+The performance of a predictor is measured using 
 
+\begin{definition}{100Cover}
+\end{definition}
+
+\begin{definition}{100Precision}
+\end{definition}
+
+\begin{definition}{Recall}
+\end{definition}
+
+\begin{definition}{Rank}
+\end{definition}
+
+\begin{definition}{Area Under Curve (AUC)}
+\end{definition}
 
 % Cross validation on Corpora
 % `Proof in Progress` -> step (aconstr)

@@ -44,6 +44,8 @@
 
 \newcommand{\todo}[1]{\textcolor{red}{TODO: \textbf{#1}}}
 
+\newtheorem{definition}{Definition}
+
 \input{terminology}
 
 \title{\Premiseselection for \coq}
@@ -51,18 +53,26 @@
 \date{\today}
 
 \begin{document}
-	\maketitle
-	
-	% \section{Background}
-	% \input{document-background}
+	\input{document-titlepage}	
 	
 	\section{Purpose}
 	\input{document-purpose}
 	
+	\section{Background}
+	\input{document-background}
+
 	\section{Approach}
 	\input{document-approach}
-	
-	
+
+	\section{Implementation}
+	\input{document-implementation}
+
+	\section{Results}
+	\input{document-results}
+
+	\section{Discussion}
+	\input{document-discussion}
+
     \bibliographystyle{plain}
     \bibliography{literature}
 \end{document}

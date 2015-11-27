@@ -1,0 +1,16 @@
+In this section I will discuss considerations I made during the implementation of \roerei.
+These considerations are not very interesting from an academic standpoint, but moreso from an engineering standpoint.
+Also students might be interested.
+
+Started implementing with OCaml.
+Best choice for implementing due to easy integration with CoqIDE in later stage.
+Problems arose during implementation:
+\begin{itemize}
+\item Serialization and deserialization takes an unacceptable amount of time. (3 minutes vs 1 second in C++).
+\item Not ideal standard library implementation for List etc. (not tail recursive), resulting in stack overflows for large objects.
+\item 3rd party libraries using the standard library thus becoming unsuitable without patches.
+\end{itemize}
+
+Choose to re-implement everything except Parser + Interpreter in C++.
+Quite a bit faster for everything.
+Currently KNN CV takes 4.5 minutes
