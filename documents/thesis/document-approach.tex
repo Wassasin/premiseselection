@@ -3,18 +3,23 @@ The premise selection tool works as follows, and can be summarised as in table \
     \item Export all \coq objects from the standard library and the selected corpora to XML.
 		\coq has an XML export functionality built in, until version 8.4pl5.
 	\item Parse these objects back into canonical \acic format.
-	\item From each Coq term $s$ of the form $l_s := t : A$, yield a summary $<p_s, t_s, A_s>$:
-		where $l_s$ is the human readable term as written in the Coq source file, $p_s$ is the canonical name (uri) of the term,
-		$t_s$ the names of all objects in the proof body (the proof itself),
-		and $A_s$ all names in the type of the proof (what is proven).
+	\item From each Coq term $s$ of the form $\hname :\equiv \body : \type$, yield a summary $<\cname[s], \body[s], \type[s]>$:
+		where $\hname[s]$ is the human readable term as written in the Coq source file, $\cname[s]$ is the canonical name (uri) of the term,
+		$\body[s]$ the names of all objects in the proof body (the proof itself),
+		and $\type[s]$ all names in the type of the proof (what is proven).
 		These canonical names are not yet human readable as they are composed of internal identifiers.
-		Therefor we separately yield a mapping $p_s \rightarrow p'_s$, where $p'_s$ is a human readible canonical name for the term.
+		Therefore we separately yield a mapping $\cname[s] \rightarrow \cname[s]'$, where $\cname[s]'$ is a human readible canonical name for the term.
+		
+		In later stages we want to identify these sets by both the Coq term $s$, by the preliminary canonical name $\cname[s]$ and by the eventual human
+		readable name $\cname[s]'$.
+		Thus in this thesis these identifiers are used interexchangably.
+		However in the implementation of \roerei this distinction is relevant.
 	\item These summaries are written to disk, and read again in the next half of the pipeline due to problems as described in section \ref{section:report}.
 	\item Distinguish theorems from other definitions, which yields the features and dependencies.
 		For this I use a heuristic as defined by Kaliszyk \cite{kaliszyk2014machine}:
 		the set of allowed features follows directly from splitting the set of all objects into either theorems $\thms$ or definitions $\defs$.
-		Were we consider $S$ to be the set of all coq terms, we consider
-		$$\defs = \bigcup_{s \in S} A_s ~~\text{and}~~ \thms = \bigcup_{s \in S} t_s \setminus \defs \text{.}$$
+		Were we consider $S$ to be the set of all proven coq terms, we consider
+		$$\defs = \bigcup_{s \in S} \type[s] ~~\text{and}~~ \thms = (\bigcup_{s \in S} \body[s]) \setminus \defs \text{.}$$
 		This is more extensively explained in section \ref{section:features}.
     \item Generate a \dagraph of dependencies for all \coq objects.
 		This is especially useful when determining the performance of our solution as our predictions may not use
@@ -41,30 +46,30 @@ The corpora used are determined beforehand.
 	\begin{tikzpicture}[auto, node distance=2.5cm, main/.style={draw,align=center}]
 		\node[main] (coq) {Coq term\\inside coq};
 		\node[main] (xml) [below of=coq] {XML\\representation};
-		\node[main] (term) [below of=xml] {Coq term $s$};
-		\node[main] (summary) [below of=term] {Summary\\$<p_s, t_s, A_s>$};
-		\node[main] (mapping) [left=1cm of summary] {Mapping\\$p \rightarrow p'$};
-		\node[main] (definitions) [below right=2cm and 0cm of summary] {Definitions $D$};
-		\node[main] (theorems) [below left=2cm and 0cm of summary] {Theorems $T$};
-		\node[main] (features) [below of=definitions] {Features\\of theorems};
-		\node[main] (dependencies) [below of=theorems] {Dependencies\\of theorems};
-		\node[main] (prediction) [below left of=features] {Prediction};
+		\node[main] (term) [below of=xml] {Coq term $s$\\$\cname :\equiv \body : \type$};
+		\node[main] (summary) [below of=term] {Summary\\$<\cname[s], \body[s], \type[s], \ldots>$};
+		\node[main] (mapping) [left=1cm of summary] {Mapping\\$\cname \rightarrow \cname'$};
+		\node[main] (definitions) [below right=2cm and -1cm of summary] {Definitions\\$\defs$};
+		\node[main] (additional) [right=1cm of definitions] {Additional\\metrics};
+		\node[main] (theorems) [below left=2cm and 0cm of summary] {Theorems\\$\thms$};
+		\node[main] (features) [below of=definitions] {Features\\of theorems\\$\features$};
+		\node[main] (dependencies) [below of=theorems] {Dependencies\\of theorems\\$\deps$};
+		\node[main] (prediction) [below left=1.5cm and -0.1cm of features] {Prediction};
 
 		\draw[->] (coq) edge node {Coq XML export} (xml);
 		\draw[->] (xml) edge node {Parser} (term);
 		\draw[->] (term) edge node {Resolver} (summary);
 		\draw[->] (term) edge node {} (mapping);
 		\draw[->] (mapping) edge node {} (summary);
-		\draw[->] (summary) edge node [right] {$A_s$} (definitions);
-		\draw[->] (summary) edge node [left] {$t_s / A_s$} (theorems);
-		\draw[->] (definitions) edge node {} (theorems);
-		\draw[->] (theorems) edge node {} (features);
+		\draw[->] (summary) edge node [right] {$\type[s]$} (definitions);
+		\draw[->] (summary) edge [bend left] node {$\ldots$} (additional);
+		\draw[->] (summary) edge node [left] {$\body[s] \setminus \defs$} (theorems);
+		\draw[dashed] (definitions) edge node {} (theorems);
 		\draw[->] (theorems) edge node {} (dependencies);
 		\draw[->] (features) edge node {(External) learner} (prediction);
 		\draw[->] (dependencies) edge node {} (prediction);
-		
-		\draw[dashed] (definitions) edge node [sloped, above] {$=$} (features);
-		\draw[dashed] (summary) edge [bend left, pos=0.19] node {$t_s$} (dependencies);
+		\draw[->] (definitions) edge node [above] {} (features);
+		\draw[->] (additional) edge node [above] {} (features);
 	\end{tikzpicture}
 	\label{table:transformations}
 	\caption{Transformations performed by the \premiseselection tooling.}
@@ -72,18 +77,15 @@ The corpora used are determined beforehand.
 
 
 \subsection{Tooling}
-Various design goals of the \premiseselection tool are to:
+Various design goals of the \premiseselection tool called \roerei are to:
 \begin{itemize}
     \item Support offline learning and analysis of \machinelearning on the various corpora.
     \item Enable integration in the \coqide GUI.
     	I would like to create something like Clippy or Vigor for \coq.
     \item Enable merging of the premise selection tool in the \coq main branch as a plugin.
 \end{itemize}
-In order to achieve this, I decided to implement the tool on top of the \acic datastructures
-as exported by the \xml plugin in \coq.
-As far as reasonable the \premiseselection tooling will be written in \ocaml.
-I foresee that some effort will be required to interface \ocaml with existing implementations
-of canonical \machinelearning algorithms.
+In order to achieve this \roerei is implemented on top of the \acic datastructures as exported by the \xml plugin in \coq.
+As far as reasonable the \premiseselection tooling is written in \cpp, with the parser and resolver written in \ocaml.
 The \machinelearning field favours \python and \matlab as the preferred development environments.
 Ideally the tooling created can be used as a building block in a future \coq tactic which finishes proofs fully automatically.
 
@@ -107,7 +109,7 @@ Of these, the following \coq objects are used:
         Axioms only generate a type, and no body.
 \end{description}
 
-If time permits, also the following objects could be used:
+The following objects are not used, but could be useful in future work:
 \begin{description}
     \item[Proof in progress]
         Consists of a name, a type, a body and a list of dependencies.
@@ -137,17 +139,26 @@ The similarity of complete theorems is captured in the model employed in the \pr
 Distinguishing theorems from other definitions is not trivial.
 Normally only definitions of kind \prop need to be considered as theorems.
 However in the case of \corn the propositions are of type \cprop, which is of kind \kindtype.
-Also the kind of a definition is not exported consistently by \coq.
+Also the kind of a definition is not exported consistently by \coq \citationeeded.
 Instead I will initially use a heuristic as defined by Kaliszyk \cite{kaliszyk2014machine}.
 This heuristic defines the theorems, or the set of allowed dependencies, as all definitions except those used in the types of definitions.
 
-For the prototype only the definitions used in the theorem type are regarded as features.
-Concretely, for a set of proven theorems with their types and bodies, the used definitions from the types are collected.
-For this set of proven theorems, a feature matrix $F$ is constructed.
-The \texttt{true} boolean value $F_{ij}$ then represents the usage of definition $j$ in the type of the proven theorem $i$.
-
-For the body of each proven theorem the used definitions are similarly collected, and a dependency matrix $D$ is constructed.
-This matrix thus encodes the usage of definitions in the body of those proven theorems.
+For \roerei only the definitions used in the theorem type are regarded as features.
+Concretely, for a set of proven theorems $S$ with their types and bodies, the used definitions from the types are collected.
+From this for each proven theorem $s$ a function $\features[s]$ is defined on the set of allowed features $Z$.
+$Z$ is composed of the definitions $\defs$ as well as various other metrics which have been added halfway through this thesis such as the number of conjunctions in the type of a term.
+$$ Z = \defs \cup \{ \wedge \} $$
+$$
+\begin{array}{lcl}
+	\features[s] & : & \featurekeys \rightarrow \mathbb{R} \\
+	\features[s](x) & = & \left\{
+		\begin{array}{ll}
+			\counttype{s}{x} & x \in \defs \\
+			\counttype{s}{\wedge} & x = \wedge
+		\end{array} \right.
+\end{array}
+$$
+For the body of each proven theorem the used definitions are similarly collected, and the set of allowed dependencies $\deps[s]$ is constructed.
 
 The predictor can now, for a unproven theorem, compute the features from the type and yield the ordered set of definitions likely to be useful in the to be constructed body.
 After the prototype is completed additional features will be considered and implemented.
@@ -156,31 +167,25 @@ Most notably some corpus specific features will be tried.
 \subsection{Machine learning}
 
 \subsubsection{\knn}
-$$
-\begin{array}{lcl}
-	F_s & : & T \rightarrow \mathbb{R} \\
-	F_s(t) & = & T_s^\#(t)
-\end{array}
-$$
-$$ \text{dist}(x, y) = \left( \sum_t^T \left( F_x(t) - F_y(t) \right)^2 \right)^{\frac{1}{2}} $$
+$$ \text{dist}(x, y) = \left( \sum_{i \in \featurekeys} \left( \features[x](i) - \features[y](i) \right)^2 \right)^{\frac{1}{2}} $$
 
-For each conjecture $c \in T_\text{test}$ the distance is computed with each term $t \in T_\text{train}$.
+For each conjecture $c \in \testset$ the distance is computed with each term $t \in \trainset$.
 Then the closest $K$ terms $t$ are selected, which we call $\text{closest}_K(c)$.
-Their dependencies $\phi \in D_t$ are then suggested; the likelyhood dependant on the distance of their parents to conjecture $c$.
-\[ r_\text{knn}(\phi, c) = \sum_{t \in \text{closest}_K(c)} D^\#_t(\phi) \times \text{dist}(c, t) \]
+Their dependencies $\phi \in \deps[t]$ are then suggested; the likelyhood dependant on the distance of their parents to conjecture $c$.
+\[ r_\text{knn}(\phi, c) = \sum_{t \in \text{closest}_K(c)} \countbody{t}{\phi} \times \text{dist}(c, t) \]
 
 \subsubsection{\nb}
 
-Given dependency candidate $\phi$, we compute for all terms $t \in T$:
+Given dependency candidate $\phi$, we compute for all features $x \in \featurekeys$:
 \[
-	w_t = \tau + \sum_{\psi \in P_\phi} F_\psi(t) ~~\text{with}~~ W = \tau + \sum_{t \in T} w_t - \tau
+	w_x = \tau + \sum_{\psi \in \parents[\phi]} \features[\psi](x) ~~\text{with}~~ W = \tau + \sum_{x \in \featurekeys} w_x - \tau
 \]
 
 Now we can compute the likelyhood of candidate $\phi$ given some constants $\pi, \sigma, \tau$:
 \[
 	r_\text{nb}(\phi, c) = \ln W +
-	\sum_{t | w_t = 0} F_c(t) \times \sigma +
-	\sum_{t | w_t \neq 0} F_c(t) \times \left( \ln(\pi \times w_t) - \ln(W) \right)
+	\sum_{x | w_x = 0} \features[c](x) \times \sigma +
+	\sum_{x | w_x \neq 0} \features[c](x) \times \ln(\pi \times w_t) - \ln(W)
 \]
 
 By K\"uhlwein \cite{kuhlwein2013mash} it is suggested to use $\pi = 10$, $\sigma = -15$ and $\tau = 20$.
@@ -218,11 +223,11 @@ $\} $
 \end{lstlisting}
 
 \begin{lstlisting}[language=Coq, mathescape, frame=none]
-$D = \{$nat$,$ 0$,$ S$,$ plus$\}$
+$\defs = \{$nat$,$ 0$,$ S$,$ plus$\}$
 \end{lstlisting}
 
 \begin{lstlisting}[language=Coq, mathescape, frame=none]
-$T = \mathtt{dom}(S) \setminus D = \{$nat_ind$,$ plus_0_r$\}$
+$\thms = \mathtt{dom}(S) \setminus \defs = \{$nat_ind$,$ plus_0_r$\}$
 \end{lstlisting}
 
 \subsection{Corpora}

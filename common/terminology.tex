@@ -3,6 +3,7 @@
 \newcommand{\premiseselection}{premise selection\xspace}
 \newcommand{\Premiseselection}{Premise selection\xspace}
 
+\newcommand{\cpp}{C++\xspace}
 \newcommand{\ocaml}{OCaml\xspace}
 \newcommand{\python}{Python\xspace}
 \newcommand{\matlab}{MATLAB\xspace}
@@ -29,5 +30,22 @@
 \newcommand{\nb}{Naive Bayes\xspace}
 \newcommand{\ensemble}{Ensemble Learning\xspace}
 
-\newcommand{\defs}{\texttt{Defs}}
-\newcommand{\thms}{\texttt{Thms}}
+\newcommand{\defs}[1][]{\texttt{Defs}_{}}
+\newcommand{\thms}[1][]{\texttt{Thms}_{}}
+
+\newcommand{\hname}[1][]{l_{#1}}
+\newcommand{\cname}[1][]{n_{#1}}
+\newcommand{\body}[1][]{t_{#1}}
+\newcommand{\type}[1][]{A_{#1}}
+
+\newcommand{\deps}[1][]{D_{#1}}
+\newcommand{\parents}[1][]{P_{#1}}
+\newcommand{\features}[1][]{F_{#1}}
+\newcommand{\featurekeys}{Z}
+\newcommand{\terms}[1][]{S_{#1}}
+\newcommand{\trainset}{\terms[{\text{train}}]}
+\newcommand{\testset}{\terms[{\text{test}}]}
+\newcommand{\counttype}[2]{\#_{#2}(\text{type of}~{#1})}
+\newcommand{\countbody}[2]{\#_{#2}(\text{term of}~{#1})}
+
+\newcommand{\citationeeded}{[citation needed]}
