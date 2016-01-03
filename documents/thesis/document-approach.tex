@@ -184,11 +184,18 @@ Given dependency candidate $\phi$, we compute for all features $x \in \featureke
 Now we can compute the likelyhood of candidate $\phi$ given some constants $\pi, \sigma, \tau$:
 \[
 	r_\text{nb}(\phi, c) = \ln W +
-	\sum_{x | w_x = 0} \features[c](x) \times \sigma +
-	\sum_{x | w_x \neq 0} \features[c](x) \times \ln(\pi \times w_t) - \ln(W)
+	\sum_{x \in \featurekeys | w_x = 0} \features[c](x) \times \sigma +
+	\sum_{x \in \featurekeys | w_x \neq 0} \features[c](x) \times \ln(\pi \times w_x) - \ln(W)
 \]
 
 By K\"uhlwein \cite{kuhlwein2013mash} it is suggested to use $\pi = 10$, $\sigma = -15$ and $\tau = 20$.
+
+\subsubsection{Kernel methods}
+\subsubsection{Deep neural nets}
+\subsubsection{Random forests}
+\subsubsection{SInE}
+\subsubsection{MePo}
+\subsubsection{Ensembles}
 
 \subsection{Example}
 \begin{lstlisting}[language=Coq, mathescape]

@@ -1,20 +1,18 @@
 \subsection{Problem}
 It is customary to implement cross validation for premise selection in the following manner:
-Construct a poset of terms from $T$ using the dependency relation for $x, y \in T$:
+Construct a poset of terms from $\terms$ using the dependency relation for $x, y \in \terms$:
 \[
-	x <_D y ~~\leftrightarrow~~ D^*_x \cap (P^*_y \cup \{y\}) \neq \emptyset
+	x <_D y ~~\leftrightarrow~~ \depstrans[x] \cap (\parentstrans[y] \cup \{y\}) \neq \emptyset
 \]
 
-A linearized list constructed from this poset, and each element is:
-\begin{itemize}
-\item Tested, i.e. treated as a conjecture.
+A linearized list constructed from this poset, and each element is
+	first tested, i.e. treated as a conjecture.
 	The classifier is asked for a prediction, and the performance is recorded.
-\item Learned to the classifier (added to the trainingset and added to the allowed set of dependencies)
-\end{itemize}
+	Finally the element is learned to the classifier (added to the trainingset and added to the allowed set of dependencies)
 
 Currently, the classifier is trained using the entire trainingset of the fold, without the dependencies of the term-turned-conjecture $\phi$:
 \[
-	T' = T \setminus D^*_\phi ~\text{and}~ D' = D \setminus D^*_\phi
+	\trainset' = \trainset \setminus \depstrans[\phi] ~\text{and}~ \deps' = \deps \setminus \depstrans[\phi]
 \]
 
 Using the customary approach, always an equal or better performance is reached.
