@@ -7,11 +7,11 @@
 % Features
 \usepackage{url}
 \usepackage{hyperref}
+\usepackage{glossaries}			% Must be after hyperref
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{xspace}
 \usepackage{mfirstuc}
-\usepackage{diagbox}
 \usepackage{rotating}
 \usepackage{multirow}
 \usepackage{appendix}
@@ -44,7 +44,11 @@
 
 \newcommand{\todo}[1]{\textcolor{red}{TODO: \textbf{#1}}}
 
+\theoremstyle{definition}
 \newtheorem{definition}{Definition}
+
+\makeglossaries
+\newcommand{\defgls}[1]{\label{def:#1}\glsadd{#1}}
 
 \input{terminology}
 
@@ -53,8 +57,10 @@
 \date{\today}
 
 \begin{document}
+	\pagenumbering{alph} % Hack to force correct page references
 	\input{document-titlepage}	
-	
+	\pagenumbering{arabic}
+
 	\section{Purpose}
 	\input{document-purpose}
 	
@@ -72,6 +78,8 @@
 
 	\section{Discussion}
 	\input{document-discussion}
+	
+	\printglossaries
 
     \bibliographystyle{plain}
     \bibliography{literature}

@@ -1,8 +1,18 @@
-The premise selection tool works as follows, and can be summarised as in table \ref{table:transformations}:
+\begin{definition}[\cic]\defgls{cic}
+	Calculus of (Co)Inductive Constructions
+\end{definition}
+
+\begin{definition}[\acic]\defgls{acic}
+	Calculus of (Co)Inductive Constructions with Explicit Named Substitutions,
+	developed by Claudio Sacerdoti Coen in his PhD thesis \cite{coen2000progettazione}
+	as an extension of \cic where discharging is not necessary.
+\end{definition}
+
+The premise selection tool works as follows, and can be summarised as in figure \ref{figure:transformations}:
 \begin{itemize}
     \item Export all \coq objects from the standard library and the selected corpora to XML.
 		\coq has an XML export functionality built in, until version 8.4pl5.
-	\item Parse these objects back into canonical \acic format.
+	\item Parse these objects back into canonical \gls{acic} format.
 	\item From each Coq term $s$ of the form $\hname :\equiv \body : \type$, yield a summary $<\cname[s], \body[s], \type[s]>$:
 		where $\hname[s]$ is the human readable term as written in the Coq source file, $\cname[s]$ is the canonical name (uri) of the term,
 		$\body[s]$ the names of all objects in the proof body (the proof itself),
@@ -16,10 +26,15 @@ The premise selection tool works as follows, and can be summarised as in table \
 		However in the implementation of \roerei this distinction is relevant.
 	\item These summaries are written to disk, and read again in the next half of the pipeline due to problems as described in section \ref{section:report}.
 	\item Distinguish theorems from other definitions, which yields the features and dependencies.
-		For this I use a heuristic as defined by Kaliszyk \cite{kaliszyk2014machine}:
+		For this we use a heuristic as defined by Kaliszyk \cite{kaliszyk2014machine}:
 		the set of allowed features follows directly from splitting the set of all objects into either theorems $\thms$ or definitions $\defs$.
 		Were we consider $S$ to be the set of all proven coq terms, we consider
-		$$\defs = \bigcup_{s \in S} \type[s] ~~\text{and}~~ \thms = (\bigcup_{s \in S} \body[s]) \setminus \defs \text{.}$$
+		\begin{definition}\defgls{defs}  % \label{def:defs}\glsadd{defs}
+			$\defs = \bigcup_{s \in S} \type[s]$
+		\end{definition}
+		\begin{definition}
+			$\thms = (\bigcup_{s \in S} \body[s]) \setminus \defs \text{.}$
+		\end{definition}
 		This is more extensively explained in section \ref{section:features}.
     \item Generate a \dagraph of dependencies for all \coq objects.
 		This is especially useful when determining the performance of our solution as our predictions may not use
@@ -71,8 +86,8 @@ The corpora used are determined beforehand.
 		\draw[->] (definitions) edge node [above] {} (features);
 		\draw[->] (additional) edge node [above] {} (features);
 	\end{tikzpicture}
-	\label{table:transformations}
 	\caption{Transformations performed by the \premiseselection tooling.}
+	\label{figure:transformations}
 \end{figure}
 
 
@@ -81,7 +96,7 @@ Various design goals of the \premiseselection tool called \roerei are to:
 \begin{itemize}
     \item Support offline learning and analysis of \machinelearning on the various corpora.
     \item Enable integration in the \coqide GUI.
-    	I would like to create something like Clippy or Vigor for \coq.
+    	We would like to create something like Clippy or Vigor for \coq.
     \item Enable merging of the premise selection tool in the \coq main branch as a plugin.
 \end{itemize}
 In order to achieve this \roerei is implemented on top of the \acic datastructures as exported by the \xml plugin in \coq.
@@ -140,7 +155,7 @@ Distinguishing theorems from other definitions is not trivial.
 Normally only definitions of kind \prop need to be considered as theorems.
 However in the case of \corn the propositions are of type \cprop, which is of kind \kindtype.
 Also the kind of a definition is not exported consistently by \coq \citationeeded.
-Instead I will initially use a heuristic as defined by Kaliszyk \cite{kaliszyk2014machine}.
+Instead we will initially use a heuristic as defined by Kaliszyk \cite{kaliszyk2014machine}.
 This heuristic defines the theorems, or the set of allowed dependencies, as all definitions except those used in the types of definitions.
 
 For \roerei only the definitions used in the theorem type are regarded as features.
