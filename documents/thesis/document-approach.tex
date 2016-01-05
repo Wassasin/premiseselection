@@ -1,39 +1,37 @@
-\begin{definition}[\cic]\defgls{cic}
-	Calculus of (Co)Inductive Constructions
-\end{definition}
-
 \begin{definition}[\acic]\defgls{acic}
-	Calculus of (Co)Inductive Constructions with Explicit Named Substitutions,
-	developed by Claudio Sacerdoti Coen in his PhD thesis \cite{coen2000progettazione}
-	as an extension of \cic where discharging is not necessary.
+	Calculus of (Co)Inductive Constructions with Explicit Named Substitutions \cite{coen2000progettazione},
+	an extension of \cic where discharging is not necessary.
 \end{definition}
 
 The premise selection tool works as follows, and can be summarised as in figure \ref{figure:transformations}:
 \begin{itemize}
     \item Export all \coq objects from the standard library and the selected corpora to XML.
 		\coq has an XML export functionality built in, until version 8.4pl5.
-	\item Parse these objects back into canonical \gls{acic} format.
-	\item From each Coq term $s$ of the form $\hname :\equiv \body : \type$, yield a summary $<\cname[s], \body[s], \type[s]>$:
-		where $\hname[s]$ is the human readable term as written in the Coq source file, $\cname[s]$ is the canonical name (uri) of the term,
-		$\body[s]$ the names of all objects in the proof body (the proof itself),
-		and $\type[s]$ all names in the type of the proof (what is proven).
-		These canonical names are not yet human readable as they are composed of internal identifiers.
-		Therefore we separately yield a mapping $\cname[s] \rightarrow \cname[s]'$, where $\cname[s]'$ is a human readible canonical name for the term.
+	\item Parse these objects back into canonical \acic\glsadd{acic} format.
+	\item From each \coqobj[s] of the form $\hname :\equiv \body : \type$, yield a summary $<\cname[s], \body[s], \type[s]>$:
+		where $\hname[s]$ \glsadd{hname} is the human readable name of the term $s$ as written in the Coq source file,
+		$\cname[s]$ \glsadd{cname} is the canonical name (uri) of the term,
+		$\body[s]$ \glsadd{body} the set of names of all objects in the proof body (the proof itself),
+		and $\type[s]$ \glsadd{type} the set of all names in the type of the proof (what is proven).
 		
-		In later stages we want to identify these sets by both the Coq term $s$, by the preliminary canonical name $\cname[s]$ and by the eventual human
-		readable name $\cname[s]'$.
+		These canonical names are not yet human readable as they are composed of internal identifiers.
+		Therefore we separately yield a mapping $\cname[s] \rightarrow \hcname[s]$,
+		where $\hcname[s]$ \glsadd{hcname} is a human readible canonical name for the term $s$.
+		
+		In later stages we want to identify these sets by both the \coqobj[s],
+		by the preliminary canonical name $\cname[s]$ and by the eventual human readable name $\hcname[s]$.
 		Thus in this thesis these identifiers are used interexchangably.
 		However in the implementation of \roerei this distinction is relevant.
 	\item These summaries are written to disk, and read again in the next half of the pipeline due to problems as described in section \ref{section:report}.
 	\item Distinguish theorems from other definitions, which yields the features and dependencies.
 		For this we use a heuristic as defined by Kaliszyk \cite{kaliszyk2014machine}:
 		the set of allowed features follows directly from splitting the set of all objects into either theorems $\thms$ or definitions $\defs$.
-		Were we consider $S$ to be the set of all proven coq terms, we consider
-		\begin{definition}\defgls{defs}  % \label{def:defs}\glsadd{defs}
+		Were we consider $S$ to be the set of all proven \coq objects, we consider
+		\begin{definition}\defgls{defs}
 			$\defs = \bigcup_{s \in S} \type[s]$
 		\end{definition}
-		\begin{definition}
-			$\thms = (\bigcup_{s \in S} \body[s]) \setminus \defs \text{.}$
+		\begin{definition}\defgls{thms}
+			$\thms = (\bigcup_{s \in S} \body[s]) \setminus \defs$
 		\end{definition}
 		This is more extensively explained in section \ref{section:features}.
     \item Generate a \dagraph of dependencies for all \coq objects.
@@ -59,11 +57,11 @@ The corpora used are determined beforehand.
 \begin{figure}[H]
 	\centering
 	\begin{tikzpicture}[auto, node distance=2.5cm, main/.style={draw,align=center}]
-		\node[main] (coq) {Coq term\\inside coq};
+		\node[main] (coq) {\coqobj[s]\\inside coq};
 		\node[main] (xml) [below of=coq] {XML\\representation};
-		\node[main] (term) [below of=xml] {Coq term $s$\\$\cname :\equiv \body : \type$};
+		\node[main] (term) [below of=xml] {\coqobj[s]\\$\cname :\equiv \body : \type$};
 		\node[main] (summary) [below of=term] {Summary\\$<\cname[s], \body[s], \type[s], \ldots>$};
-		\node[main] (mapping) [left=1cm of summary] {Mapping\\$\cname \rightarrow \cname'$};
+		\node[main] (mapping) [left=1cm of summary] {Mapping\\$\cname \rightarrow \hcname$};
 		\node[main] (definitions) [below right=2cm and -1cm of summary] {Definitions\\$\defs$};
 		\node[main] (additional) [right=1cm of definitions] {Additional\\metrics};
 		\node[main] (theorems) [below left=2cm and 0cm of summary] {Theorems\\$\thms$};
@@ -105,6 +103,7 @@ The \machinelearning field favours \python and \matlab as the preferred developm
 Ideally the tooling created can be used as a building block in a future \coq tactic which finishes proofs fully automatically.
 
 \subsection{Extraction}
+\label{section:extraction}
 The \coq XML plugin exports various objects.
 After parsing the XML output only some of these constructs are used.
 Of these, the following \coq objects are used:

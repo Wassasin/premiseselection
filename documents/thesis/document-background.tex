@@ -1,3 +1,31 @@
 % No ATP tool for Coq exists currently.
 % Many ATP tools out there.
 % Machine Learning proven viable as base for ATP.
+
+\subsection{\coq}
+
+In order to perform \premiseselection for \coq we first need to examine what definitions in \coq look like, and what we exactly want to predict.
+A proof in \coq is comprised of one or more files written in the \gallina language \cite{huet1992gallina} .
+For a complete definition of the \gallina language please refer to the \coq reference manual\footnote{\coq Reference Manual, Chapter 1: The Gallina specification language\\ \url{https://coq.inria.fr/refman/Reference-Manual003.html}}.
+
+Each file is, amongst other things, comprised of sentences.
+
+Internally \coq represents all objects as instances within \cic, or more recently \pcic.
+
+\begin{definition}[\cic]\defgls{cic}
+	Calculus of (Co)Inductive Constructions,
+	or the Calculus of Constructions \cite{coquand1988calculus} with inductive types and coinduction \cite{huet1987induction} \cite{coquand1990inductively}.
+	Used for \coq v7.
+	\todo{give full definition}
+\end{definition}
+
+\begin{definition}[\pcic]\defgls{pcic}
+	Predicative Calculus of (Co)Inductive Constructions \cite{bertot2013interactive}.
+	Used for \coq v8.
+\end{definition}
+
+\begin{definition}[{\coqobj[s]}]\defgls{coqobj}
+	\coqobj[s] of the form $\hname :\equiv \body : \type$.
+\end{definition}
+
+

@@ -11,12 +11,20 @@
 \newcommand{\roerei}{\texttt{roerei}\xspace}
 
 \newcommand{\coq}{Coq\xspace}
+\newcommand{\gallina}{Gallina\xspace}
 \newcommand{\coqide}{CoqIDE\xspace}
 
-\newcommand{\cic}{CIC\xspace}
-\newglossaryentry{cic}{name={\cic}, description={Calculus of (Co)Inductive Constructions}}
-\newcommand{\acic}{ACIC\xspace}
-\newglossaryentry{acic}{name={\acic}, description={Calculus of (Co)Inductive Constructions with Explicit Named Substitutions}}
+\newcommand{\cic}{Cic\xspace}
+\newglossaryentry{cic}{name={\cic},
+description={Calculus of (Co)Inductive Constructions}}
+
+\newcommand{\acic}{aCic\xspace}
+\newglossaryentry{acic}{name={\acic},
+description={Calculus of (Co)Inductive Constructions with Explicit Named Substitutions}}
+
+\newcommand{\pcic}{pCic\xspace}
+\newglossaryentry{pcic}{name={\pcic},
+description={Predicative Calculus of (Co)Inductive Constructions}}
 
 \newcommand{\machinelearning}{Machine Learning\xspace}
 \newcommand{\crossvalidation}{cross validation\xspace}
@@ -34,14 +42,36 @@
 \newcommand{\nb}{Naive Bayes\xspace}
 \newcommand{\ensemble}{Ensemble Learning\xspace}
 
-\newcommand{\defs}[1][]{\texttt{Defs}_{}}
-\newglossaryentry{defs}{name={Definitions}, symbol={\ensuremath{\defs}}, description={set of all names occuring in the types of terms}}
-\newcommand{\thms}[1][]{\texttt{Thms}_{}}
+\newcommand{\coqobj}[1][]{\coq object ${#1}$\xspace}
+\newglossaryentry{coqobj}{name={\coqobj[s]},
+description={An object defined in \coq. Might be an inductive type, an axiom or a proof}}
 
-\newcommand{\hname}[1][]{l_{#1}}
-\newcommand{\cname}[1][]{n_{#1}}
+\newcommand{\hname}[1][]{h_{#1}}
+\newglossaryentry{hname}{name={\ensuremath{\hname[s]}},
+description={Human readable name of the term $s$ as written in the Coq source file}}
+
+\newcommand{\cname}[1][]{c_{#1}}
+\newglossaryentry{cname}{name={\ensuremath{\cname[s]}},
+description={Canonical identifier (URI) of the term $s$}}
+
+\newcommand{\hcname}[1][]{hc_{#1}}
+\newglossaryentry{hcname}{name={\ensuremath{\hcname[s]}},
+description={Human readable canonical identifier (URI) of the term $s$}}
+
 \newcommand{\body}[1][]{t_{#1}}
+\newglossaryentry{body}{name={\ensuremath{\body[s]}},
+description={Set of names of all objects in the proof body of $s$}}
+
 \newcommand{\type}[1][]{A_{#1}}
+\newglossaryentry{type}{name={\ensuremath{\type[s]}},
+description={Set of names of all objects in the proof type of $s$}}
+
+\newcommand{\defs}[1][]{\texttt{Defs}_{}}
+\newglossaryentry{defs}{name={\ensuremath{\defs}},
+description={Set of all names occuring in proof types}}
+\newcommand{\thms}[1][]{\texttt{Thms}_{}}
+\newglossaryentry{thms}{name={\ensuremath{\thms}},
+description={Set of all names occuring in proof bodies, excluding all $\defs$}}
 
 \newcommand{\deps}[1][]{D_{#1}}
 \newcommand{\depstrans}[1][]{\deps[{#1}]^*}
