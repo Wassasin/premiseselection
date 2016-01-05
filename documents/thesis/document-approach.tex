@@ -22,7 +22,7 @@ The premise selection tool works as follows, and can be summarised as in figure 
 		by the preliminary canonical name $\cname[s]$ and by the eventual human readable name $\hcname[s]$.
 		Thus in this thesis these identifiers are used interexchangably.
 		However in the implementation of \roerei this distinction is relevant.
-	\item These summaries are written to disk, and read again in the next half of the pipeline due to problems as described in section \ref{section:report}.
+	\item These summaries are written to disk, and read again in the next half of the pipeline due to problems as described in section \ref{section:implementation}.
 	\item Distinguish theorems from other definitions, which yields the features and dependencies.
 		For this we use a heuristic as defined by Kaliszyk \cite{kaliszyk2014machine}:
 		the set of allowed features follows directly from splitting the set of all objects into either theorems $\thms$ or definitions $\defs$.
@@ -33,6 +33,7 @@ The premise selection tool works as follows, and can be summarised as in figure 
 		\begin{definition}\defgls{thms}
 			$\thms = (\bigcup_{s \in S} \body[s]) \setminus \defs$
 		\end{definition}
+		\todo{examples}
 		This is more extensively explained in section \ref{section:features}.
     \item Generate a \dagraph of dependencies for all \coq objects.
 		This is especially useful when determining the performance of our solution as our predictions may not use
