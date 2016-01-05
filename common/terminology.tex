@@ -14,18 +14,6 @@
 \newcommand{\gallina}{Gallina\xspace}
 \newcommand{\coqide}{CoqIDE\xspace}
 
-\newcommand{\cic}{Cic\xspace}
-\newglossaryentry{cic}{name={\cic},
-description={Calculus of (Co)Inductive Constructions}}
-
-\newcommand{\acic}{aCic\xspace}
-\newglossaryentry{acic}{name={\acic},
-description={Calculus of (Co)Inductive Constructions with Explicit Named Substitutions}}
-
-\newcommand{\pcic}{pCic\xspace}
-\newglossaryentry{pcic}{name={\pcic},
-description={Predicative Calculus of (Co)Inductive Constructions}}
-
 \newcommand{\machinelearning}{Machine Learning\xspace}
 \newcommand{\crossvalidation}{cross validation\xspace}
 \newcommand{\dagraph}{directed acyclic graph\xspace}
@@ -42,36 +30,62 @@ description={Predicative Calculus of (Co)Inductive Constructions}}
 \newcommand{\nb}{Naive Bayes\xspace}
 \newcommand{\ensemble}{Ensemble Learning\xspace}
 
+\newglossaryentry{termclass}{name={term},
+description={a noun or compound word of \pcic, used by \gallina}}
+\newglossaryentry{typeclass}{name={type},
+description={the semantic subclass of types inside the syntactic class term}}
+\newglossaryentry{sort}{name={sort},
+description={the type of a type when manipulated as term}}
+
+\newcommand{\sortprop}{\texttt{Prop}\xspace}
+\newglossaryentry{sortprop}{name={\sortprop},
+description={the type of a type when manipulated as term}}
+\newcommand{\sortset}{\texttt{Set}\xspace}
+\newglossaryentry{sortset}{name={\sortset},
+description={the type of a type when manipulated as term}}
+
+\newcommand{\cic}{Cic\xspace}
+\newglossaryentry{cic}{name={\cic},
+description={Calculus of (Co)Inductive Constructions}}
+
+\newcommand{\acic}{aCic\xspace}
+\newglossaryentry{acic}{name={\acic},
+description={Calculus of (Co)Inductive Constructions with Explicit Named Substitutions}}
+
+\newcommand{\pcic}{pCic\xspace}
+\newglossaryentry{pcic}{name={\pcic},
+description={Predicative Calculus of (Co)Inductive Constructions}}
+
 \newcommand{\coqobj}[1][]{\coq object ${#1}$\xspace}
 \newglossaryentry{coqobj}{name={\coqobj[s]},
-description={An object defined in \coq. Might be an inductive type, an axiom or a proof}}
+description={an object defined in \coq. Might be an inductive type, an axiom or a proof}}
 
 \newcommand{\hname}[1][]{h_{#1}}
 \newglossaryentry{hname}{name={\ensuremath{\hname[s]}},
-description={Human readable name of the term $s$ as written in the Coq source file}}
+description={human readable name of the \coqobj[s] as written in the Coq source file}}
 
 \newcommand{\cname}[1][]{c_{#1}}
 \newglossaryentry{cname}{name={\ensuremath{\cname[s]}},
-description={Canonical identifier (URI) of the term $s$}}
+description={canonical identifier (URI) of the \coqobj[s]}}
 
 \newcommand{\hcname}[1][]{hc_{#1}}
 \newglossaryentry{hcname}{name={\ensuremath{\hcname[s]}},
-description={Human readable canonical identifier (URI) of the term $s$}}
+description={human readable canonical identifier (URI) of the \coqobj[s]}}
 
 \newcommand{\body}[1][]{t_{#1}}
 \newglossaryentry{body}{name={\ensuremath{\body[s]}},
-description={Set of names of all objects in the proof body of $s$}}
+description={set of names of all objects in the proof body of $s$}}
 
 \newcommand{\type}[1][]{A_{#1}}
 \newglossaryentry{type}{name={\ensuremath{\type[s]}},
-description={Set of names of all objects in the proof type of $s$}}
+description={set of names of all objects in the proof type of $s$}}
 
 \newcommand{\defs}[1][]{\texttt{Defs}_{}}
 \newglossaryentry{defs}{name={\ensuremath{\defs}},
-description={Set of all names occuring in proof types}}
+description={set of all names occuring in proof types}}
 \newcommand{\thms}[1][]{\texttt{Thms}_{}}
 \newglossaryentry{thms}{name={\ensuremath{\thms}},
-description={Set of all names occuring in proof bodies, excluding all $\defs$}}
+description={set of all names occuring in proof bodies, excluding all $\defs$}}
 
 \newcommand{\deps}[1][]{D_{#1}}
 \newcommand{\depstrans}[1][]{\deps[{#1}]^*}
@@ -79,9 +93,9 @@ description={Set of all names occuring in proof bodies, excluding all $\defs$}}
 \newcommand{\parentstrans}[1][]{\parents[{#1}]^*}
 \newcommand{\features}[1][]{F_{#1}}
 \newcommand{\featurekeys}{Z}
-\newcommand{\terms}[1][]{S_{#1}}
-\newcommand{\trainset}{\terms[{\text{train}}]}
-\newcommand{\testset}{\terms[{\text{test}}]}
+\newcommand{\objs}[1][]{S_{#1}}
+\newcommand{\trainset}{\objs[{\text{train}}]}
+\newcommand{\testset}{\objs[{\text{test}}]}
 \newcommand{\counttype}[2]{\#_{#2}(\text{type of}~{#1})}
 \newcommand{\countbody}[2]{\#_{#2}(\text{term of}~{#1})}
 

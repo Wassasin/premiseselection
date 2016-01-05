@@ -4,19 +4,12 @@
 
 \subsection{\coq}
 
-In order to perform \premiseselection for \coq we first need to examine what definitions in \coq look like, and what we exactly want to predict.
-A proof in \coq is comprised of one or more files written in the \gallina language \cite{huet1992gallina} .
-For a complete definition of the \gallina language please refer to the \coq reference manual\footnote{\coq Reference Manual, Chapter 1: The Gallina specification language\\ \url{https://coq.inria.fr/refman/Reference-Manual003.html}}.
-
-Each file is, amongst other things, comprised of sentences.
-
-Internally \coq represents all objects as instances within \cic, or more recently \pcic.
+In order to perform \premiseselection for \coq we first need to examine what objects in \coq look like, and what we exactly want to predict.
 
 \begin{definition}[\cic]\defgls{cic}
 	Calculus of (Co)Inductive Constructions,
 	or the Calculus of Constructions \cite{coquand1988calculus} with inductive types and coinduction \cite{huet1987induction} \cite{coquand1990inductively}.
 	Used for \coq v7.
-	\todo{give full definition}
 \end{definition}
 
 \begin{definition}[\pcic]\defgls{pcic}
@@ -24,8 +17,47 @@ Internally \coq represents all objects as instances within \cic, or more recentl
 	Used for \coq v8.
 \end{definition}
 
+Internally \coq represents all objects as terms \glsadd{termclass} of \cic (or more recently \pcic).
+All terms in \coq are typed.
+By type \glsadd{typeclass} we denote the semantic subclass of types inside the syntactic class term.
+Terms can also be bound to names.
+Names can be both global (qualid) and local (ident).
+We are interested in these named terms for the purpose of \premiseselection.
+
+Types have themselves a type when manipulated as terms.
+This type is called a sort. \glsadd{sort}
+\pcic uses an infinite well-founded typing hierarchy of sorts, with base sorts \sortprop and \sortset.
+The sort \sortprop is intended to be the type of logical propositions.
+\sortset is intended to be the type of small sets such as booleans, the natural numbers, products, subsets and function types over these datatypes.
+\todo{hierarchy}
+
+A proof in \coq is comprised of one or more files written in the \gallina language \cite{huet1992gallina} .
+For a complete definition of the \gallina language please refer to the \coq reference manual\footnote{\coq Reference Manual, Chapter 1: The Gallina specification language\\ \url{https://coq.inria.fr/refman/Reference-Manual003.html}}.
+
+Each file is, amongst other things, comprised of sentences.
+A sentence can be any of the following:
+\begin{description}
+	\item[Assumption] such as an Axiom, Conjecture and Hypothesis, but also a Parameter or Variable.
+		An assumption is a name with only a type associated with it.
+	\item[Definition] for extending the environment with associations of names to terms.
+		
+	\item[Inductive] for Inductive and CoInductive datatypes.
+	\item[Fixpoint] for Fixpoint, or a block of functions defined by mutual well-founded recursion, and CoFixpoint, or a block fo terms defined by a mutual guarded co-recursion.
+	\item[Assertion proof] for stating a proposition of which the proof is built.
+		This creates type (the proposition) and an inhabitant of the type (the proof).
+		This proof is always constructed using tactics, except in the case that a Proof is admitted.
+		In this case the proposition is converted into an axiom.
+\end{description}
+
+This high level description contained in \coq files is translated to terms of \pcic.
+Most notably all tactics are resolved (or executed) into terms.
+We consider everything contained in \pcic that has a name (ident) associated with it as a \coqobj.
+
 \begin{definition}[{\coqobj[s]}]\defgls{coqobj}
-	\coqobj[s] of the form $\hname :\equiv \body : \type$.
+	We denote the set of all named exported \coq objects as $\objs$.
+	Each \coqobj $s \in \objs$ has a human readable name $\hname[s]$ (ident) and possibly if it is a global object a canonical name $\cname[s]$ (qualid).
+	It also has a term $\body[s]$ and a type $\type[s]$ associated with it.
+	Note that the term might be empty, for example as is the case with an axiom or an inductive datatype.
+	Generally we consider \coqobj[s] to be of the form $\hname :\equiv \body : \type$.
 \end{definition}
-
-
+\todo{\coqobj example}
