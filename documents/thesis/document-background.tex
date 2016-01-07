@@ -49,6 +49,8 @@ A sentence can be any of the following:
 		In this case the proposition is converted into an axiom.
 \end{description}
 
+\todo{\coq file example}
+
 This high level description contained in \coq files is translated to terms of \pcic.
 Most notably all tactics are resolved (or executed) into terms.
 We consider everything contained in \pcic that has a name (ident) associated with it as a \coqobj.
@@ -60,4 +62,11 @@ We consider everything contained in \pcic that has a name (ident) associated wit
 	Note that the term might be empty, for example as is the case with an axiom or an inductive datatype.
 	Generally we consider \coqobj[s] to be of the form $\hname :\equiv \body : \type$.
 \end{definition}
+
+Thus a \coq file can be considered to be a sequence of \coq objects:
+$$ \hname[1] :\equiv \body[1] : \type[1], ~~ \hname[2] :\equiv \body[2] : \type[2], ~~ \ldots $$
+
+A \coq corpus (or library) is a collection of \coq files, possibly including eachother.
+It can thus be considered to be a partial ordered set of \coq objects.
+
 \todo{\coqobj example}

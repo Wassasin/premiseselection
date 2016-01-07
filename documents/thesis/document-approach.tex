@@ -26,7 +26,7 @@ The premise selection tool works as follows, and can be summarised as in figure 
 	\item Distinguish theorems from other definitions, which yields the features and dependencies.
 		For this we use a heuristic as defined by Kaliszyk \cite{kaliszyk2014machine}:
 		the set of allowed features follows directly from splitting the set of all objects into either theorems $\thms$ or definitions $\defs$.
-		Were we consider $S$ to be the set of all proven \coq objects, we consider
+		Were we consider $S$ to be the set of all \coq objects, we consider
 		\begin{definition}\defgls{defs}
 			$\defs = \bigcup_{s \in S} \type[s]$
 		\end{definition}
@@ -142,12 +142,12 @@ Thusfar there is no use for these variables within this project.
 
 \subsection{Features and output}
 \label{section:features}
-When performing \premiseselection, only theorems are regarded.
-For other definitions selecting premises is conceptually problematic.
-As the training set, for each proven theorem the features are computed from the type.
-The definitions used in the body of a theorem are the desired result of the \premiseselection.
+When performing \premiseselection, only theorems are taken into account.
+For other constants selecting premises is conceptually problematic.
+As the training set, for each proven theorem the features are computed from the type of the corresponding \coqobj.
+The definitions used in the term of a \coqobj are the desired result of the \premiseselection.
 Hence, given the type of a new theorem to be proved, the \premiseselection yields a set of definitions which are likely to help prove the theorem.
-These definitions are ordered by the chance the definition can be used in the proof.
+These definitions are ordered by the probability the definition can be used in the proof.
 This ordering is derived from the used definitions of similar complete theorems.
 The similarity of complete theorems is captured in the model employed in the \premiseselection, and is derived from the features.
 
