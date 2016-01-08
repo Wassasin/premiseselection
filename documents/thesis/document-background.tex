@@ -54,17 +54,20 @@ A sentence can be any of the following:
 This high level description contained in \coq files is translated to terms of \pcic.
 Most notably all tactics are resolved (or executed) into terms.
 We consider everything contained in \pcic that has a name (ident) associated with it as a \coqobj.
+Possibly each \coqobj might also have a global name (called a qualid).
+In practice we transform the ident and qualid into a human readible canonical name.
+For the purpose of this thesis we disregard this detail, and instead consider each \coqobj to have a unique identifier which we will call the name.
 
 \begin{definition}[{\coqobj[s]}]\defgls{coqobj}
 	We denote the set of all named exported \coq objects as $\objs$.
-	Each \coqobj $s \in \objs$ has a human readable name $\hname[s]$ (ident) and possibly if it is a global object a canonical name $\cname[s]$ (qualid).
+	Each \coqobj $s \in \objs$ has a name $\name[s]$.
 	It also has a term $\body[s]$ and a type $\type[s]$ associated with it.
 	Note that the term might be empty, for example as is the case with an axiom or an inductive datatype.
-	Generally we consider \coqobj[s] to be of the form $\hname :\equiv \body : \type$.
+	Generally we consider \coqobj[s] to be of the form $\name :\equiv \body : \type$.
 \end{definition}
 
 Thus a \coq file can be considered to be a sequence of \coq objects:
-$$ \hname[1] :\equiv \body[1] : \type[1], ~~ \hname[2] :\equiv \body[2] : \type[2], ~~ \ldots $$
+$$ \name[1] :\equiv \body[1] : \type[1], ~~ \name[2] :\equiv \body[2] : \type[2], ~~ \ldots $$
 
 A \coq corpus (or library) is a collection of \coq files, possibly including eachother.
 It can thus be considered to be a partial ordered set of \coq objects.
