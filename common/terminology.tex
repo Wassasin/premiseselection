@@ -56,7 +56,7 @@ description={Calculus of (Co)Inductive Constructions with Explicit Named Substit
 \newglossaryentry{pcic}{name={\pcic},
 description={Predicative Calculus of (Co)Inductive Constructions}}
 
-\newcommand{\coqobj}[1][]{\coq object ${#1}$\xspace}
+\newcommand{\coqobj}[1][]{\coq object\ifthenelse{\equal{#1}{}}{}{~${#1}$}\xspace}
 \newglossaryentry{coqobj}{name={\coqobj[s]},
 description={an object defined in \coq. Might be an inductive type, an axiom or a proof}}
 
