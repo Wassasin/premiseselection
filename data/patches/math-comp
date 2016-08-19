@@ -1,0 +1,29 @@
+diff --git a/etc/utils/ssrcoqdep b/etc/utils/ssrcoqdep
+index 8ef5422..7b84011 100755
+--- a/etc/utils/ssrcoqdep
++++ b/etc/utils/ssrcoqdep
+@@ -21,7 +21,9 @@ esac
+ shift
+ done
+ 
+-COQBIN="$(dirname $(which coqtop))/"
++if [ -z ${COQBIN+x} ]
++	then COQBIN="$(dirname $(which coqtop))/"
++fi
+ $COQBIN/coqdep $args
+ 
+ for f in $(find bkpcoqdep -name "*.v")
+diff --git a/mathcomp/Makefile b/mathcomp/Makefile
+index e05ce80..c64e86f 100644
+--- a/mathcomp/Makefile
++++ b/mathcomp/Makefile
+@@ -22,6 +22,9 @@ MAKEFLAGS+=-B
+ 
+ %:
+ 	$(H)[ -e Makefile.coq ] || $(call coqmakefile,ssreflect)
++	# Apply quick fixes to Makefile.coq
++	sed -i -e 's/coqtop -config/coqtop $$(COQLIBS) -config/g' Makefile.coq
++	sed -i -e 's/$$(COQDEP) -slash $$(OCAMLLIBS)/$$(COQDEP) -slash $$(COQLIBS) $$(OCAMLLIBS)/g' Makefile.coq
+ 	# Override COQDEP to find only the "right" copy .ml files
+ 	$(H)MAKEFLAGS=$(OLD_MAKEFLAGS) $(MAKE) --no-print-directory \
+ 		-f Makefile.coq $* \
