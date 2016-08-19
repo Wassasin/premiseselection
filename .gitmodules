@@ -1,3 +1,12 @@
 [submodule "src/roerei"]
 	path = src/roerei
 	url = git@github.com:Wassasin/roerei
+[submodule "data/contrib/coq"]
+	path = data/contrib/coq
+	url = https://github.com/coq/coq.git
+[submodule "data/contrib/corn"]
+	path = data/contrib/corn
+	url = https://github.com/c-corn/corn.git
+[submodule "data/contrib/math-comp"]
+	path = data/contrib/math-comp
+	url = https://github.com/math-comp/math-comp
