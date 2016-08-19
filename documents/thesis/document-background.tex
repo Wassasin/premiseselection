@@ -6,18 +6,12 @@
 
 In order to perform \premiseselection for \coq we first need to examine what objects in \coq look like, and what we exactly want to predict.
 
-\begin{definition}[\cic]\defgls{cic}
-	Calculus of (Co)Inductive Constructions,
-	or the Calculus of Constructions \cite{coquand1988calculus} with inductive types and coinduction \cite{huet1987induction} \cite{coquand1990inductively}.
-	Used for \coq v7.
-\end{definition}
+Internally \coq represents all objects as terms \glsadd{termclass} of \cic \glsadd{cic}.
+\cic is the Calculus of (Co)Inductive Constructions,
+or the Calculus of Constructions \cite{coquand1988calculus} with inductive types and coinduction \cite{huet1987induction} \cite{coquand1990inductively}.
+More recently, after \coq version 8, they switched to \pcic \glsadd{pcic}, or the Predicative Calculus of (Co)Inductive Constructions \cite{bertot2013interactive}.
+When we refer to a term\glsadd{termclass}, we refer to a noun or compound word of \pcic.
 
-\begin{definition}[\pcic]\defgls{pcic}
-	Predicative Calculus of (Co)Inductive Constructions \cite{bertot2013interactive}.
-	Used for \coq v8.
-\end{definition}
-
-Internally \coq represents all objects as terms \glsadd{termclass} of \cic (or more recently \pcic).
 All terms in \coq are typed.
 By type \glsadd{typeclass} we denote the semantic subclass of types inside the syntactic class term.
 Terms can also be bound to names.
@@ -31,25 +25,45 @@ The sort \sortprop is intended to be the type of logical propositions.
 \sortset is intended to be the type of small sets such as booleans, the natural numbers, products, subsets and function types over these datatypes.
 \todo{hierarchy}
 
-A proof in \coq is comprised of one or more files written in the \gallina language \cite{huet1992gallina} .
+A proof in \coq is comprised of one or more files written in the \gallina language \cite{huet1992gallina}.
 For a complete definition of the \gallina language please refer to the \coq reference manual\footnote{\coq Reference Manual, Chapter 1: The Gallina specification language\\ \url{https://coq.inria.fr/refman/Reference-Manual003.html}}.
 
 Each file is, amongst other things, comprised of sentences.
 A sentence can be any of the following:
 \begin{description}
-	\item[Assumption] such as an Axiom, Conjecture and Hypothesis, but also a Parameter or Variable.
+	\item[Assumption] such as an axiom, conjecture and hypothesis, but also a parameter or variable.
 		An assumption is a name with only a type associated with it.
 	\item[Definition] for extending the environment with associations of names to terms.
-		
-	\item[Inductive] for Inductive and CoInductive datatypes.
-	\item[Fixpoint] for Fixpoint, or a block of functions defined by mutual well-founded recursion, and CoFixpoint, or a block fo terms defined by a mutual guarded co-recursion.
+	\item[Inductive] for inductive and coinductive datatypes.
+	\item[Fixpoint] for fixpoint, or a block of functions defined by mutual well-founded recursion, and cofixpoint, or a block of terms defined by a mutual guarded co-recursion.
 	\item[Assertion proof] for stating a proposition of which the proof is built.
 		This creates type (the proposition) and an inhabitant of the type (the proof).
-		This proof is always constructed using tactics, except in the case that a Proof is admitted.
+		This proof is always constructed using tactics, except in the case that a proof is admitted.
 		In this case the proposition is converted into an axiom.
 \end{description}
 
-\todo{\coq file example}
+\begin{figure}[H]
+	\begin{lstlisting}[language=Coq, mathescape]
+Inductive nat : Set :=
+  | O : nat
+  | S : nat -> nat.
+
+Definition nat_id := $\ldots$ .
+
+Fixpoint plus (n m : nat) : nat :=
+  match n with
+  | O => m
+  | S p => S (p + m)
+  end.
+
+Lemma plus_0_r : $\forall$ x , plus x 0 = x.
+Proof.
+$\ldots$ nat_ind $\ldots$
+Qed.
+Definition plus_0_r n := eq_sym (nat_ind _ eq_refl $\ldots$ ).
+	\end{lstlisting}
+	\caption{\coq file example defining natural numbers}
+\end{figure}
 
 This high level description contained in \coq files is translated to terms of \pcic.
 Most notably all tactics are resolved (or executed) into terms.
@@ -63,13 +77,31 @@ For the purpose of this thesis we disregard this detail, and instead consider ea
 	Each \coqobj $s \in \objs$ has a name $\name[s]$.
 	It also has a term $\body[s]$ and a type $\type[s]$ associated with it.
 	Note that the term might be empty, for example as is the case with an axiom or an inductive datatype.
-	Generally we consider \coqobj[s] to be of the form $\name :\equiv \body : \type$.
+	Generally we consider \coqobj[s] to be of the form $\name \objdef \body : \type$.
+	In the case that $\body$ is empty, we write $\name : \type$ instead.
 \end{definition}
 
 Thus a \coq file can be considered to be a sequence of \coq objects:
-$$ \name[1] :\equiv \body[1] : \type[1], ~~ \name[2] :\equiv \body[2] : \type[2], ~~ \ldots $$
+$$ \name[1] \objdef \body[1] : \type[1], ~~ \name[2] \objdef \body[2] : \type[2], ~~ \ldots $$
 
 A \coq corpus (or library) is a collection of \coq files, possibly including eachother.
 It can thus be considered to be a partial ordered set of \coq objects.
+
+\begin{figure}[H]
+	$$
+		\begin{array}{rclcl}
+			\texttt{nat} & & & : & \sortset, \\
+			\texttt{0} & & & : & \texttt{nat}, \\
+			\texttt{S} & & & : & \texttt{nat} \rightarrow \texttt{nat}, \\
+			\texttt{nat\_id} & \objdef & \lambda x~.~x & : & \texttt{nat} \rightarrow \texttt{nat}, \\
+			\texttt{nat\_ind} & \objdef & \texttt{fix}~\ldots & : &
+				\forall P : \texttt{nat} \rightarrow \sortprop,~
+				P~\texttt{0} \rightarrow (\forall n : \texttt{nat},~ P~n \rightarrow P~(\texttt{S}~n)) \rightarrow \forall n : \texttt{nat},~ P~n, \\
+			\texttt{plus} & \objdef & \texttt{fix}~\ldots & : & \texttt{nat} \rightarrow \texttt{nat} \rightarrow \texttt{nat}, \\
+			\texttt{plus\_0\_r} & \objdef & \ldots~\texttt{nat\_ind}~\ldots & : & \forall x : \texttt{nat},~ \texttt{plus}~x~0 = x
+		\end{array}
+	$$
+	\caption{\coqobj example of the preceding \coq file}
+\end{figure}
 
 \todo{\coqobj example}

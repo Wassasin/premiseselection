@@ -8,7 +8,7 @@ The premise selection tool works as follows, and can be summarised as in figure 
     \item Export all \coq objects from the standard library and the selected corpora to XML.
 		\coq has an XML export functionality built in, until version 8.4pl5.
 	\item Parse these objects back into canonical \acic\glsadd{acic} format.
-	\item From each \coqobj[s] of the form $\name :\equiv \body : \type$, yield a summary $<\name[s], \body[s], \type[s]>$:
+	\item From each \coqobj[s] of the form $\name \objdef \body : \type$, yield a summary $<\name[s], \body[s], \type[s]>$:
 		where $\body[s]$ \glsadd{body} is the set of names of all objects in the proof term (the proof itself),
 		and $\type[s]$ \glsadd{type} is the set of all names in the type of the proof (what is proven).
 	\item These summaries are written to disk, and read again in the next half of the pipeline due to problems as described in section \ref{section:implementation}.
@@ -49,7 +49,7 @@ The corpora used are determined beforehand.
 	\begin{tikzpicture}[auto, node distance=2.5cm, main/.style={draw,align=center}]
 		\node[main] (coq) {\coqobj[s]\\inside coq};
 		\node[main] (xml) [below of=coq] {XML\\representation};
-		\node[main] (term) [below of=xml] {\coqobj[s]\\$\name :\equiv \body : \type$};
+		\node[main] (term) [below of=xml] {\coqobj[s]\\$\name \objdef \body : \type$};
 		\node[main] (summary) [below of=term] {Summary\\$<\name[s], \body[s], \type[s], \ldots>$};
 		\node[main] (definitions) [below right=2cm and -1cm of summary] {Definitions\\$\defs$};
 		\node[main] (additional) [right=1cm of definitions] {Additional\\metrics};
@@ -199,36 +199,6 @@ By K\"uhlwein \cite{kuhlwein2013mash} it is suggested to use $\pi = 10$, $\sigma
 \subsubsection{Ensembles}
 
 \subsection{Example}
-\begin{lstlisting}[language=Coq, mathescape]
-Inductive nat : Set :=
-  | O : nat
-  | S : nat -> nat.
-
-Definition nat_id := $\ldots$ .
-
-Fixpoint plus (n m : nat) : nat :=
-  match n with
-  | O => m
-  | S p => S (p + m)
-  end.
-
-Lemma plus_0_r : $\forall$ x , plus x 0 = x.
-Proof.
-$\ldots$ nat_ind $\ldots$
-Qed.
-Definition plus_0_r n := eq_sym (nat_ind _ eq_refl $\ldots$ ).
-\end{lstlisting}
-
-\begin{lstlisting}[language=Coq, mathescape, frame=none]
-$S = \{$
-	nat : Set$,$
-	O : nat$,$
-	S : nat -> nat$,$
-	nat_ind : $\forall$ P : nat -> Prop, P 0 -> ($\forall$ n : nat, P n -> P (S n)) -> $\forall$ n : nat, P n := fix $\ldots$$,$
-	plus : nat -> nat -> nat := fix $\ldots$$,$
-	plus_0_r : $\forall$ x , plus x 0 = x := $\ldots$ nat_ind $\ldots$ $,$
-$\} $
-\end{lstlisting}
 
 \begin{lstlisting}[language=Coq, mathescape, frame=none]
 $\defs = \{$nat$,$ 0$,$ S$,$ plus$\}$
