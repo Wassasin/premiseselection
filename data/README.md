@@ -10,6 +10,12 @@ For your convenience the generated dataset is also hosted online.
 # System
 These instructions have been tested with:
 * Ubuntu 15.04
+* Ubuntu 14.04 LTS
+
+# Versions
+| Name | Path        | Version        | Date       | Commit  |
+|------|-------------|----------------|------------|---------|
+| Coq  | contrib/coq | version 8.4pl6 | 2016-08-02 | baa60ff |
 
 # Dependencies
 ```
