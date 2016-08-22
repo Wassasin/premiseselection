@@ -11,6 +11,22 @@ index 8d3045c..1df8740 100644
  VM=		# is "-no-vm" to not use the vm"
  TIMECMD=	# is "'time -p'" to get compilation time of .v
  
+diff --git a/plugins/xml/cic2acic.ml b/plugins/xml/cic2acic.ml
+index 165bf83..7adbc00 100644
+--- a/plugins/xml/cic2acic.ml
++++ b/plugins/xml/cic2acic.ml
+@@ -23,8 +23,9 @@ let get_module_path_of_full_path path =
+     (function modul -> Libnames.is_dirpath_prefix_of modul dirpath) modules
+   with
+      [] ->
+-       Pp.msg_warn ("Modules not supported: reference to "^
+-         Libnames.string_of_path path^" will be wrong");
++(* Printing these warnings takes quite some time, thus we acknowledge this and skip *)
++(*       Pp.msg_warn ("Modules not supported: reference to "^
++         Libnames.string_of_path path^" will be wrong"); *)
+        dirpath
+    | [modul] -> modul
+    | _ ->
 diff --git a/plugins/xml/xmlcommand.ml b/plugins/xml/xmlcommand.ml
 index 59ade01..2ff5229 100644
 --- a/plugins/xml/xmlcommand.ml
