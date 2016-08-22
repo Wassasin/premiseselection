@@ -8,6 +8,7 @@ SRC_PATH=`pwd`/contrib/math-comp
 COQ_PATH=`pwd`/contrib/coq
 PATCHES_PATH=`pwd`/patches
 
+rm -rf $DEST_PATH
 mkdir -p $DEST_PATH
 pushd $SRC_PATH
 git checkout -- .
