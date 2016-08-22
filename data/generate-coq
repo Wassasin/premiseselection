@@ -1,0 +1,19 @@
+#!/bin/bash
+set -e
+
+JOBS=`nproc`
+
+DEST_PATH=`pwd`/xml/coq
+SRC_PATH=`pwd`/contrib/coq
+PATCHES_PATH=`pwd`/patches
+
+rm -rf $DEST_PATH
+mkdir -p $DEST_PATH
+pushd $SRC_PATH
+git checkout -- .
+git clean -fxd
+git apply $PATCHES_PATH/coq
+./configure -local
+COQ_XML=-xml COQ_XML_LIBRARY_ROOT=$DEST_PATH \
+	nice -n20 make -j$JOBS
+popd
