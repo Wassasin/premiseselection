@@ -1,8 +1,28 @@
 diff --git a/etc/utils/ssrcoqdep b/etc/utils/ssrcoqdep
-index 8ef5422..7b84011 100755
+index 8ef5422..09924d1 100755
 --- a/etc/utils/ssrcoqdep
 +++ b/etc/utils/ssrcoqdep
-@@ -21,7 +21,9 @@ esac
+@@ -3,7 +3,7 @@
+ args="$@"
+ echo "calling coqdep on $args" 1>&2
+ 
+-mkdir bkpcoqdep
++BKPCOQDEP=`mktemp -d bkpcoqdep.XXXXXX -p /tmp`
+ 
+ while [[ $# > 0 ]]
+ do
+@@ -11,8 +11,8 @@ key="$1"
+ 
+ case $key in
+     *.v)
+-	mkdir -p $(dirname bkpcoqdep/$key)
+-        cp $key bkpcoqdep/$key
++	mkdir -p $(dirname $BKPCOQDEP/$key)
++        cp $key $BKPCOQDEP/$key
+ 	sed "s/^From.*//" -i $key
+     ;;
+     *)
+@@ -21,12 +21,15 @@ esac
  shift
  done
  
@@ -12,12 +32,27 @@ index 8ef5422..7b84011 100755
 +fi
  $COQBIN/coqdep $args
  
- for f in $(find bkpcoqdep -name "*.v")
+-for f in $(find bkpcoqdep -name "*.v")
++for f in $(find $BKPCOQDEP -name "*.v")
+ do
+-mv $f ${f##bkpcoqdep/}
++echo "$f -> ${f##${BKPCOQDEP}/}" 1>&2
++mv $f ${f##${BKPCOQDEP}/}
+ done
+ 
+-rm -rf bkpcoqdep
++rm -rf $BKPCOQDEP
 diff --git a/mathcomp/Makefile b/mathcomp/Makefile
-index e05ce80..c64e86f 100644
+index e05ce80..f36875c 100644
 --- a/mathcomp/Makefile
 +++ b/mathcomp/Makefile
-@@ -22,6 +22,9 @@ MAKEFLAGS+=-B
+@@ -17,13 +17,17 @@ endif
+ 
+ OLD_MAKEFLAGS:=$(MAKEFLAGS)
+ MAKEFLAGS+=-B
++JOBS?=1
+ 
+ .DEFAULT_GOAL := all
  
  %:
  	$(H)[ -e Makefile.coq ] || $(call coqmakefile,ssreflect)
@@ -25,5 +60,8 @@ index e05ce80..c64e86f 100644
 +	sed -i -e 's/coqtop -config/coqtop $$(COQLIBS) -config/g' Makefile.coq
 +	sed -i -e 's/$$(COQDEP) -slash $$(OCAMLLIBS)/$$(COQDEP) -slash $$(COQLIBS) $$(OCAMLLIBS)/g' Makefile.coq
  	# Override COQDEP to find only the "right" copy .ml files
- 	$(H)MAKEFLAGS=$(OLD_MAKEFLAGS) $(MAKE) --no-print-directory \
+-	$(H)MAKEFLAGS=$(OLD_MAKEFLAGS) $(MAKE) --no-print-directory \
++	$(H)MAKEFLAGS=$(OLD_MAKEFLAGS) $(MAKE) -j$(JOBS) --no-print-directory \
  		-f Makefile.coq $* \
+ 		COQDEP='$(COQDEP) -exclude-dir plugin -c'
+ 

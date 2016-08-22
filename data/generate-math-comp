@@ -1,0 +1,20 @@
+#!/bin/bash
+set -e
+
+JOBS=`nproc`
+
+DEST_PATH=`pwd`/xml/math-comp
+SRC_PATH=`pwd`/contrib/math-comp
+COQ_PATH=`pwd`/contrib/coq
+PATCHES_PATH=`pwd`/patches
+
+mkdir -p $DEST_PATH
+pushd $SRC_PATH
+git checkout -- .
+git clean -fxd
+git apply $PATCHES_PATH/math-comp
+pushd mathcomp
+COQ_XML=-xml COQ_XML_LIBRARY_ROOT=$DEST_PATH COQ_BIN=$COQ_PATH/bin JOBS=$JOBS \
+	nice -n20 make
+popd
+popd
