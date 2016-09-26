@@ -1,34 +1,41 @@
 \newcommand{\Ms}{Master's thesis\xspace}
+\newcommand{\citationeeded}{[citation needed]}
 
+% Generic
+\newcommand{\machinelearning}{Machine Learning\xspace}
+\newcommand{\crossvalidation}{cross validation\xspace}
+\newcommand{\dagraph}{directed acyclic graph\xspace}
 \newcommand{\premiseselection}{premise selection\xspace}
 \newcommand{\Premiseselection}{Premise selection\xspace}
 
+% Languages
 \newcommand{\cpp}{C++\xspace}
 \newcommand{\ocaml}{OCaml\xspace}
 \newcommand{\python}{Python\xspace}
 \newcommand{\matlab}{MATLAB\xspace}
 \newcommand{\xml}{XML\xspace}
-\newcommand{\roerei}{\texttt{roerei}\xspace}
 
+% Projects
+\newcommand{\roerei}{\texttt{roerei}\xspace}
 \newcommand{\coq}{Coq\xspace}
 \newcommand{\gallina}{Gallina\xspace}
 \newcommand{\coqide}{CoqIDE\xspace}
 
-\newcommand{\machinelearning}{Machine Learning\xspace}
-\newcommand{\crossvalidation}{cross validation\xspace}
-\newcommand{\dagraph}{directed acyclic graph\xspace}
-\newcommand{\prop}{\texttt{Prop}\xspace}
-\newcommand{\cprop}{\texttt{CProp}\xspace}
-\newcommand{\kindtype}{\texttt{Type}\xspace}
-
+% Corpora
 \newcommand{\compcert}{CompCert\xspace}
 \newcommand{\corn}{CoRN\xspace}
 \newcommand{\formalin}{Formalin\xspace}
 \newcommand{\mathcomp}{Mathematical Components\xspace}
 
+% Machine learning methods
 \newcommand{\knn}{$k$-Nearest Neighbor\xspace}
 \newcommand{\nb}{Naive Bayes\xspace}
 \newcommand{\ensemble}{Ensemble Learning\xspace}
+
+% Coq terminology
+\newcommand{\prop}{\texttt{Prop}\xspace}
+\newcommand{\cprop}{\texttt{CProp}\xspace}
+\newcommand{\kindtype}{\texttt{Type}\xspace}
 
 \newglossaryentry{termclass}{name={term},
 description={a noun or compound word of \pcic, used by \gallina}}
@@ -60,6 +67,7 @@ description={Predicative Calculus of (Co)Inductive Constructions}}
 \newglossaryentry{coqobj}{name={\coqobj[s]},
 description={an object defined in \coq. Might be an inductive type, an axiom or a proof}}
 
+% Paper-bound definitions
 \newcommand{\name}[1][]{n_{#1}}
 \newglossaryentry{name}{name={\ensuremath{\name[s]}},
 description={name of the \coqobj[s] as written in the Coq source file}}
@@ -94,5 +102,3 @@ description={set of all names occuring in proof bodies, excluding all $\defs$}}
 \newcommand{\countbody}[2]{\#_{#2}(\text{term of}~{#1})}
 
 \newcommand{\objdef}{:=}
-
-\newcommand{\citationeeded}{[citation needed]}
