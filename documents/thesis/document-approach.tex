@@ -14,7 +14,7 @@ The premise selection tool works as follows, and can be summarised as in figure 
 	\item These summaries are written to disk, and read again in the next half of the pipeline due to problems as described in section \ref{section:implementation}.
 	\item Distinguish theorems from other definitions, which yields the features and dependencies.
 		For this we use a heuristic as defined by Kaliszyk \cite{kaliszyk2014machine}:
-		the set of allowed features follows directly from splitting the set of all objects into either theorems $\thms$ or definitions $\defs$.
+		the set of all objects is split into either theorems $\thms$ (the features) or definitions $\defs$ (the dependencies).
 		Were we consider $S$ to be the set of all \coq objects, we consider
 		\begin{definition}\defgls{defs}
 			$\defs = \bigcup_{s \in S} \type[s]$
@@ -217,7 +217,7 @@ $\thms = \mathtt{dom}(S) \setminus \defs = \{$nat_ind$,$ plus_0_r$\}$
 \end{description}
 
 \subsection{Metrics}
-The performance of a predictor is measured using 
+The performance of a predictor is measured using
 
 \begin{definition}{100Cover}
 \end{definition}
@@ -238,4 +238,4 @@ The performance of a predictor is measured using
 % `Proof in Progress` -> step (aconstr)
 % Subset corpora (Train) -> Corpus (Test) -> Rating
 % A corpus is divided into Proofs in Progress (each substep)
-% Ratio of guessed steps 
+% Ratio of guessed steps
