@@ -161,18 +161,24 @@ $$
 $$
 For the body of each proven theorem the used definitions are similarly collected, and the set of allowed dependencies $\deps[s]$ is constructed.
 
-The predictor can now, for a unproven theorem, compute the features from the type and yield the ordered set of definitions likely to be useful in the to be constructed body.
-After the prototype is completed additional features will be considered and implemented.
-Most notably some corpus specific features will be tried.
+\subsection{Predictors}
 
-\subsection{Machine learning}
+\begin{definition}{Predictor}
+	\[ P : \features[s] \rightarrow \deps \times \mathbb{R} \]
+\end{definition}
+
+A predictor $p$ can now, for a unproven conjecture $c$,
+using the features of said conjecture $\features[c]$,
+compute the ordered set of definitions likely to be useful in the yet to be constructed proof of $c$.
+Each of these suggestions has an associated likelyhood $p$ to be useful in the proof of conjecture $c$.
 
 \subsubsection{\knn}
 $$ \text{dist}(x, y) = \left( \sum_{i \in \featurekeys} \left( \features[x](i) - \features[y](i) \right)^2 \right)^{\frac{1}{2}} $$
 
 For each conjecture $c \in \testset$ the distance is computed with each term $t \in \trainset$.
-Then the closest $K$ terms $t$ are selected, which we call $\text{closest}_K(c)$.
-Their dependencies $\phi \in \deps[t]$ are then suggested; the likelyhood dependant on the distance of their parents to conjecture $c$.
+Then the closest $K$ terms are selected, which we call $\text{closest}_K(c)$.
+Their dependencies $\phi \in \deps[t]$ are then suggested.
+Their likelyhood is dependant on the distance of their parents to conjecture $c$.
 \[ r_\text{knn}(\phi, c) = \sum_{t \in \text{closest}_K(c)} \countbody{t}{\phi} \times \text{dist}(c, t) \]
 
 \subsubsection{\nb}
@@ -208,19 +214,60 @@ $\defs = \{$nat$,$ 0$,$ S$,$ plus$\}$
 $\thms = \mathtt{dom}(S) \setminus \defs = \{$nat_ind$,$ plus_0_r$\}$
 \end{lstlisting}
 
+\subsection{Performance}
+The performance of a predictor is estimated by running the prediction on known corpora.
+The results of these predictions are quantified using a set of metrics.
+
+In order to prevent so-called overfitting bias, \crossvalidation is used.
+
+\todo{explain crossvalidation}
+
+% Cross validation on Corpora
+% `Proof in Progress` -> step (aconstr)
+% Subset corpora (Train) -> Corpus (Test) -> Rating
+% A corpus is divided into Proofs in Progress (each substep)
+% Ratio of guessed steps
+
+It is customary to implement cross validation for premise selection in the following manner:
+Construct a poset of objects from $\objs$ using the dependency relation for $x, y \in \objs$:
+\[
+	x <_D y ~~\leftrightarrow~~ \depstrans[x] \cap (\parentstrans[y] \cup \{y\}) \neq \emptyset
+\]
+
+A linearized list is constructed from this poset, and each element in this list is first tested, i.e. treated as a conjecture.
+The predictor is asked for a prediction, and the performance is measured.
+Finally the element is learned to the predictor by adding it to the trainingset and adding it to the allowed set of dependencies.
+
+Currently, the predictor is trained using the entire trainingset of the fold, without the dependencies of the term-turned-conjecture $\phi$:
+\[
+	\trainset' = \trainset \setminus \depstrans[\phi] ~\text{and}~ \deps' = \deps \setminus \depstrans[\phi]
+\]
+
+Using the customary approach, always an equal or better performance is reached.
+Trivially this can be concluded because some of the irrelevant terms are excluded from the trainingset, as a result of the poset linearization.
+
 \subsection{Corpora}
+A corpus can have different characteristics, which might reveal strengths or weaknesses of predictors.
+The following corpora are used as test cases:
+
 \begin{description}
-    \item[\compcert]
+	\item[\coq stdlib]
+	\item[\compcert]
     \item[\formalin]
     \item[\corn]
     \item[\mathcomp]
 \end{description}
 
 \subsection{Metrics}
-The performance of a predictor is measured using
+Given a
+
 
 \begin{definition}{100Cover}
+The average coverage of the set of proof dependencies by the first 100 suggestions.
+
+\[ \text{100Cover} = \frac{ \#( \text{Top}_{100}(\text{Suggestions}) \bigcap \text{Required}) } { \#\text{Required} } \]
 \end{definition}
+
 
 \begin{definition}{100Precision}
 \end{definition}
@@ -234,8 +281,3 @@ The performance of a predictor is measured using
 \begin{definition}{Area Under Curve (AUC)}
 \end{definition}
 
-% Cross validation on Corpora
-% `Proof in Progress` -> step (aconstr)
-% Subset corpora (Train) -> Corpus (Test) -> Rating
-% A corpus is divided into Proofs in Progress (each substep)
-% Ratio of guessed steps
