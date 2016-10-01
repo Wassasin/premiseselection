@@ -171,12 +171,12 @@ A predictor $p$ can now, for a unproven conjecture $c$,
 using the features of said conjecture $\features[c]$,
 compute the partial ordered set of definitions likely to be useful in the yet to be constructed proof of $c$.
 \todo{Now a partial function on $\mathbb{R}$, how to denote partial ordered set?}
-Each of these suggestions has an associated likelyhood $p$ to be useful in the proof of conjecture $c$.
+Each of these suggestions has an associated likelyhood $r_p$ to be useful in the proof of conjecture $c$.
 
 \subsubsection{\knn}
 $$ \text{dist}(x, y) = \left( \sum_{i \in \featurekeys} \left( \features[x](i) - \features[y](i) \right)^2 \right)^{\frac{1}{2}} $$
 
-For each conjecture $c \in \testset$ the distance is computed with each term $t \in \trainset$.
+For a conjecture $c$ the distance using $\text{dist}$ is computed with each term $t \in \objs$.
 Then the closest $K$ terms are selected, which we call $\text{closest}_K(c)$.
 Their dependencies $\phi \in \deps[t]$ are then suggested.
 Their likelyhood is dependant on the distance of their parents to conjecture $c$.
@@ -221,8 +221,6 @@ The results of these predictions are quantified using a set of metrics.
 
 In order to prevent so-called overfitting bias, \crossvalidation is used.
 
-\todo{explain crossvalidation}
-
 % Cross validation on Corpora
 % `Proof in Progress` -> step (aconstr)
 % Subset corpora (Train) -> Corpus (Test) -> Rating
@@ -246,6 +244,7 @@ Currently, the predictor is trained using the entire trainingset of the fold, wi
 
 Using the customary approach, always an equal or better performance is reached.
 Trivially this can be concluded because some of the irrelevant terms are excluded from the trainingset, as a result of the poset linearization.
+\todo{Explain posetcons \{optimistic, pessimistic, canonical\}}
 
 \subsection{Corpora}
 A corpus can have different characteristics, which might reveal strengths or weaknesses of predictors.
@@ -260,8 +259,10 @@ The following corpora are used as test cases:
 \end{description}
 
 \subsection{Metrics}
-Given a
+Given a predictor, the performance of this predictor can be denoted using various metrics.
+In this thesis we use the following metrics:
 
+\todo{Explain Top100, suggestions, required, etc}
 
 \begin{definition}{100Cover}
 The average coverage of the set of proof dependencies by the first 100 suggestions.
@@ -271,6 +272,7 @@ The average coverage of the set of proof dependencies by the first 100 suggestio
 
 
 \begin{definition}{100Precision}
+\[ \text{100Precision} = \frac{ \#( \text{Top}_{100}(\text{Suggestions}) \bigcap \text{Required}) } { \#\text{Top}_{100}(\text{Suggestions}) } \]
 \end{definition}
 
 \begin{definition}{Recall}
