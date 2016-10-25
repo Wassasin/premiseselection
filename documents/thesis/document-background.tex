@@ -1,35 +1,66 @@
-% No ATP tool for Coq exists currently.
-% Many ATP tools out there.
-% Machine Learning proven viable as base for ATP.
-
 \subsection{\coq}
 
 In order to perform \premiseselection for \coq we first need to examine what objects in \coq look like, and what we exactly want to predict.
+
+\subsubsection{\pcic}
 
 Internally \coq represents all objects as terms \glsadd{termclass} of \cic \glsadd{cic}.
 \cic is the Calculus of (Co)Inductive Constructions,
 or the Calculus of Constructions \cite{coquand1988calculus} with inductive types and coinduction \cite{huet1987induction} \cite{coquand1990inductively}.
 More recently, after \coq version 8, they switched to \pcic \glsadd{pcic}, or the Predicative Calculus of (Co)Inductive Constructions \cite{bertot2013interactive}.
-When we refer to a term\glsadd{termclass}, we refer to a noun or compound word of \pcic.
+
+\begin{definition}[term]\glsadd{termclass}
+	A term is a noun or compound word of \pcic.
+\end{definition}
+\begin{definition}[type]\glsadd{typeclass}
+	A type is denoted by the semantic subclass of types inside the syntactic class term.
+\end{definition}
 
 All terms in \coq are typed.
-By type \glsadd{typeclass} we denote the semantic subclass of types inside the syntactic class term.
 Terms can also be bound to names.
 Names can be both global (qualid) and local (ident).
-We are interested in these named terms for the purpose of \premiseselection.
+We are interested in these named terms for the purpose of \premiseselection, as we wish to select terms which are most likely to help prove a conjecture.
 
-Types have themselves a type when manipulated as terms.
-This type is called a sort. \glsadd{sort}
-\pcic uses an infinite well-founded typing hierarchy of sorts, with base sorts \sortprop and \sortset.
+\begin{definition}[sentence]\defgls{sentence}
+	A sentence is a named term. It is comprised of a name $\name$ and a term $\body$. Each term has a type associated with it, which we denote with $\type$.
+	We write each sentence to be of the form
+	\[\name \objdef \body : \type\]
+\end{definition}
+
+\begin{definition}[sort]\defgls{type}
+	The type of a type when manipulated as a term is called a sort.
+	\pcic uses an infinite well-founded typing hierarchy of sorts, with base sorts \sortprop and \sortset, and with inductive sort \sorttype.
+	The set of sorts named $\sorts$ is defined by
+	\[\sorts \equiv \{ \sortprop, \sortset, \sorttype[{i}] ~|~ i \in \mathbb{N} \} \]
+
+	Their types are defined as
+	\[
+		\begin{array}{rcl}
+			\sortprop & : & \sorttype[1] \\
+			\sortset & : & \sorttype[1] \\
+			\forall_{i \in \mathbb{N}}~ \sorttype[i] & : & \sorttype[{i+1}]
+		\end{array}
+	\]
+\end{definition}
+
 The sort \sortprop is intended to be the type of logical propositions.
 \sortset is intended to be the type of small sets such as booleans, the natural numbers, products, subsets and function types over these datatypes.
-\todo{hierarchy}
+For example if we look at the types of the term $0$ and $\texttt{True}$:
+	\[
+		\begin{array}{rcl}
+			0 & : & \texttt{nat} \\
+			\texttt{nat} & : & \sortset \\
+			\texttt{True} & : & \sortprop
+		\end{array}
+	\]
+
+\subsubsection{\gallina}
 
 A proof in \coq is comprised of one or more files written in the \gallina language \cite{huet1992gallina}.
 For a complete definition of the \gallina language please refer to the \coq reference manual\footnote{\coq Reference Manual, Chapter 1: The Gallina specification language\\ \url{https://coq.inria.fr/refman/Reference-Manual003.html}}.
 
-Each file is, amongst other things, comprised of sentences.
-A sentence can be any of the following:
+Each file is, amongst other things, comprised of statements.
+A statement can be any of the following:
 \begin{description}
 	\item[Assumption] such as an axiom, conjecture and hypothesis, but also a parameter or variable.
 		An assumption is a name with only a type associated with it.
@@ -73,13 +104,14 @@ In practice we transform the ident and qualid into a human readible canonical na
 For the purpose of this thesis we disregard this detail, and instead consider each \coqobj to have a unique identifier which we will call the name.
 
 \begin{definition}[{\coqobj[s]}]\defgls{coqobj}
-	We denote the set of all named exported \coq objects as $\objs$.
+	A named exported \coq term $\body$ along with the name $\name$ and type $\type$ is called an \coq object and is of the form $\name \objdef \body : \type$.
+	We denote the set of all \coq objects as $\objs$.
 	Each \coqobj $s \in \objs$ has a name $\name[s]$.
 	It also has a term $\body[s]$ and a type $\type[s]$ associated with it.
 	Note that the term might be empty, for example as is the case with an axiom or an inductive datatype.
-	Generally we consider \coqobj[s] to be of the form $\name \objdef \body : \type$.
 	In the case that $\body$ is empty, we write $\name : \type$ instead.
 \end{definition}
+
 
 Thus a \coq file can be considered to be a sequence of \coq objects:
 $$ \name[1] \objdef \body[1] : \type[1], ~~ \name[2] \objdef \body[2] : \type[2], ~~ \ldots $$

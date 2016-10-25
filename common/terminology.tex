@@ -41,15 +41,21 @@
 description={a noun or compound word of \pcic, used by \gallina}}
 \newglossaryentry{typeclass}{name={type},
 description={the semantic subclass of types inside the syntactic class term}}
+\newglossaryentry{sentence}{name={sentence},
+description={a named term along with the corresponding type}}
 \newglossaryentry{sort}{name={sort},
 description={the type of a type when manipulated as term}}
 
+\newcommand{\sorts}{\texttt{Sorts}\xspace}
 \newcommand{\sortprop}{\texttt{Prop}\xspace}
 \newglossaryentry{sortprop}{name={\sortprop},
-description={the type of a type when manipulated as term}}
+description={the type of logical propositions}}
 \newcommand{\sortset}{\texttt{Set}\xspace}
 \newglossaryentry{sortset}{name={\sortset},
-description={the type of a type when manipulated as term}}
+description={the type of small sets}}
+\newcommand{\sorttype}[1][]{\texttt{Type}\ifthenelse{\equal{#1}{}}{}{({#1})}\xspace}
+\newglossaryentry{sorttype}{name={\sorttype},
+description={the type of types}}
 
 \newcommand{\cic}{Cic\xspace}
 \newglossaryentry{cic}{name={\cic},
