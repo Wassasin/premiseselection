@@ -106,26 +106,26 @@ It can thus be considered to be a partial ordered set of \coq objects, with the 
 Inductive nat : Set :=
   | O : nat
   | S : nat -> nat.
-
-Definition nat_id := $\ldots$ .
-
+Definition nat_id := fun x : nat => x.
 Fixpoint plus (n m : nat) : nat :=
   match n with
   | O => m
   | S p => S (p + m)
   end.
-
 Lemma plus_0_r : $\forall$ x , plus x 0 = x.
 Proof.
-$\ldots$ nat_ind $\ldots$
+intro x.
+apply eq_sym.
+induction x.
+unfold plus.
+apply eq_refl.
+unfold plus.
+apply f_equal.
+exact IHx.
 Qed.
-Definition plus_0_r n := eq_sym (nat_ind _ eq_refl $\ldots$ ).
 	\end{lstlisting}
-	\caption{\coq file example defining natural numbers}
-\end{figure}
-
-\begin{figure}[H]
-	Of sort \sortset:
+	\texttt{0} and \texttt{S} can be regarded as constructors or objects. \texttt{nat\_id} and \texttt{plus} can be regarded as functions, which are also objects.
+	The following terms are all of sort \sortset.
 	$$
 		\begin{array}{rcl}
 			\texttt{0} & : & \texttt{nat} \\
@@ -139,7 +139,7 @@ Definition plus_0_r n := eq_sym (nat_ind _ eq_refl $\ldots$ ).
 		\end{array}
 	$$
 
-	Of sort \sortprop:
+	The following terms are of sort \sortprop, and are therefore always proofs:
 	$$
 		\begin{array}{rclcl}
 			\texttt{nat\_ind} & \objdef & \texttt{fix}~\ldots & : &
@@ -148,7 +148,5 @@ Definition plus_0_r n := eq_sym (nat_ind _ eq_refl $\ldots$ ).
 			\texttt{plus\_0\_r} & \objdef & \ldots~\texttt{nat\_ind}~\ldots & : & \forall x : \texttt{nat},~ \texttt{plus}~x~0 = x
 		\end{array}
 	$$
-	\caption{\coqobj example of the preceding \coq file}
+	\caption{\coq file example defining natural numbers, and the corresponding \coq objects}
 \end{figure}
-
-\todo{\coqobj example}
