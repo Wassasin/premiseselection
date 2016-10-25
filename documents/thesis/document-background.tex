@@ -17,23 +17,23 @@ More recently, after \coq version 8, they switched to \pcic \glsadd{pcic}, or th
 \end{definition}
 
 All terms in \coq are typed.
-We define $\body : \type$ to mean that term $\body$ is of type $\type$.
+We define $\term : \type$ to mean that term $\term$\glsadd{term} is of type $\type$\glsadd{type}.
 
 Terms can also be bound to names.
 Names can be both global (qualid) and local (ident).
 In practice we transform the ident and qualid into a human readible canonical name.
 For the purpose of this thesis we disregard this detail, and instead consider each name to be a unique identifier.
 We are interested in these named terms for the purpose of \premiseselection, as we wish to select terms which are most likely to help prove a conjecture.
-We define $\name \objdef \body$ to mean that term $\body$ is bound to name $\name$.
+We define $\name \objdef \term$ to mean that term $\term$ is bound to name $\name$.
 
 \begin{definition}[sentence]\defgls{sentence}
-	A sentence is a named term. It is comprised of a name $\name$ and a term $\body$. Each term has a type associated with it, which we denote with $\type$.
+	A sentence is a named term. It is comprised of a name $\name$ and a term $\term$. Each term has a type associated with it, which we denote with $\type$.
 	We write each sentence to be of the form
-	\[\name \objdef \body : \type\]
+	\[\name \objdef \term : \type\]
 \end{definition}
 
 Note that the a might be empty, for example as is the case with an axiom or an inductive datatype.
-In the case that $\body$ is empty, we write $\name : \type$ instead.
+In the case that $\term$ is empty, we write $\name : \type$ instead.
 
 \begin{definition}[sort]\defgls{type}
 	The type of a type when manipulated as a term is called a sort.
@@ -90,16 +90,16 @@ Most notably all tactics are resolved (or executed) into terms.
 	A \coqobj $s$ is a named term (also called a sentence).
 	We denote the set of all \coq objects as $\objs$.
 	For convenience we denote the ownership of the associated properties with a subscript.
-	Each \coqobj $s \in \objs$ has a name $\name[s]$, a term $\body[s]$ and a type $\type[s]$ associated with it.
+	Each \coqobj $s \in \objs$ has a name $\name[s]$, a term $\term[s]$ and a type $\type[s]$ associated with it.
 \end{definition}
 
 
 Thus a \coq file can be considered to be a sequence of \coq objects:
-$$ \name[1] \objdef \body[1] : \type[1], ~~ \name[2] \objdef \body[2] : \type[2], ~~ \ldots $$
+$$ \name[1] \objdef \term[1] : \type[1], ~~ \name[2] \objdef \term[2] : \type[2], ~~ \ldots $$
 
 A \coq corpus (or library) is a collection of \coq files, possibly including eachother.
 It can thus be considered to be a partial ordered set of \coq objects, with the relation $R(a,b)$ for \coq objects $a, b \in \objs$ to be defined as
-\[R(a,b) = \name[b] \texttt{~is referenced in~} \body[a]\]
+\[R(a,b) = \name[b] \texttt{~is referenced in~} \term[a]\]
 
 \begin{figure}[H]
 	\begin{lstlisting}[language=Coq, mathescape]

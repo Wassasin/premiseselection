@@ -1,26 +1,31 @@
 \begin{definition}[\acic]\defgls{acic}
-	Calculus of (Co)Inductive Constructions with Explicit Named Substitutions \cite{coen2000progettazione},
-	an extension of \cic where discharging is not necessary.
+	The Calculus of (Co)Inductive Constructions with Explicit Named Substitutions \cite{coen2000progettazione}.
+
+	In normal \cic sections can contain local variables.
+	After closing such a section, all definitions are discharged by abstracting these local section variables away.
+	In \acic this is no longer necessary as the definitions are adapted to explicitly capture local variables.
 \end{definition}
 
-The premise selection tool works as follows, and can be summarised as in figure \ref{figure:transformations}:
-\begin{itemize}
+The premise selection tool works as follows, and can be summarised as in Figure \ref{figure:transformations}:
+\begin{enumerate}
     \item Export all \coq objects from the standard library and the selected corpora to XML.
 		\coq has an XML export functionality built in, until version 8.4pl5.
-	\item Parse these objects back into canonical \acic\glsadd{acic} format.
-	\item From each \coqobj[s] of the form $\name \objdef \body : \type$, yield a summary $<\name[s], \body[s], \type[s]>$:
-		where $\body[s]$ \glsadd{body} is the set of names of all objects in the proof term (the proof itself),
-		and $\type[s]$ \glsadd{type} is the set of all names in the type of the proof (what is proven).
+		Currently this is the only existing method to extract \coq objects.
+	\item Read these objects from XML back into canonical \acic\glsadd{acic} format in tool memory.
+	\item From each \coqobj[s] of the form $\name[s] \objdef \term[s] : \type[s]$,
+		yield a summary $<\name[s], \termset[s], \typeset[s]>$:
+		where $\termset[s]$\glsadd{termset} is the set of names of all objects in the term,
+		and $\typeset[s]$\glsadd{typeset} is the set of all names in the type of the proof (what is proven).
 	\item These summaries are written to disk, and read again in the next half of the pipeline due to problems as described in section \ref{section:implementation}.
 	\item Distinguish theorems from other definitions, which yields the features and dependencies.
 		For this we use a heuristic as defined by Kaliszyk \cite{kaliszyk2014machine}:
 		the set of all objects is split into either theorems $\thms$ (the features) or definitions $\defs$ (the dependencies).
 		Were we consider $S$ to be the set of all \coq objects, we consider
 		\begin{definition}\defgls{defs}
-			$\defs = \bigcup_{s \in S} \type[s]$
+			$\defs = \bigcup_{s \in S} \typeset[s]$
 		\end{definition}
 		\begin{definition}\defgls{thms}
-			$\thms = (\bigcup_{s \in S} \body[s]) \setminus \defs$
+			$\thms = (\bigcup_{s \in S} \termset[s]) \setminus \defs$
 		\end{definition}
 		\todo{examples}
 		This is more extensively explained in section \ref{section:features}.
@@ -29,7 +34,7 @@ The premise selection tool works as follows, and can be summarised as in figure 
 		knowledge from future (yet unproven) proofs.
 	\item These features and dependencies can now be used to predict, using for example \knn.
 	\item Predictions are subsequently augmented by further traversing the \dagraph of dependencies.
-\end{itemize}
+\end{enumerate}
 
 The implementation of the tools and the subsequent comparison is done using the following steps in the following order, and can be summarised as in table \ref{table:approach}:
 \begin{itemize}
@@ -49,8 +54,8 @@ The corpora used are determined beforehand.
 	\begin{tikzpicture}[auto, node distance=2.5cm, main/.style={draw,align=center}]
 		\node[main] (coq) {\coqobj[s]\\inside coq};
 		\node[main] (xml) [below of=coq] {XML\\representation};
-		\node[main] (term) [below of=xml] {\coqobj[s]\\$\name \objdef \body : \type$};
-		\node[main] (summary) [below of=term] {Summary\\$<\name[s], \body[s], \type[s], \ldots>$};
+		\node[main] (term) [below of=xml] {\coqobj[s]\\$\name \objdef \term : \type$};
+		\node[main] (summary) [below of=term] {Summary\\$<\name[s], \termset[s], \typeset[s], \ldots>$};
 		\node[main] (definitions) [below right=2cm and -1cm of summary] {Definitions\\$\defs$};
 		\node[main] (additional) [right=1cm of definitions] {Additional\\metrics};
 		\node[main] (theorems) [below left=2cm and 0cm of summary] {Theorems\\$\thms$};
@@ -61,9 +66,9 @@ The corpora used are determined beforehand.
 		\draw[->] (coq) edge node {Coq XML export} (xml);
 		\draw[->] (xml) edge node {Parser} (term);
 		\draw[->] (term) edge node {Resolver} (summary);
-		\draw[->] (summary) edge node [right] {$\type[s]$} (definitions);
+		\draw[->] (summary) edge node [right] {$\typeset[s]$} (definitions);
 		\draw[->] (summary) edge [bend left] node {$\ldots$} (additional);
-		\draw[->] (summary) edge node [left] {$\body[s] \setminus \defs$} (theorems);
+		\draw[->] (summary) edge node [left] {$\termset[s] \setminus \defs$} (theorems);
 		\draw[dashed] (definitions) edge node {} (theorems);
 		\draw[->] (theorems) edge node {} (dependencies);
 		\draw[->] (features) edge node {(External) learner} (prediction);

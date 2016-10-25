@@ -76,17 +76,29 @@ description={an object defined in \coq. Might be an inductive type, an axiom or 
 % Paper-bound definitions
 \newcommand{\name}[1][]{n_{#1}}
 \newglossaryentry{name}{name={\ensuremath{\name[s]}},
-description={name of the \coqobj[s] as written in the Coq source file}}
+description={canonical form of the name of the \coqobj[s]}}
 
-\newcommand{\body}[1][]{t_{#1}}
-\newglossaryentry{body}{name={\ensuremath{\body[s]}},
-description={set of names of all objects in the proof body of $s$}}
+\newcommand{\term}[1][]{t_{#1}}
+\newglossaryentry{term}{name={\ensuremath{\term[s]}},
+description={term of the \coqobj[s]}}
 
 \newcommand{\emptyterm}{\top}
 
 \newcommand{\type}[1][]{A_{#1}}
 \newglossaryentry{type}{name={\ensuremath{\type[s]}},
-description={set of names of all objects in the proof type of $s$}}
+description={type of the \coqobj[s]}}
+
+\newcommand{\flatten}[1]{{\nabla}({#1})}
+\newglossaryentry{flatten}{name={\ensuremath{\flatten{x}}},
+description={extracts names from term or type, and return the set of names}}
+
+\newcommand{\termset}[1][]{\flatten{\term[#1]}}
+\newglossaryentry{termset}{name={\ensuremath{\termset[s]}},
+description={set of names of all objects in the term of \coqobj[s]}}
+
+\newcommand{\typeset}[1][]{\flatten{\type[#1]}}
+\newglossaryentry{typeset}{name={\ensuremath{\typeset[s]}},
+description={set of names of all objects in the type of \coqobj[s]}}
 
 \newcommand{\defs}[1][]{\texttt{Defs}_{}}
 \newglossaryentry{defs}{name={\ensuremath{\defs}},
