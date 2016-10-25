@@ -17,15 +17,23 @@ More recently, after \coq version 8, they switched to \pcic \glsadd{pcic}, or th
 \end{definition}
 
 All terms in \coq are typed.
+We define $\body : \type$ to mean that term $\body$ is of type $\type$.
+
 Terms can also be bound to names.
 Names can be both global (qualid) and local (ident).
+In practice we transform the ident and qualid into a human readible canonical name.
+For the purpose of this thesis we disregard this detail, and instead consider each name to be a unique identifier.
 We are interested in these named terms for the purpose of \premiseselection, as we wish to select terms which are most likely to help prove a conjecture.
+We define $\name \objdef \body$ to mean that term $\body$ is bound to name $\name$.
 
 \begin{definition}[sentence]\defgls{sentence}
 	A sentence is a named term. It is comprised of a name $\name$ and a term $\body$. Each term has a type associated with it, which we denote with $\type$.
 	We write each sentence to be of the form
 	\[\name \objdef \body : \type\]
 \end{definition}
+
+Note that the a might be empty, for example as is the case with an axiom or an inductive datatype.
+In the case that $\body$ is empty, we write $\name : \type$ instead.
 
 \begin{definition}[sort]\defgls{type}
 	The type of a type when manipulated as a term is called a sort.
@@ -56,10 +64,12 @@ For example if we look at the types of the term $0$ and $\texttt{True}$:
 
 \subsubsection{\gallina}
 
-A proof in \coq is comprised of one or more files written in the \gallina language \cite{huet1992gallina}.
+A proof in \coq is a statement written in the \gallina language \cite{huet1992gallina} and stored in a file.
 For a complete definition of the \gallina language please refer to the \coq reference manual\footnote{\coq Reference Manual, Chapter 1: The Gallina specification language\\ \url{https://coq.inria.fr/refman/Reference-Manual003.html}}.
-
-Each file is, amongst other things, comprised of statements.
+A statement can reference other statements using their names.
+These statements need not be stored in the same file.
+Thus for a complete proof multiple files might need to be loaded.
+These statements all have correlating \pcic terms associated with them.
 A statement can be any of the following:
 \begin{description}
 	\item[Assumption] such as an axiom, conjecture and hypothesis, but also a parameter or variable.
@@ -72,6 +82,24 @@ A statement can be any of the following:
 		This proof is always constructed using tactics, except in the case that a proof is admitted.
 		In this case the proposition is converted into an axiom.
 \end{description}
+
+\coq translates \gallina statements contained in \coq vernac (.v) files to terms of \pcic.
+Most notably all tactics are resolved (or executed) into terms.
+
+\begin{definition}[{\coqobj[s]}]\defgls{coqobj}
+	A \coqobj $s$ is a named term (also called a sentence).
+	We denote the set of all \coq objects as $\objs$.
+	For convenience we denote the ownership of the associated properties with a subscript.
+	Each \coqobj $s \in \objs$ has a name $\name[s]$, a term $\body[s]$ and a type $\type[s]$ associated with it.
+\end{definition}
+
+
+Thus a \coq file can be considered to be a sequence of \coq objects:
+$$ \name[1] \objdef \body[1] : \type[1], ~~ \name[2] \objdef \body[2] : \type[2], ~~ \ldots $$
+
+A \coq corpus (or library) is a collection of \coq files, possibly including eachother.
+It can thus be considered to be a partial ordered set of \coq objects, with the relation $R(a,b)$ for \coq objects $a, b \in \objs$ to be defined as
+\[R(a,b) = \name[b] \texttt{~is referenced in~} \body[a]\]
 
 \begin{figure}[H]
 	\begin{lstlisting}[language=Coq, mathescape]
@@ -96,40 +124,27 @@ Definition plus_0_r n := eq_sym (nat_ind _ eq_refl $\ldots$ ).
 	\caption{\coq file example defining natural numbers}
 \end{figure}
 
-This high level description contained in \coq files is translated to terms of \pcic.
-Most notably all tactics are resolved (or executed) into terms.
-We consider everything contained in \pcic that has a name (ident) associated with it as a \coqobj.
-Possibly each \coqobj might also have a global name (called a qualid).
-In practice we transform the ident and qualid into a human readible canonical name.
-For the purpose of this thesis we disregard this detail, and instead consider each \coqobj to have a unique identifier which we will call the name.
-
-\begin{definition}[{\coqobj[s]}]\defgls{coqobj}
-	A named exported \coq term $\body$ along with the name $\name$ and type $\type$ is called an \coq object and is of the form $\name \objdef \body : \type$.
-	We denote the set of all \coq objects as $\objs$.
-	Each \coqobj $s \in \objs$ has a name $\name[s]$.
-	It also has a term $\body[s]$ and a type $\type[s]$ associated with it.
-	Note that the term might be empty, for example as is the case with an axiom or an inductive datatype.
-	In the case that $\body$ is empty, we write $\name : \type$ instead.
-\end{definition}
-
-
-Thus a \coq file can be considered to be a sequence of \coq objects:
-$$ \name[1] \objdef \body[1] : \type[1], ~~ \name[2] \objdef \body[2] : \type[2], ~~ \ldots $$
-
-A \coq corpus (or library) is a collection of \coq files, possibly including eachother.
-It can thus be considered to be a partial ordered set of \coq objects.
-
 \begin{figure}[H]
+	Of sort \sortset:
+	$$
+		\begin{array}{rcl}
+			\texttt{0} & : & \texttt{nat} \\
+			\texttt{S} & : & \texttt{nat} \rightarrow \texttt{nat}
+		\end{array}
+	$$
 	$$
 		\begin{array}{rclcl}
-			\texttt{nat} & & & : & \sortset, \\
-			\texttt{0} & & & : & \texttt{nat}, \\
-			\texttt{S} & & & : & \texttt{nat} \rightarrow \texttt{nat}, \\
-			\texttt{nat\_id} & \objdef & \lambda x~.~x & : & \texttt{nat} \rightarrow \texttt{nat}, \\
+			\texttt{nat\_id} & \objdef & \lambda x~.~x & : & \texttt{nat} \rightarrow \texttt{nat} \\
+			\texttt{plus} & \objdef & \texttt{fix}~\ldots & : & \texttt{nat} \rightarrow \texttt{nat} \rightarrow \texttt{nat} \\
+		\end{array}
+	$$
+
+	Of sort \sortprop:
+	$$
+		\begin{array}{rclcl}
 			\texttt{nat\_ind} & \objdef & \texttt{fix}~\ldots & : &
 				\forall P : \texttt{nat} \rightarrow \sortprop,~
-				P~\texttt{0} \rightarrow (\forall n : \texttt{nat},~ P~n \rightarrow P~(\texttt{S}~n)) \rightarrow \forall n : \texttt{nat},~ P~n, \\
-			\texttt{plus} & \objdef & \texttt{fix}~\ldots & : & \texttt{nat} \rightarrow \texttt{nat} \rightarrow \texttt{nat}, \\
+				P~\texttt{0} \rightarrow (\forall n : \texttt{nat},~ P~n \rightarrow P~(\texttt{S}~n)) \rightarrow \forall n : \texttt{nat},~ P~n \\
 			\texttt{plus\_0\_r} & \objdef & \ldots~\texttt{nat\_ind}~\ldots & : & \forall x : \texttt{nat},~ \texttt{plus}~x~0 = x
 		\end{array}
 	$$
