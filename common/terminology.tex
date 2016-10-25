@@ -92,6 +92,14 @@ description={type of the \coqobj[s]}}
 \newglossaryentry{flatten}{name={\ensuremath{\flatten{x}}},
 description={extracts names from term or type, and return the set of names}}
 
+\newcommand{\countoccur}[1]{{\nabla_\#}({#1})}
+\newglossaryentry{countoccur}{name={\ensuremath{\countoccur{x}}},
+description={extracts names from term or type, and return the set of names along with their number of occurances in the term}}
+
+\newcommand{\depth}[1]{{\nabla_D}({#1})}
+\newglossaryentry{depth}{name={\ensuremath{\depth{x}}},
+description={extracts names from term or type, and return the set of names along with their depth in the term}}
+
 \newcommand{\termset}[1][]{\flatten{\term[#1]}}
 \newglossaryentry{termset}{name={\ensuremath{\termset[s]}},
 description={set of names of all objects in the term of \coqobj[s]}}
