@@ -25,25 +25,39 @@ The premise selection tool works as follows, and can be summarised as in Figure 
 		Finally in Section \ref{section:depth} we extract the minimum depth each name occurs $\depth{x}$\glsadd{depth}.
 		\begin{figure}[H]
 			\[
-				\typeset{\texttt{O}}, \typeset{\texttt{S}}, \typeset{\texttt{nat\_id}}, \typeset{\texttt{plus}} = \{ \texttt{nat} \}
+				\begin{array}{rcl}
+					\typeset{\texttt{O}}, \typeset{\texttt{S}}, \typeset{\texttt{nat\_id}}, \typeset{\texttt{plus}} & = & \{ \texttt{nat} \}\\
+					\typeset{\texttt{nat\_ind}} & = & \{ 0, \texttt{S} \} \\
+					\typeset{\texttt{plus\_0\_r}} & = & \{ \texttt{nat}, \texttt{eq}, \texttt{plus}, 0 \} \\
+					& & \\
+					\termset{\texttt{nat\_id}} & = & \emptyset \\
+					\termset{\texttt{plus\_0\_r}} & = & \{ \texttt{eq\_sym}, \texttt{nat\_ind}, \texttt{eq\_refl}, \texttt{f\_equal}, \texttt{S} \}
+				\end{array}
 			\]
-			\caption{Summaries yielded for the natural number example}
+			\caption{Summaries yielded for the natural number example in Figure \ref{figure:natexample}}
 		\end{figure}
 	\item These summaries are written to disk, and read again in the next half of the pipeline due to problems as described in Section \ref{section:implementation}.
 	\item Distinguish theorems from other definitions, which yields the features and dependencies.
-		For this we use a heuristic as defined by Kaliszyk \cite{kaliszyk2014machine}:
-		the set of all objects is split into either theorems $\thms$ (the features) or definitions $\defs$ (the dependencies).
-		Were we consider $S$ to be the set of all \coq objects, we take
+		Ideally we would like to take all objects of sort \sortprop to be the theorems.
+		However this does not work in all cases, specifically for the \corn dataset.
+		In order to solve this we use a heuristic as defined by Kaliszyk \cite{kaliszyk2014machine}.
+		Where we consider $S$ to be the set of all \coq objects, we take
 		\begin{definition}\defgls{defs}
 			$\defs = \bigcup_{s \in S} \typeset{s}$
 		\end{definition}
 		\begin{definition}\defgls{thms}
 			$\thms = (\bigcup_{s \in S} \termset{s}) \setminus \defs$
 		\end{definition}
-		\begin{figure}
-
-		\end{figure}
 		This is more extensively explained in Section \ref{section:features}.
+		\begin{figure}[H]
+			\[
+				\begin{array}{rcl}
+					\defs & = & \{ 0, \texttt{S}, \texttt{nat}, \texttt{eq}, \texttt{plus} \} \\
+					\thms & = & \{ \texttt{eq\_sym}, \texttt{nat\_ind}, \texttt{eq\_refl}, \texttt{f\_equal} \}
+				\end{array}
+			\]
+			\caption{$\defs$ and $\thms$ for the natural number example in Figure \ref{figure:natexample}}
+		\end{figure}
     \item Generate a \dagraph of dependencies for all \coq objects.
 		This is especially useful when determining the performance of our solution as our predictions may not use
 		knowledge from future (yet unproven) proofs.
