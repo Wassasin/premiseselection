@@ -104,15 +104,17 @@ description={the set of all types}}
 
 \newcommand{\flattensym}{\nabla}
 \newcommand{\flatten}[1]{\flattensym({#1})}
-\newglossaryentry{flatten}{name={\ensuremath{\flatten{x}}}, sort=flatten,
+\newglossaryentry{flatten}{name={\ensuremath{\flattensym}}, sort=flatten,
 description={extracts names from term or type, and return the set of names}}
 
-\newcommand{\countoccur}[1]{{\flattensym_\#}({#1})}
-\newglossaryentry{countoccur}{name={\ensuremath{\countoccur{x}}}, sort=flatten-countoccur,
+\newcommand{\countoccursym}{\flattensym_\#}
+\newcommand{\countoccur}[1]{\countoccursym({#1})}
+\newglossaryentry{countoccur}{name={\ensuremath{\countoccursym}}, sort=flatten-countoccur,
 description={extracts names from term along with their number of occurances in the term}}
 
-\newcommand{\depth}[1]{{\flattensym_D}({#1})}
-\newglossaryentry{depth}{name={\ensuremath{\depth{x}}}, sort=flatten-depth,
+\newcommand{\depthsym}{\flattensym_D}
+\newcommand{\depth}[1]{\depthsym({#1})}
+\newglossaryentry{depth}{name={\ensuremath{\depthsym}}, sort=flatten-depth,
 description={extracts names from term along with their depth in the term}}
 
 \newcommand{\termset}[1]{\flatten{\term[#1]}}
