@@ -16,6 +16,7 @@
 \newcommand{\xml}{XML\xspace}
 
 % Projects
+\newcommand{\preloader}{\texttt{preloader}\xspace}
 \newcommand{\roerei}{\texttt{roerei}\xspace}
 \newcommand{\coq}{Coq\xspace}
 \newcommand{\gallina}{Gallina\xspace}
@@ -129,10 +130,10 @@ description={set of names of all objects in the type of \coqobj[s]}}
 
 \newcommand{\defs}[1][]{\texttt{Defs}_{}}
 \newglossaryentry{defs}{name={\ensuremath{\defs}},
-description={set of all names occuring in proof types}}
+description={set of names of all objects in the types of all objects; used as set of features}}
 \newcommand{\thms}[1][]{\texttt{Thms}_{}}
 \newglossaryentry{thms}{name={\ensuremath{\thms}},
-description={set of all names occuring in proof bodies, excluding all $\defs$}}
+description={set of names of all objects in the terms of all objects, excluding all $\defs$; used as set of dependencies}}
 
 \newcommand{\deps}[1][]{D_{#1}}
 \newcommand{\depstrans}[1][]{\deps[{#1}]^*}
