@@ -102,23 +102,23 @@ description={the set of all types}}
 
 \newcommand{\flattensym}{\nabla}
 \newcommand{\flatten}[1]{\flattensym({#1})}
-\newglossaryentry{flatten}{name={\ensuremath{\flatten{x}}},
+\newglossaryentry{flatten}{name={\ensuremath{\flatten{x}}}, sort=flatten,
 description={extracts names from term or type, and return the set of names}}
 
 \newcommand{\countoccur}[1]{{\flattensym_\#}({#1})}
-\newglossaryentry{countoccur}{name={\ensuremath{\countoccur{x}}},
-description={extracts names from term or type, and return the set of names along with their number of occurances in the term}}
+\newglossaryentry{countoccur}{name={\ensuremath{\countoccur{x}}}, sort=flatten-countoccur,
+description={extracts names from term along with their number of occurances in the term}}
 
 \newcommand{\depth}[1]{{\flattensym_D}({#1})}
-\newglossaryentry{depth}{name={\ensuremath{\depth{x}}},
-description={extracts names from term or type, and return the set of names along with their depth in the term}}
+\newglossaryentry{depth}{name={\ensuremath{\depth{x}}}, sort=flatten-depth,
+description={extracts names from term along with their depth in the term}}
 
 \newcommand{\termset}[1]{\flatten{\term[#1]}}
-\newglossaryentry{termset}{name={\ensuremath{\termset{s}}},
+\newglossaryentry{termset}{name={\ensuremath{\termset{s}}}, sort=flatten-termset,
 description={set of names of all objects in the term of \coqobj[s]}}
 
 \newcommand{\typeset}[1]{\flatten{\type[#1]}}
-\newglossaryentry{typeset}{name={\ensuremath{\typeset{s}}},
+\newglossaryentry{typeset}{name={\ensuremath{\typeset{s}}}, sort=flatten-typeset,
 description={set of names of all objects in the type of \coqobj[s]}}
 
 \newcommand{\defs}[1][]{\texttt{Defs}_{}}
