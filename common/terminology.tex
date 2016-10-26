@@ -78,9 +78,17 @@ description={an object defined in \coq. Might be an inductive type, an axiom or 
 \newglossaryentry{name}{name={\ensuremath{\name[s]}},
 description={canonical form of the name of the \coqobj[s]}}
 
+\newcommand{\names}{\mathcal{N}}
+\newglossaryentry{names}{name={\ensuremath{\names}},
+description={the set of all names}}
+
 \newcommand{\term}[1][]{t_{#1}}
 \newglossaryentry{term}{name={\ensuremath{\term[s]}},
 description={term of the \coqobj[s]}}
+
+\newcommand{\terms}{\mathcal{T}}
+\newglossaryentry{terms}{name={\ensuremath{\terms}},
+description={the set of all terms}}
 
 \newcommand{\emptyterm}{\top}
 
@@ -88,24 +96,29 @@ description={term of the \coqobj[s]}}
 \newglossaryentry{type}{name={\ensuremath{\type[s]}},
 description={type of the \coqobj[s]}}
 
-\newcommand{\flatten}[1]{{\nabla}({#1})}
+\newcommand{\types}{\mathcal{A}}
+\newglossaryentry{types}{name={\ensuremath{\types}},
+description={the set of all types}}
+
+\newcommand{\flattensym}{\nabla}
+\newcommand{\flatten}[1]{\flattensym({#1})}
 \newglossaryentry{flatten}{name={\ensuremath{\flatten{x}}},
 description={extracts names from term or type, and return the set of names}}
 
-\newcommand{\countoccur}[1]{{\nabla_\#}({#1})}
+\newcommand{\countoccur}[1]{{\flattensym_\#}({#1})}
 \newglossaryentry{countoccur}{name={\ensuremath{\countoccur{x}}},
 description={extracts names from term or type, and return the set of names along with their number of occurances in the term}}
 
-\newcommand{\depth}[1]{{\nabla_D}({#1})}
+\newcommand{\depth}[1]{{\flattensym_D}({#1})}
 \newglossaryentry{depth}{name={\ensuremath{\depth{x}}},
 description={extracts names from term or type, and return the set of names along with their depth in the term}}
 
-\newcommand{\termset}[1][]{\flatten{\term[#1]}}
-\newglossaryentry{termset}{name={\ensuremath{\termset[s]}},
+\newcommand{\termset}[1]{\flatten{\term[#1]}}
+\newglossaryentry{termset}{name={\ensuremath{\termset{s}}},
 description={set of names of all objects in the term of \coqobj[s]}}
 
-\newcommand{\typeset}[1][]{\flatten{\type[#1]}}
-\newglossaryentry{typeset}{name={\ensuremath{\typeset[s]}},
+\newcommand{\typeset}[1]{\flatten{\type[#1]}}
+\newglossaryentry{typeset}{name={\ensuremath{\typeset{s}}},
 description={set of names of all objects in the type of \coqobj[s]}}
 
 \newcommand{\defs}[1][]{\texttt{Defs}_{}}

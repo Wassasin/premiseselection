@@ -13,27 +13,36 @@ The premise selection tool works as follows, and can be summarised as in Figure 
 		Currently this is the only existing method to extract \coq objects.
 	\item Read these objects from XML back into canonical \acic\glsadd{acic} format in tool memory.
 	\item From each \coqobj[s] of the form $\name[s] \objdef \term[s] : \type[s]$,
-		yield a summary $<\name[s], \termset[s], \typeset[s]>$.
+		yield a summary $<\name[s], \termset{s}, \typeset{s}>$.
 		\begin{definition}[$\flatten{x}$]\defgls{flatten}
-			For a given term (or type) $x$, yield the set of names referenced to in the expression of the term.
+			For a given term (or type) $x$, yield the set of names referenced to in the term.
+			\[ \flattensym : \terms \rightarrow 2^{\names} \]
 		\end{definition}
-		Given that definition, $\termset[s]$\glsadd{termset} is the set of names of all objects in the term $\term[s]$,
-		and $\typeset[s]$\glsadd{typeset} is the set of all names in the type $\type[s]$.
-		Note that other variants for this $\termset[s]$ can be used.
+		Given that definition, $\termset{s}$\glsadd{termset} is the set of names of all objects in the term $\term[s]$,
+		and $\typeset{s}$\glsadd{typeset} is the set of all names in the type $\type[s]$.
+		Note that other variants for this $\termset{s}$ can be used.
 		In Section \ref{section:countoccur} we also extract the number of occurances of each name using $\countoccur{x}$.
 		Finally in Section \ref{section:depth} we extract the minimum depth each name occurs $\depth{x}$.
+		\begin{figure}[H]
+			\[
+				\typeset{\texttt{O}}, \typeset{\texttt{S}}, \typeset{\texttt{nat\_id}}, \typeset{\texttt{plus}} = \{ \texttt{nat} \}
+			\]
+			\caption{Summaries yielded for the natural number example}
+		\end{figure}
 	\item These summaries are written to disk, and read again in the next half of the pipeline due to problems as described in Section \ref{section:implementation}.
 	\item Distinguish theorems from other definitions, which yields the features and dependencies.
 		For this we use a heuristic as defined by Kaliszyk \cite{kaliszyk2014machine}:
 		the set of all objects is split into either theorems $\thms$ (the features) or definitions $\defs$ (the dependencies).
-		Were we consider $S$ to be the set of all \coq objects, we consider
+		Were we consider $S$ to be the set of all \coq objects, we take
 		\begin{definition}\defgls{defs}
-			$\defs = \bigcup_{s \in S} \typeset[s]$
+			$\defs = \bigcup_{s \in S} \typeset{s}$
 		\end{definition}
 		\begin{definition}\defgls{thms}
-			$\thms = (\bigcup_{s \in S} \termset[s]) \setminus \defs$
+			$\thms = (\bigcup_{s \in S} \termset{s}) \setminus \defs$
 		\end{definition}
-		\todo{examples}
+		\begin{figure}
+
+		\end{figure}
 		This is more extensively explained in Section \ref{section:features}.
     \item Generate a \dagraph of dependencies for all \coq objects.
 		This is especially useful when determining the performance of our solution as our predictions may not use

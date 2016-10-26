@@ -11,19 +11,26 @@ More recently, after \coq version 8, they switched to \pcic \glsadd{pcic}, or th
 
 \begin{definition}[term]\glsadd{termclass}
 	A term is a noun or compound word of \pcic.
+	A term is typically denoted by $\term$\glsadd{term}, with $\terms$\glsadd{terms} being the set of all terms.
 \end{definition}
 \begin{definition}[type]\glsadd{typeclass}
 	A type is denoted by the semantic subclass of types inside the syntactic class term.
+	A type is typically denoted by $\type$\glsadd{type}, with $\types$\glsadd{types} being the set of all types.
 \end{definition}
 
 All terms in \coq are typed.
-We define $\term : \type$ to mean that term $\term$\glsadd{term} is of type $\type$\glsadd{type}.
+We define $\term : \type$ to mean that term $\term$ is of type $\type$.
+As a type is inside the syntactic class term, all types can be considered to be terms as well.
+\[ \types \subseteq \terms \]
 
-Terms can also be bound to names.
+\begin{definition}[name]
+	A name is an element in the set of names $\names$\glsadd{names}, and is bound to a term. A name is typically denoted by $\name$\glsadd{name}.
+\end{definition}
 Names can be both global (qualid) and local (ident).
 In practice we transform the ident and qualid into a human readible canonical name.
 For the purpose of this thesis we disregard this detail, and instead consider each name to be a unique identifier.
-We are interested in these named terms for the purpose of \premiseselection, as we wish to select terms which are most likely to help prove a conjecture.
+We are interested in these named terms for the purpose of \premiseselection,
+as we wish to select terms which are most likely to help prove a conjecture.
 We define $\name \objdef \term$ to mean that term $\term$ is bound to name $\name$.
 
 \begin{definition}[sentence]\defgls{sentence}
