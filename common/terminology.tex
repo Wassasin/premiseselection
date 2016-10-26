@@ -47,11 +47,13 @@ description={a named term along with the corresponding type}}
 description={the type of a type when manipulated as term}}
 
 \newcommand{\sorts}{\texttt{Sorts}\xspace}
+\newglossaryentry{sorts}{name={\ensuremath{\sorts}}, sort=sorts,
+description={the set of sorts}}
 \newcommand{\sortprop}{\texttt{Prop}\xspace}
-\newglossaryentry{sortprop}{name={\sortprop},
+\newglossaryentry{sortprop}{name={\sortprop}, sort=prop,
 description={the type of logical propositions}}
 \newcommand{\sortset}{\texttt{Set}\xspace}
-\newglossaryentry{sortset}{name={\sortset},
+\newglossaryentry{sortset}{name={\sortset}, sort=set,
 description={the type of small sets}}
 \newcommand{\sorttype}[1][]{\texttt{Type}\ifthenelse{\equal{#1}{}}{}{({#1})}\xspace}
 \newglossaryentry{sorttype}{name={\sorttype},

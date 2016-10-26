@@ -42,10 +42,10 @@ We define $\name \objdef \term$ to mean that term $\term$ is bound to name $\nam
 Note that the a might be empty, for example as is the case with an axiom or an inductive datatype.
 In the case that $\term$ is empty, we write $\name : \type$ instead.
 
-\begin{definition}[sort]\defgls{type}
+\begin{definition}[sort]\defgls{sort}
 	The type of a type when manipulated as a term is called a sort.
-	\pcic uses an infinite well-founded typing hierarchy of sorts, with base sorts \sortprop and \sortset, and with inductive sort \sorttype.
-	The set of sorts named $\sorts$ is defined by
+	\pcic uses an infinite well-founded typing hierarchy of sorts, with base sorts \sortprop\glsadd{sortprop} and \sortset\glsadd{sortset}, and with inductive sort \sorttype\glsadd{sorttype}.
+	The set of sorts named $\sorts$\defgls{sorts} is defined by
 	\[\sorts \equiv \{ \sortprop, \sortset, \sorttype[{i}] ~|~ i \in \mathbb{N} \} \]
 
 	Their types are defined as
