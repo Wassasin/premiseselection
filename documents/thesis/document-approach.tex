@@ -85,15 +85,15 @@ The premise selection tool works as follows, and can be summarised as in Figure 
 	\item Distinguish theorems from other definitions, which yields the features and dependencies.
 		Ideally we would like to take all objects of sort \sortprop to be the theorems.
 		However this does not work in all cases, specifically for the \corn dataset.
-		In order to solve this we use a heuristic as defined by Kaliszyk \cite{kaliszyk2014machine}.
-		Where we consider $S$ to be the set of all \coq objects, we take
-		\begin{definition}\defgls{defs}
-			$\defs = \bigcup_{s \in S} \typeset{s}$
-		\end{definition}
-		\begin{definition}\defgls{thms}
-			$\thms = (\bigcup_{s \in S} \termset{s}) \setminus \defs$
-		\end{definition}
-		This is more extensively explained in Section \ref{section:features}.
+		In order to solve this we use a heuristic as defined by Kaliszyk et al.\ \cite{kaliszyk2014machine}.
+		Where we consider $\objs$ to be the set of all \coq objects, we take
+    \[
+      \begin{array}{rcll}
+        \defs & = & \bigcup_{s \in S} \typeset{s} & \text{(Definition \ref{def:defs})}\glsadd{defs} \\
+        \thms & = & (\bigcup_{s \in S} \termset{s}) \setminus \defs & \text{(Definition \ref{def:thms})}\glsadd{thms}
+      \end{array}
+    \]
+		This is more extensively explained in Section \ref{section:thmsdefs}.
 		\begin{figure}[H]
 			\[
 				\begin{array}{rcl}
@@ -104,6 +104,7 @@ The premise selection tool works as follows, and can be summarised as in Figure 
 			\caption{$\defs$ and $\thms$ for the natural number example in Figure \ref{figure:natexample}}
 		\end{figure}
     \item From the $\thms$ and $\defs$ generate a \dagraph of dependencies and feature vector for all \coq objects.
+      See Section \ref{section:featsdeps}.
 		\todo{dagraph dependencies} \todo{feature vector}
 	\item These features and dependencies can now be used to predict by bundling them with a predictor, for example \knn.
 		\todo{predictors}
@@ -124,8 +125,8 @@ The premise selection tool works as follows, and can be summarised as in Figure 
 		\node[main] (summary) [below of=term] {Summary\\$<\name[s], \termset{s}, \typeset{s}>$};
 		\node[main] (definitions) [below right=2cm and 0cm of summary] {Definitions\\$\defs$};
 		\node[main] (theorems) [below left=2cm and 0cm of summary] {Theorems\\$\thms$};
-		\node[main] (features) [below of=definitions] {Features\\of theorems\\$\features$};
-		\node[main] (dependencies) [below of=theorems] {Dependencies\\of theorems\\$\deps$};
+    \node[main] (features) [below of=definitions] {Features\\of theorems\\$\features[s]$};
+    \node[main] (dependencies) [below of=theorems] {Dependencies\\of theorems\\$\deps[s]$};
 		\node[main] (predictor) [below=7.0cm of summary] {Predictor};
 
 		\draw[->] (coq) edge node {(1) Coq XML export} (xml);
@@ -170,7 +171,7 @@ From the parsed \xml files only the following \acic constructs are used:
 		This separation is an optimization, as once defined the proofs (terms) of theorems are irrelevant.
 		For \coq it is sufficient to only know the type of a theorem.
 		For definitions the term is absolutely necessary, as the definitions needs to be substituted when applied.
-		However, conceptually theorems and definitions become indistinguishable when exported (see Section \ref{section:features}).
+		However, conceptually theorems and definitions become indistinguishable when exported (see Section \ref{section:thmsdefs}).
         Axioms only generate a type, as the term of an axiom is empty.
 \end{description}
 
@@ -190,24 +191,59 @@ The following objects are not used, but could be useful in future work:
 A variable consists of a name and a type, and becomes a parameter when a theory which uses the variable is applied.
 Thusfar there is no use for these variables within this thesis.
 
-\subsection{Features and output}
-\label{section:features}
-When performing \premiseselection, only theorems are taken into account.
-For other constants selecting premises is conceptually problematic.
-As the training set, for each proven theorem the features are computed from the type of the corresponding \coqobj.
-The definitions used in the term of a \coqobj are the desired result of the \premiseselection.
-Hence, given the type of a new theorem to be proved, the \premiseselection yields a set of definitions which are likely to help prove the theorem.
-These definitions are ordered by the probability the definition can be used in the proof.
-This ordering is derived from the used definitions of similar complete theorems.
-The similarity of complete theorems is captured in the model employed in the \premiseselection, and is derived from the features.
+\subsection{Theorems and definitions}
+\label{section:thmsdefs}
 
-Distinguishing theorems from other definitions is not trivial.
-Normally only definitions of kind \prop need to be considered as theorems.
-However in the case of \corn the propositions are of type \cprop, which is of kind \kindtype.
-Also the kind of a definition is not exported consistently by \coq \citationeeded.
-Instead we will initially use a heuristic as defined by Kaliszyk \cite{kaliszyk2014machine}.
-This heuristic defines the theorems, or the set of allowed dependencies, as all definitions except those used in the types of definitions.
+For the sake of \premiseselection, we would like to categorize all \coqobjs as either theorems or definitions.
+\begin{definition}[theorem]\glsadd{theorem}
+    Theorems are \coqobjs that have been proved based on previously established \coqobjs.
+    They logically follow from the defined axioms.
+\end{definition}
 
+\begin{definition}[definition]\glsadd{definition}
+    Definitions are all \coqobjs that are not theorems.
+    They are either simply constants or purely transformative operations on such constants
+    and can merely assist in establishing new proofs.
+\end{definition}
+
+\coq is based on the Curry-Howard isomorphism.
+This means that the statements of proofs (what is proven) are encoded in the type of the theorems.
+Axioms are then defined as simple constants, and used in the type of a theorem to build further proofs.
+Thus on a logical level there is no distinction between a definition and a theorem.
+\coq tries to track this distinction by having the type of theorems be of sort \sortprop.
+Ideally we would like to take all objects of sort \sortprop to be the theorems.
+However this does not work in all cases, specifically for the \corn dataset.
+In the case of \corn the propositions are of type \cprop, which is of sort \sorttype.
+\todo{example-corn}
+
+In order to solve this we use a heuristic as defined by Kaliszyk et al.\ \cite{kaliszyk2014machine}.
+Where we consider $\objs$ to be the set of all \coqobjs, we take
+
+\begin{definition}\defgls{defs}\label{def:defs}
+  the definitions to be the names in the types of all \coqobjs
+  \[ \defs = \bigcup_{s \in S} \typeset{s} \]
+\end{definition}
+
+\begin{definition}\defgls{thms}\label{def:thms}
+  the theorems to be the names in the terms of all \coqobj, excluding all definitions
+  \[ \thms = (\bigcup_{s \in S} \termset{s}) \setminus \defs \]
+\end{definition}
+
+This provides an adequate distinction for our purposes.
+
+\subsection{Features and dependencies}
+\label{section:featsdeps}
+
+For \premiseselection we would like to suggest new theorems (premises) for open proof goals.
+These premises are selected according to the type of the proof goal (the names of the constants in the proof goal).
+
+
+
+\todo{features}
+\todo{dependencies}
+
+
+% Old
 For \roerei only the definitions used in the theorem type are regarded as features.
 Concretely, for a set of proven theorems $S$ with their types and bodies, the used definitions from the types are collected.
 From this for each proven theorem $s$ a function $\features[s]$ is defined on the set of allowed features $Z$.

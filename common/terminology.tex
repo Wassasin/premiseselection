@@ -33,9 +33,7 @@
 \newcommand{\ensemble}{Ensemble Learning\xspace}
 
 % Coq terminology
-\newcommand{\prop}{\texttt{Prop}\xspace}
 \newcommand{\cprop}{\texttt{CProp}\xspace}
-\newcommand{\kindtype}{\texttt{Type}\xspace}
 
 \newglossaryentry{termclass}{name={term},
 description={a noun or compound word of \pcic, used by \gallina}}
@@ -75,11 +73,18 @@ description={Predicative Calculus of (Co)Inductive Constructions}}
 \newglossaryentry{gallina}{name={\gallina},
 description={the specification language for \coq}}
 
+% Paper-bound definitions
 \newcommand{\coqobj}[1][]{\coq object\ifthenelse{\equal{#1}{}}{}{~${#1}$}\xspace}
+\newcommand{\coqobjs}{\coq objects\xspace}
 \newglossaryentry{coqobj}{name={\coqobj[s]},
 description={an object defined in \coq. Might be an inductive type, an axiom or a proof}}
 
-% Paper-bound definitions
+\newglossaryentry{theorem}{name=theorem,
+description={\coqobjs that have been proved based on previously established \coqobjs}}
+
+\newglossaryentry{definition}{name=definition,
+description={\coqobjs that are not theorems. Either simple constants or purely transformative operations on such constants}}
+
 \newcommand{\name}[1][]{n_{#1}}
 \newglossaryentry{name}{name={\ensuremath{\name[s]}},
 description={canonical form of the name of the \coqobj[s]}}
