@@ -208,7 +208,7 @@ For the sake of \premiseselection, we would like to categorize all \coqobjs as e
 
 \coq is based on the Curry-Howard isomorphism.
 This means that the statements of proofs (what is proven) are encoded in the type of the theorems.
-Axioms are then defined as simple constants, and used in the type of a theorem to build further proofs.
+Axioms are then defined as simple constants, and used in the term of a theorem to justify proofs.
 Thus on a logical level there is no distinction between a definition and a theorem.
 \coq tries to track this distinction by having the type of theorems be of sort \sortprop.
 Ideally we would like to take all objects of sort \sortprop to be the theorems.
@@ -217,15 +217,15 @@ In the case of \corn the propositions are of type \cprop, which is of sort \sort
 \todo{example-corn}
 
 In order to solve this we use a heuristic as defined by Kaliszyk et al.\ \cite{kaliszyk2014machine}.
-Where we consider $\objs$ to be the set of all \coqobjs, we take
+Where we consider $\objs$ to be the set of all \coqobjs,
 
 \begin{definition}\defgls{defs}\label{def:defs}
-  the definitions to be the names in the types of all \coqobjs
+  we take the definitions to be the names in the types of all \coqobjs
   \[ \defs = \bigcup_{s \in S} \typeset{s} \]
 \end{definition}
 
 \begin{definition}\defgls{thms}\label{def:thms}
-  the theorems to be the names in the terms of all \coqobj, excluding all definitions
+  we take the theorems to be the names in the terms of all \coqobj, excluding all definitions
   \[ \thms = (\bigcup_{s \in S} \termset{s}) \setminus \defs \]
 \end{definition}
 
