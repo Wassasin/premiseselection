@@ -6,3 +6,34 @@
   \end{tabular}
   \caption{Performance of the \knn method for the \coq (flat) dataset}
 \end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+        xlabel=$k$,
+        ylabel=\oocover
+      ]
+      \addplot+[smooth, no markers] table {data/knn_coq_oocover.dat};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{\oocover of the \knn method for the \coq (flat) dataset for different values of $k$}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+        xlabel=$\pi$,
+        ylabel=$\tau$,
+        zlabel=\oocover,
+        colorbar horizontal
+      ]
+      \addplot3 [surf] gnuplot [raw gnuplot] {
+        set dgrid3d 30,30 spline;
+        splot 'data/nb_coq_oocover.dat';
+      };
+    \end{axis}
+  \end{tikzpicture}
+  \caption{\oocover of the \nb method for the \coq (flat) dataset for $\sigma = -15$}
+\end{figure}
