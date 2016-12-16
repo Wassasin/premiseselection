@@ -2,6 +2,7 @@
 echo -e "\033[32mDeploying assets\033[0m"
 mkdir -p "build"
 cp -R "assets" "build"
+cp -R "data" "build"
 cp *.tex "build"
 cp *.sty "build"
 cp *.bib "build"
