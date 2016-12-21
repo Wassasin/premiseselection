@@ -2,9 +2,18 @@
   \centering
   \begin{tabular}{r|rrrrrr}
     $k$ & \oocover & \ooprecision & \recall & \rank & \auc & \volume \\\hline
-    \input{data/knn_coq_k}
+    \input{data/knn-coq-frequency}
   \end{tabular}
-  \caption{Performance of the \knn method for the \coq (flat) dataset}
+  \caption{Performance of the \knn method for the \coq (frequency) dataset}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{tabular}{r|rrrrrr}
+    Method & \oocover & \ooprecision & \recall & \rank & \auc & \volume \\\hline
+    \input{data/best-coq-frequency}
+  \end{tabular}
+  \caption{Performance of the various methods for the \coq (frequency) dataset}
 \end{figure}
 
 \begin{figure}[H]
@@ -12,12 +21,74 @@
   \begin{tikzpicture}
     \begin{axis}[
         xlabel=$k$,
-        ylabel=\oocover
+        ylabel=\oocover,
+        legend pos=outer north east
       ]
-      \addplot+[smooth, no markers] table {data/knn_coq_oocover.dat};
+      \addplot+[smooth, no markers] table {data/knn-coq-flat-oocover.dat};
+      \addlegendentry{\coq (flat)}
+
+      \addplot+[smooth, no markers] table {data/knn-coq-depth-oocover.dat};
+      \addlegendentry{\coq (depth)}
+
+      \addplot+[smooth, no markers] table {data/knn-coq-frequency-oocover.dat};
+      \addlegendentry{\coq (frequency)}
     \end{axis}
   \end{tikzpicture}
-  \caption{\oocover of the \knn method for the \coq (flat) dataset for different values of $k$}
+  \caption{\oocover of the \knn method for the \coq dataset for different values of $k$}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+        xlabel=$k$,
+        ylabel=\oocover,
+        legend pos=outer north east
+      ]
+      \addplot+[smooth, no markers] table {data/knn-coq-frequency-oocover.dat};
+      \addlegendentry{\coq}
+
+      \addplot+[smooth, no markers] table {data/knn-ch2o-frequency-oocover.dat};
+      \addlegendentry{\formalin}
+
+      \addplot+[smooth, no markers] table {data/knn-corn-frequency-oocover.dat};
+      \addlegendentry{\corn}
+
+      \addplot+[smooth, no markers] table {data/knn-mathclasses-frequency-oocover.dat};
+      \addlegendentry{\mathclasses}
+
+      \addplot+[smooth, no markers] table {data/knn-mathcomp-frequency-oocover.dat};
+      \addlegendentry{\mathcomp}
+    \end{axis}
+  \end{tikzpicture}
+  \caption{\oocover of the \knn method for the various (frequency) datasets for different values of $k$}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+        xlabel=$k$,
+        ylabel=\oocover,
+        legend pos=outer north east
+      ]
+      \addplot+[smooth, no markers] table {data/knn-coq-depth-oocover.dat};
+      \addlegendentry{\coq}
+
+      \addplot+[smooth, no markers] table {data/knn-ch2o-depth-oocover.dat};
+      \addlegendentry{\formalin}
+
+      \addplot+[smooth, no markers] table {data/knn-corn-depth-oocover.dat};
+      \addlegendentry{\corn}
+
+      \addplot+[smooth, no markers] table {data/knn-mathclasses-depth-oocover.dat};
+      \addlegendentry{\mathclasses}
+
+      \addplot+[smooth, no markers] table {data/knn-mathcomp-depth-oocover.dat};
+      \addlegendentry{\mathcomp}
+    \end{axis}
+  \end{tikzpicture}
+  \caption{\oocover of the \knn method for the various (depth) datasets for different values of $k$}
 \end{figure}
 
 \begin{figure}[H]
@@ -27,13 +98,14 @@
         xlabel=$\pi$,
         ylabel=$\tau$,
         zlabel=\oocover,
-        colorbar horizontal
+        colorbar horizontal,
+        view={0}{90},
+        shader=interp,
+        mesh/ordering=x varies,
+        mesh/rows=10
       ]
-      \addplot3 [surf] gnuplot [raw gnuplot] {
-        set dgrid3d 30,30 spline;
-        splot 'data/nb_coq_oocover.dat';
-      };
+    \addplot3 [surf] table {data/nb-coq-frequency-oocover.dat};
     \end{axis}
   \end{tikzpicture}
-  \caption{\oocover of the \nb method for the \coq (flat) dataset for $\sigma = -15$}
+  \caption{\oocover of the \nb method for the \coq (frequency) dataset for $\sigma = -15$}
 \end{figure}
