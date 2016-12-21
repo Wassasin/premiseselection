@@ -1,5 +1,5 @@
 #!/bin/bash
-echo -e "\033[32mDeploying assets\033[0m"
+echo -e "\033[32mDeploying files to build\033[0m"
 mkdir -p "build"
 cp -R "assets" "build"
 cp -R "data" "build"
@@ -7,25 +7,40 @@ cp *.tex "build"
 cp *.sty "build"
 cp *.bib "build"
 
-echo -e "\033[32mBuilding assets [Graphviz files to PDF]\033[0m"
-find build/assets/ -name \*.dot -exec dot -O -Tpdf {} \; -exec prename -f 's/dot.pdf$/pdf/' {}.pdf \;
-
-echo -e "\033[32mBuilding assets [SVG to EPS with Inkscape]\033[0m"
-find build/assets/ -name \*.svg -exec inkscape {} -E {}.eps \; -exec prename -f 's/svg.eps$/eps/' {}.eps \;
-
-echo -e "\033[32mBuilding assets [EPS to PDF with Ghostscript]\033[0m"
-find build/assets/ -name \*.eps -exec epstopdf {} \; -exec echo {} \;
+mkdir -p "build/figures"
+cp figures/*.tex "build/figures"
 
 pushd "build" 1>/dev/null
-rm -f "document.aux"
+rm -f "*.aux"
+
+
+echo -e "\033[32mBuilding assets [Graphviz files to PDF]\033[0m"
+find ./assets/ -name \*.dot -exec dot -O -Tpdf {} \; -exec prename -f 's/dot.pdf$/pdf/' {}.pdf \; -exec echo {} \;
+
+echo -e "\033[32mBuilding assets [SVG to EPS with Inkscape]\033[0m"
+find ./assets/ -name \*.svg -exec inkscape {} -E {}.eps \; -exec prename -f 's/svg.eps$/eps/' {}.eps \; -exec echo {} \;
+
+echo -e "\033[32mBuilding assets [EPS to PDF with Ghostscript]\033[0m"
+find ./assets/ -name \*.eps -exec epstopdf {} \; -exec echo {} \;
+
+echo -e "\033[32mBuilding figures [xelatex]\033[0m"
+find ./figures -name \*.tex -exec bash -c 'xelatex -halt-on-error "{}" 1>/dev/null || echo "Fail: {}"' \; -exec echo {} \;
+
+
 echo -e "\033[32mBuilding latex [Pass 1/5: xelatex preprocess]\033[0m"
-xelatex -halt-on-error -file-line-error "document.tex" || exit 1
+xelatex -halt-on-error -file-line-error "document.tex" 1>&2 || exit 1
+
 echo -e "\033[32mBuilding latex [Pass 2/5: bibtex]\033[0m"
-bibtex "document" || exit 1
+bibtex "document" 1>/dev/null || exit 1
+
 echo -e "\033[32mBuilding latex [Pass 3/5: glossaries]\033[0m"
-makeglossaries "document" || exit 1
+makeglossaries "document" 1>/dev/null || exit 1
+
 echo -e "\033[32mBuilding latex [Pass 4/5: xelatex references]\033[0m"
 xelatex -halt-on-error -file-line-error "document.tex" | grep -i ".*:[0-9]*:.*\|warning"
+
 echo -e "\033[32mBuilding latex [Pass 5/5: xelatex crossreferences]\033[0m"
-xelatex -halt-on-error -interaction=batchmode "document.tex"
+xelatex -halt-on-error -interaction=batchmode 1>/dev/null "document.tex"
+
+
 popd 1>/dev/null

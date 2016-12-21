@@ -1,0 +1,19 @@
+\documentclass{standalone}
+\input{../preamble}
+
+\begin{document}
+  \begin{tikzpicture}
+    \begin{axis}[
+        xlabel=$\pi$,
+        ylabel=$\tau$,
+        zlabel=\oocover,
+        colorbar horizontal,
+        view={0}{90},
+        shader=interp,
+        mesh/ordering=x varies,
+        mesh/rows=10
+      ]
+    \addplot3 [surf] table {data/nb-coq-frequency-oocover.dat};
+    \end{axis}
+  \end{tikzpicture}
+\end{document}
