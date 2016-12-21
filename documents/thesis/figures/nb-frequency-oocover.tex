@@ -5,15 +5,29 @@
   \begin{tikzpicture}
     \begin{axis}[
         xlabel=$\pi$,
+        ylabel=$\sigma$,
+        zlabel=\oocover,
+        colorbar horizontal,
+        view={0}{90},
+ %       shader=interp,
+        mesh/ordering=x varies,
+        mesh/rows=5
+      ]
+    \addplot3 [surf] table {data/nb-coq-frequency-pi-sigma-oocover.dat};
+    \end{axis}
+  \end{tikzpicture}
+  \begin{tikzpicture}
+    \begin{axis}[
+        xlabel=$\pi$,
         ylabel=$\tau$,
         zlabel=\oocover,
         colorbar horizontal,
         view={0}{90},
-        shader=interp,
+%        shader=interp,
         mesh/ordering=x varies,
         mesh/rows=10
       ]
-    \addplot3 [surf] table {data/nb-coq-frequency-oocover.dat};
+    \addplot3 [surf] table {data/nb-coq-frequency-pi-tau-oocover.dat};
     \end{axis}
   \end{tikzpicture}
 \end{document}
