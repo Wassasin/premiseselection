@@ -9,11 +9,11 @@
         zlabel=\oocover,
         colorbar horizontal,
         view={0}{90},
- %       shader=interp,
+        shader=interp,
         mesh/ordering=x varies,
-        mesh/rows=5
+        mesh/rows=10
       ]
-    \addplot3 [surf] table {data/nb-coq-frequency-pi-sigma-oocover.dat};
+      \addplot3 [surf] table [z index=2] {data/nb-coq-frequency-pi-sigma.dat};
     \end{axis}
   \end{tikzpicture}
   \begin{tikzpicture}
@@ -23,11 +23,11 @@
         zlabel=\oocover,
         colorbar horizontal,
         view={0}{90},
-%        shader=interp,
+        shader=interp,
         mesh/ordering=x varies,
         mesh/rows=10
       ]
-    \addplot3 [surf] table {data/nb-coq-frequency-pi-tau-oocover.dat};
+      \addplot3 [surf] table [z index=2] {data/nb-coq-frequency-pi-tau.dat};
     \end{axis}
   \end{tikzpicture}
 \end{document}

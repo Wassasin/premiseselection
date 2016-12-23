@@ -8,13 +8,13 @@
         ylabel=\oocover,
         legend pos=outer north east
       ]
-      \addplot+[smooth, no markers] table {data/knn-coq-flat-oocover.dat};
+      \addplot+[smooth, no markers] table [y index=1] {data/knn-coq-flat.dat};
       \addlegendentry{\coq (flat)}
 
-      \addplot+[smooth, no markers] table {data/knn-coq-depth-oocover.dat};
+      \addplot+[smooth, no markers] table [y index=1] {data/knn-coq-depth.dat};
       \addlegendentry{\coq (depth)}
 
-      \addplot+[smooth, no markers] table {data/knn-coq-frequency-oocover.dat};
+      \addplot+[smooth, no markers] table [y index=1] {data/knn-coq-frequency.dat};
       \addlegendentry{\coq (frequency)}
     \end{axis}
   \end{tikzpicture}
