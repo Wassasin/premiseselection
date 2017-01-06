@@ -1,0 +1,28 @@
+#!/bin/bash
+echo -e "\033[32mDeploying document files to build\033[0m"
+mkdir -p "build"
+
+cp *.tex "build"
+cp *.sty "build"
+cp *.bib "build"
+
+pushd "build" 1>/dev/null
+rm -f "*.aux"
+
+echo -e "\033[32mBuilding latex [Pass 1/5: xelatex preprocess]\033[0m"
+xelatex -halt-on-error -file-line-error "document.tex" 1>&2 || exit 1
+
+echo -e "\033[32mBuilding latex [Pass 2/5: bibtex]\033[0m"
+bibtex "document" 1>/dev/null || exit 1
+
+echo -e "\033[32mBuilding latex [Pass 3/5: glossaries]\033[0m"
+makeglossaries "document" 1>/dev/null || exit 1
+
+echo -e "\033[32mBuilding latex [Pass 4/5: xelatex references]\033[0m"
+xelatex -halt-on-error -file-line-error "document.tex" | grep -i ".*:[0-9]*:.*\|warning"
+
+echo -e "\033[32mBuilding latex [Pass 5/5: xelatex crossreferences]\033[0m"
+xelatex -halt-on-error -interaction=batchmode 1>/dev/null "document.tex"
+
+
+popd 1>/dev/null

@@ -236,29 +236,35 @@ This provides an adequate distinction for our purposes.
 
 For \premiseselection we would like to suggest new theorems (premises) for open proof goals.
 These premises are selected according to the type of the proof goal (the names of the constants in the proof goal).
+Specifically we call the set of aspects which describe a proof goal the set of feature keys:
 
+\begin{definition}\defgls{featurekeys}\label{def:featurekeys}
+  The set of feature keys $\featurekeys$ is defined as the set of definitions, but with possible extensions such as the use of products in a proof goal
+  \[ \features = \defs \cup \{ \times \} \]
+\end{definition}
 
+For a proof goal a numeric value can be derived for each feature key.
+We call such a value a feature.
+
+\begin{definition}\defgls{features}\label{def:features}
+  For a \coq object $s \in \objs$ the features are computed using the function $\features[s]$:
+  $$
+  \begin{array}{lcl}
+    \features[s] & : & \featurekeys \rightarrow \mathbb{R} \\
+    \features[s](x) & = & \left\{
+      \begin{array}{ll}
+        \counttype{s}{x} & x \in \defs \\
+        \counttype{s}{\wedge} & x = \wedge
+      \end{array} \right.
+  \end{array}
+  $$
+\end{definition}
 
 \todo{features}
 \todo{dependencies}
 
 
 % Old
-For \roerei only the definitions used in the theorem type are regarded as features.
-Concretely, for a set of proven theorems $S$ with their types and terms, the definitions from the types are collected.
-From this for each proven theorem $s \in S$ a function $\features[s]$ is defined on the set of allowed features $Z$.
-$Z$ is composed of the definitions $\defs$ as well as various other metrics which have been added halfway through this thesis such as the number of conjunctions in the type of a term.
-$$ Z = \defs \cup \{ \wedge \} $$
-$$
-\begin{array}{lcl}
-	\features[s] & : & \featurekeys \rightarrow \mathbb{R} \\
-	\features[s](x) & = & \left\{
-		\begin{array}{ll}
-			\counttype{s}{x} & x \in \defs \\
-			\counttype{s}{\wedge} & x = \wedge
-		\end{array} \right.
-\end{array}
-$$
 For the body of each proven theorem the used definitions are similarly collected, and the set of allowed dependencies $\deps[s]$ is constructed.
 
 \subsubsection{Number of occurances}

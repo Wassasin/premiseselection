@@ -140,7 +140,7 @@ description={set of names of all objects in the type of \coqobj[s]}}
 
 \newcommand{\defs}[1][]{\texttt{Defs}_{}}
 \newglossaryentry{defs}{name={\ensuremath{\defs}},
-description={set of names of all objects in the types of all objects; used as set of features}}
+description={set of names of all objects in the types of all objects; used as the base of the set of features}}
 \newcommand{\thms}[1][]{\texttt{Thms}_{}}
 \newglossaryentry{thms}{name={\ensuremath{\thms}},
 description={set of names of all objects in the terms of all objects, excluding all $\defs$; used as set of dependencies}}
@@ -157,7 +157,13 @@ description={set of names of all objects in the terms of all objects, excluding 
 \newcommand{\parents}[1][]{P_{#1}}
 \newcommand{\parentstrans}[1][]{\parents[{#1}]^*}
 \newcommand{\features}[1][]{F_{#1}}
+\newglossaryentry{features}{name={\ensuremath{\features}},
+description={function which computes the numeric values describing a \coq object. These values are considered to be the features of the \coq object.}}
+
 \newcommand{\featurekeys}{Z}
+\newglossaryentry{featurekeys}{name={\ensuremath{\featurekeys}},
+description={set of feature keys, or the set of the aspects with which an object can be described; based on the set of definitions $\defs$, but possibly extended with other aspects}}
+
 \newcommand{\objs}[1][]{S_{#1}}
 \newcommand{\trainset}{\objs[{\text{train}}]}
 \newcommand{\testset}{\objs[{\text{test}}]}
