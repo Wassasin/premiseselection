@@ -50,6 +50,7 @@ The \machinelearning field favours \python and \matlab as the preferred developm
 Thus we needed to re-implement various \machinelearning algorithms in \cpp.
 
 \subsection{Transformations}
+\label{section:transformations}
 The premise selection tool works as follows, and can be summarised as in Figure \ref{figure:transformations}:
 \begin{enumerate}
     \item Export all \coq objects from the standard library and the selected corpora to XML files during their compilation.
@@ -65,9 +66,13 @@ The premise selection tool works as follows, and can be summarised as in Figure 
 		\end{definition}
 		Given that definition, $\termset{s}$\glsadd{termset} is the set of names of all objects in the term $\term[s]$,
 		and $\typeset{s}$\glsadd{typeset} is the set of all names in the type $\type[s]$.
-		Note that other variants for this $\termset{s}$ can be used.
-		In Section \ref{section:countoccur} we also extract the number of occurances of each name using $\countoccur{x}$\glsadd{countoccur}.
-		Finally in Section \ref{section:depth} we extract the minimum depth each name occurs $\depth{x}$\glsadd{depth}.
+		Note that other variants for this $\flatten{x}$ can be used.
+    We can also extract the number of occurances of each name using $\countoccur{x}$\glsadd{countoccur}:
+    \begin{definition}[$\countoccur{x}$]\defgls{countoccur}
+			For a given term (or type) $x$, yield the number of times names are referenced in the term.
+      \[ \countoccursym : \terms \rightarrow \mathbb{N}^{\names} \]
+    \end{definition}
+    Similarly we can also extract the minimum depth for which each name occurs as $\depthoccur{x}$\glsadd{depthoccur}.
 		\begin{figure}[H]
 			\[
 				\begin{array}{rcl}
@@ -104,7 +109,7 @@ The premise selection tool works as follows, and can be summarised as in Figure 
 			\caption{$\defs$ and $\thms$ for the natural number example in Figure \ref{figure:natexample}}
 		\end{figure}
     \item From the $\thms$ and $\defs$ generate a \dagraph of dependencies and feature vector for all \coq objects.
-      See Section \ref{section:featsdeps}.
+      See Section \ref{section:feats} and Sections \ref{section:deps}.
 		\todo{dagraph dependencies} \todo{feature vector}
 	\item These features and dependencies can now be used to predict by bundling them with a predictor, for example \knn.
 		\todo{predictors}
@@ -125,7 +130,7 @@ The premise selection tool works as follows, and can be summarised as in Figure 
 		\node[main] (summary) [below of=term] {Summary\\$<\name[s], \termset{s}, \typeset{s}>$};
 		\node[main] (definitions) [below right=2cm and 0cm of summary] {Definitions\\$\defs$};
 		\node[main] (theorems) [below left=2cm and 0cm of summary] {Theorems\\$\thms$};
-    \node[main] (features) [below of=definitions] {Features\\of theorems\\$\features[s]$};
+    \node[main] (features) [below of=definitions] {Features\\of theorems\\$\features{}{s}$};
     \node[main] (dependencies) [below of=theorems] {Dependencies\\of theorems\\$\deps[s]$};
 		\node[main] (predictor) [below=7.0cm of summary] {Predictor};
 
@@ -221,78 +226,85 @@ Where we consider $\objs$ to be the set of all \coqobjs,
 
 \begin{definition}\defgls{defs}\label{def:defs}
   we take the definitions to be the names in the types of all \coqobjs
-  \[ \defs = \bigcup_{s \in S} \typeset{s} \]
+  \[ \defs = \bigcup_{s \in \objs} \typeset{s} \]
 \end{definition}
 
 \begin{definition}\defgls{thms}\label{def:thms}
   we take the theorems to be the names in the terms of all \coqobj, excluding all definitions
-  \[ \thms = (\bigcup_{s \in S} \termset{s}) \setminus \defs \]
+  \[ \thms = (\bigcup_{s \in \objs} \termset{s}) \setminus \defs \]
 \end{definition}
 
 This provides an adequate distinction for our purposes.
 
-\subsection{Features and dependencies}
-\label{section:featsdeps}
+\subsection{Features}
+\label{section:feats}
 
 For \premiseselection we would like to suggest new theorems (premises) for open proof goals.
 These premises are selected according to the type of the proof goal (the names of the constants in the proof goal).
-Specifically we call the set of aspects which describe a proof goal the set of feature keys:
+Specifically we call the set of aspects which describe a proof goal the set of feature keys.
 
 \begin{definition}\defgls{featurekeys}\label{def:featurekeys}
   The set of feature keys $\featurekeys$ is defined as the set of definitions, but with possible extensions such as the use of products in a proof goal
-  \[ \features = \defs \cup \{ \times \} \]
+  \[ \featurekeys = \defs \cup \{ \times \} \]
 \end{definition}
 
-For a proof goal a numeric value can be derived for each feature key.
-We call such a value a feature.
+Given a proof goal, for each feature key a numeric value can be derived.
+Such a value is called a feature.
 
 \begin{definition}\defgls{features}\label{def:features}
-  For a \coq object $s \in \objs$ the features are computed using the function $\features[s]$:
+  For a \coqobj $s \in \objs$ the features are computed using the function
   $$
   \begin{array}{lcl}
-    \features[s] & : & \featurekeys \rightarrow \mathbb{R} \\
-    \features[s](x) & = & \left\{
-      \begin{array}{ll}
-        \counttype{s}{x} & x \in \defs \\
-        \counttype{s}{\wedge} & x = \wedge
-      \end{array} \right.
+    \features{}{s} & : & \featurekeys \rightarrow 2 \\
+    \features{}{s}(x) & = & \flatten{\type[s]}(x)
   \end{array}
   $$
 \end{definition}
 
-\todo{features}
-\todo{dependencies}
+The functions $\countoccursym$ and $\depthoccursym$ as described in Section \ref{section:transformations} can also be used to compute features for a \coqobj.
+We denote these variants of features as $\features{\countsym}{s}$ and $\features{\depthsym}{s}$.
+In the following text we will not explicitly state which of these variants are used,
+as that is only relevant in parts of the results section (Section \ref{section:results}) and onwards.
 
+\subsection{Dependencies}
+\label{sections:deps}
 
-% Old
-For the body of each proven theorem the used definitions are similarly collected, and the set of allowed dependencies $\deps[s]$ is constructed.
+The dependencies $\deps[s]$ of a \coqobj[s] are names of other objects which have been used to define or prove $s$.
+Similarly we can define a function which for $s \in \objs$ collects the dependencies:
 
-\subsubsection{Number of occurances}
-\label{section:countoccur}
+\begin{definition}\defgls{deps}\label{def:deps}
+  $$
+  \begin{array}{lcl}
+    \deps[s] & : & \thms \rightarrow 2 \\
+    \deps[s](x) & = & \flatten{\term[s]}(x)
+  \end{array}
+  $$
+\end{definition}
 
-\subsubsection{Depth}
-\label{section:depth}
+Later we will want to reproduce this set of dependencies given only the original proof goal (or type) of a \coqobj.
+We could also compute the depth and number of occurances of these dependencies.
+However this is not used in this thesis.
 
 \subsection{Predictors}
 
 \begin{definition}{Predictor}
-	\[ P : \features[s] \rightarrow \deps \rightharpoondown \mathbb{R} \]
+  \[ P : \features{}{s} \rightarrow \deps \rightharpoondown \mathbb{R} \]
 \end{definition}
 
 A predictor $p$ can now, for a unproven conjecture $c$,
-using the features of said conjecture $\features[c]$,
+using the features of said conjecture $\features{}{c}$,
 compute the partial ordered set of definitions likely to be useful in the yet to be constructed proof of $c$.
 \todo{Now a partial function on $\mathbb{R}$, how to denote partial ordered set?}
 Each of these suggestions has an associated likelyhood $r_p$ to be useful in the proof of conjecture $c$.
 
 \subsubsection{\knn}
-$$ \text{dist}(x, y) = \left( \sum_{i \in \featurekeys} \left( \features[x](i) - \features[y](i) \right)^2 \right)^{\frac{1}{2}} $$
+$$ \text{dist}(x, y) = \left( \sum_{i \in \featurekeys} \left( \features{}{x}(i) - \features{}{y}(i) \right)^2 \right)^{\frac{1}{2}} $$
 
-For a conjecture $c$ the distance using $\text{dist}$ is computed with each term $t \in \objs$.
-Then the closest $K$ terms are selected, which we call $\text{closest}_K(c)$.
+For a conjecture $c$ the distance using $\text{dist}$ is computed for each \coqobj $s \in \objs$.
+Then the closest $K$ objects are selected, which we call $\text{closest}_K(c)$.
 Their dependencies $\phi \in \deps[t]$ are then suggested.
 Their likelyhood is dependant on the distance of their parents to conjecture $c$.
-\[ r_\text{knn}(\phi, c) = \sum_{t \in \text{closest}_K(c)} \countbody{t}{\phi} \times \text{dist}(c, t) \]
+\[ r_\text{knn}(\phi, c) = \sum_{t \in \text{closest}_K(c)} \countoccur{t}{\phi} \times \text{dist}(c, t) \]
 
 \subsubsection{\nb}
 

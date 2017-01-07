@@ -120,15 +120,19 @@ description={the set of all types}}
 \newglossaryentry{flatten}{name={\ensuremath{\flattensym}}, sort=flatten,
 description={extracts names from term or type, and return the set of names}}
 
-\newcommand{\countoccursym}{\flattensym_\#}
+\newcommand{\countsym}{\#}
+
+\newcommand{\countoccursym}{\flattensym_\countsym}
 \newcommand{\countoccur}[1]{\countoccursym({#1})}
 \newglossaryentry{countoccur}{name={\ensuremath{\countoccursym}}, sort=flatten-countoccur,
-description={extracts names from term along with their number of occurances in the term}}
+description={extracts names from term or type along with their number of occurances}}
 
-\newcommand{\depthsym}{\flattensym_D}
-\newcommand{\depth}[1]{\depthsym({#1})}
-\newglossaryentry{depth}{name={\ensuremath{\depthsym}}, sort=flatten-depth,
-description={extracts names from term along with their depth in the term}}
+\newcommand{\depthsym}{D}
+
+\newcommand{\depthoccursym}{\flattensym_\depthsym}
+\newcommand{\depthoccur}[1]{\depthoccursym({#1})}
+\newglossaryentry{depthoccur}{name={\ensuremath{\depthoccursym}}, sort=flatten-depthoccur,
+description={extracts names from term or type along with their depth}}
 
 \newcommand{\termset}[1]{\flatten{\term[#1]}}
 \newglossaryentry{termset}{name={\ensuremath{\termset{s}}}, sort=flatten-termset,
@@ -152,22 +156,24 @@ description={set of names of all objects in the terms of all objects, excluding 
 \newcommand{\auc}{AUC\xspace}
 \newcommand{\volume}{Volume\xspace}
 
-\newcommand{\deps}[1][]{D_{#1}}
 \newcommand{\depstrans}[1][]{\deps[{#1}]^*}
 \newcommand{\parents}[1][]{P_{#1}}
 \newcommand{\parentstrans}[1][]{\parents[{#1}]^*}
-\newcommand{\features}[1][]{F_{#1}}
-\newglossaryentry{features}{name={\ensuremath{\features}},
-description={function which computes the numeric values describing a \coq object. These values are considered to be the features of the \coq object.}}
 
 \newcommand{\featurekeys}{Z}
 \newglossaryentry{featurekeys}{name={\ensuremath{\featurekeys}},
 description={set of feature keys, or the set of the aspects with which an object can be described; based on the set of definitions $\defs$, but possibly extended with other aspects}}
 
+\newcommand{\features}[2]{F^{#1}_{#2}}
+\newglossaryentry{features}{name={\ensuremath{\features{}{}}},
+description={function which computes the numeric values describing a \coqobj. These values are considered to be the features of the \coq object.}}
+
+\newcommand{\deps}[1][]{D_{#1}}
+\newglossaryentry{deps}{name={\ensuremath{\deps}},
+description={set of names of objects which have been used to define or prove a \coqobj.}}
+
 \newcommand{\objs}[1][]{S_{#1}}
 \newcommand{\trainset}{\objs[{\text{train}}]}
 \newcommand{\testset}{\objs[{\text{test}}]}
-\newcommand{\counttype}[2]{\#_{#2}(\text{type of}~{#1})}
-\newcommand{\countbody}[2]{\#_{#2}(\text{term of}~{#1})}
 
 \newcommand{\objdef}{:=}
