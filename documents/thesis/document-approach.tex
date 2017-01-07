@@ -288,13 +288,12 @@ However this is not used in this thesis.
 \subsection{Predictors}
 
 \begin{definition}{Predictor}
-  \[ P : \features{}{s} \rightarrow \deps \rightharpoondown \mathbb{R} \]
+  \[ P : (\featurekeys \rightarrow \mathbb{N}) \rightarrow \thms \rightharpoonup \mathbb{R} \]
 \end{definition}
 
 A predictor $p$ can now, for a unproven conjecture $c$,
 using the features of said conjecture $\features{}{c}$,
 compute the partial ordered set of definitions likely to be useful in the yet to be constructed proof of $c$.
-\todo{Now a partial function on $\mathbb{R}$, how to denote partial ordered set?}
 Each of these suggestions has an associated likelyhood $r_p$ to be useful in the proof of conjecture $c$.
 
 \subsubsection{\knn}
