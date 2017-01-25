@@ -131,7 +131,7 @@ The premise selection tool works as follows, and can be summarised as in Figure 
 		\node[main] (definitions) [below right=2cm and 0cm of summary] {Definitions\\$\defs$};
 		\node[main] (theorems) [below left=2cm and 0cm of summary] {Theorems\\$\thms$};
     \node[main] (features) [below of=definitions] {Features\\of theorems\\$\features{}{s}$};
-    \node[main] (dependencies) [below of=theorems] {Dependencies\\of theorems\\$\deps[s]$};
+    \node[main] (dependencies) [below of=theorems] {Dependencies\\of theorems\\$\deps{s}$};
 		\node[main] (predictor) [below=7.0cm of summary] {Predictor};
 
 		\draw[->] (coq) edge node {(1) Coq XML export} (xml);
@@ -248,6 +248,11 @@ Specifically we call the set of aspects which describe a proof goal the set of f
   \[ \featurekeys = \defs \cup \{ \times \} \]
 \end{definition}
 
+Previously we have defined the $\flattensym$ operation for terms $\terms$ and types $\types$ resulting in $\names$.
+We extend this operation to also yield the amount of products.
+
+\[ \flattensym : \types \rightarrow 2^{\featurekeys} \]
+
 Given a proof goal, for each feature key a numeric value can be derived.
 Such a value is called a feature.
 
@@ -255,28 +260,28 @@ Such a value is called a feature.
   For a \coqobj $s \in \objs$ the features are computed using the function
   $$
   \begin{array}{lcl}
-    \features{}{s} & : & \featurekeys \rightarrow 2 \\
+    \features{}{s} & : & 2^\featurekeys \\
     \features{}{s}(x) & = & \flatten{\type[s]}(x)
   \end{array}
   $$
 \end{definition}
 
 The functions $\countoccursym$ and $\depthoccursym$ as described in Section \ref{section:transformations} can also be used to compute features for a \coqobj.
-We denote these variants of features as $\features{\countsym}{s}$ and $\features{\depthsym}{s}$.
+We denote these variants of features as $\features{\countsym}{s}$ and $\features{\depthsym}{s}$ with $\features{\countsym}{s} : \nat^\featurekeys$.
 In the following text we will not explicitly state which of these variants are used,
 as that is only relevant in parts of the results section (Section \ref{section:results}) and onwards.
 
 \subsection{Dependencies}
 \label{sections:deps}
 
-The dependencies $\deps[s]$ of a \coqobj[s] are names of other objects which have been used to define or prove $s$.
+The dependencies $\deps{s}$ of a \coqobj[s] are names of other objects which have been used to define or prove $s$.
 Similarly we can define a function which for $s \in \objs$ collects the dependencies:
 
 \begin{definition}\defgls{deps}\label{def:deps}
   $$
   \begin{array}{lcl}
-    \deps[s] & : & \thms \rightarrow 2 \\
-    \deps[s](x) & = & \flatten{\term[s]}(x)
+    \deps{s} & : & 2^{\thms} \\
+    \deps{s}(x) & = & \flatten{\term[s]}(x)
   \end{array}
   $$
 \end{definition}
@@ -285,23 +290,29 @@ Later we will want to reproduce this set of dependencies given only the original
 We could also compute the depth and number of occurances of these dependencies.
 However this is not used in this thesis.
 
+\begin{definition}
+  $$
+  \depset = \thms
+  $$
+\end{definition}
+
 \subsection{Predictors}
 
 \begin{definition}{Predictor}
-  \[ P : (\featurekeys \rightarrow \mathbb{N}) \rightarrow \thms \rightharpoonup \mathbb{R} \]
+  \[ P : 2^\featurekeys \rightarrow \thms \rightharpoonup \mathbb{R} \]
 \end{definition}
 
-A predictor $p$ can now, for a unproven conjecture $c$,
+A predictor $P$ can now, for a unproven conjecture $c$,
 using the features of said conjecture $\features{}{c}$,
-compute the partial ordered set of definitions likely to be useful in the yet to be constructed proof of $c$.
-Each of these suggestions has an associated likelyhood $r_p$ to be useful in the proof of conjecture $c$.
+compute the likelyhood a dependency $\phi \in \depset$ is useful in proof of conjecture $c$.
+Using these likelyhoods a partial ordered set of definitions likely to be useful in the yet to be constructed proof of $c$ can be formed.
 
 \subsubsection{\knn}
 $$ \text{dist}(x, y) = \left( \sum_{i \in \featurekeys} \left( \features{}{x}(i) - \features{}{y}(i) \right)^2 \right)^{\frac{1}{2}} $$
 
-For a conjecture $c$ the distance using $\text{dist}$ is computed for each \coqobj $s \in \objs$.
-Then the closest $K$ objects are selected, which we call $\text{closest}_K(c)$.
-Their dependencies $\phi \in \deps[t]$ are then suggested.
+For a conjecture $c$ the distance using $\text{dist}$ is computed for each known \coqobj $s \in \objs$.
+Then the closest $K \in \nat$ objects are selected, which we call $\text{closest}_K(c)$.
+Their dependencies $\phi \in \deps{t}$ are then suggested.
 Their likelyhood is dependant on the distance of their parents to conjecture $c$.
 \[ r_\text{knn}(\phi, c) = \sum_{t \in \text{closest}_K(c)} \countoccur{t}{\phi} \times \text{dist}(c, t) \]
 

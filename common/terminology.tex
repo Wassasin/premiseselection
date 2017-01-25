@@ -8,6 +8,9 @@
 \newcommand{\premiseselection}{premise selection\xspace}
 \newcommand{\Premiseselection}{Premise selection\xspace}
 
+% Math
+\newcommand{\nat}{\mathbb{N}}
+
 % Languages
 \newcommand{\cpp}{C++\xspace}
 \newcommand{\ocaml}{OCaml\xspace}
@@ -168,9 +171,15 @@ description={set of feature keys, or the set of the aspects with which an object
 \newglossaryentry{features}{name={\ensuremath{\features{}{}}},
 description={function which computes the numeric values describing a \coqobj. These values are considered to be the features of the \coq object.}}
 
-\newcommand{\deps}[1][]{D_{#1}}
-\newglossaryentry{deps}{name={\ensuremath{\deps}},
-description={set of names of objects which have been used to define or prove a \coqobj.}}
+\newcommand{\depsym}{D}
+
+\newcommand{\deps}[1]{\depsym_{#1}}
+\newglossaryentry{deps}{name={\ensuremath{\deps{s}}},
+description={set of names of objects which have been used to define or prove a \coqobj $s$.}}
+
+\newcommand{\depset}{\depsym}
+\newglossaryentry{depset}{name={\ensuremath{\depset}},
+description={set of all possible dependencies.}}
 
 \newcommand{\objs}[1][]{S_{#1}}
 \newcommand{\trainset}{\objs[{\text{train}}]}
