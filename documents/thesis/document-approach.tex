@@ -274,13 +274,21 @@ as that is only relevant in parts of the results section (Section \ref{section:r
 \subsection{Dependencies}
 \label{sections:deps}
 
+Theorems 
+\begin{definition}\defgls{depset}\label{def:depset}
+  The set of all possible dependencies $\depset$ is defined as the set of theorems.
+  $$
+  \depset = \thms
+  $$
+\end{definition}
+
 The dependencies $\deps{s}$ of a \coqobj[s] are names of other objects which have been used to define or prove $s$.
-Similarly we can define a function which for $s \in \objs$ collects the dependencies:
 
 \begin{definition}\defgls{deps}\label{def:deps}
+  For a \coqobj $s \in \objs$ the dependencies are computed using the function
   $$
   \begin{array}{lcl}
-    \deps{s} & : & 2^{\thms} \\
+    \deps{s} & : & 2^{\depset} \\
     \deps{s}(x) & = & \flatten{\term[s]}(x)
   \end{array}
   $$
@@ -290,44 +298,73 @@ Later we will want to reproduce this set of dependencies given only the original
 We could also compute the depth and number of occurances of these dependencies.
 However this is not used in this thesis.
 
-\begin{definition}
-  $$
-  \depset = \thms
-  $$
-\end{definition}
-
 \subsection{Predictors}
+We wish to predict useful dependencies for a proof goal, or conjecture.
+For this we define predictors:
 
-\begin{definition}{Predictor}
-  \[ P : 2^\featurekeys \rightarrow \thms \rightharpoonup \mathbb{R} \]
+\begin{definition}
+  A predictor $P$ is a function which given an unproven conjecture $c \in \types$ 
+  computes the likelyhood a dependency $\phi \in \depset$ is useful in proof of conjecture $c$.
+  $$
+    P : \types \rightarrow \depset \rightharpoonup \mathbb{R}
+  $$
 \end{definition}
 
-A predictor $P$ can now, for a unproven conjecture $c$,
-using the features of said conjecture $\features{}{c}$,
-compute the likelyhood a dependency $\phi \in \depset$ is useful in proof of conjecture $c$.
-Using these likelyhoods a partial ordered set of definitions likely to be useful in the yet to be constructed proof of $c$ can be formed.
+A weak total ordered subset of definitions useful for conjecture $c$ is formed by sorting on the resulting value of type $\mathbb{R}$.
+In the next few chapters we define a few of these predictors.
 
 \subsubsection{\knn}
-$$ \text{dist}(x, y) = \left( \sum_{i \in \featurekeys} \left( \features{}{x}(i) - \features{}{y}(i) \right)^2 \right)^{\frac{1}{2}} $$
 
-For a conjecture $c$ the distance using $\text{dist}$ is computed for each known \coqobj $s \in \objs$.
-Then the closest $K \in \nat$ objects are selected, which we call $\text{closest}_K(c)$.
-Their dependencies $\phi \in \deps{t}$ are then suggested.
-Their likelyhood is dependant on the distance of their parents to conjecture $c$.
-\[ r_\text{knn}(\phi, c) = \sum_{t \in \text{closest}_K(c)} \countoccur{t}{\phi} \times \text{dist}(c, t) \]
+\todo{reference}
+
+\begin{definition}\defgls{dist}\label{def:dist}
+  Given two types $x, y \in \types$, the euclidean distance between these types can be computed using the features $\features{}{a}$ and $\features{}{b}$ of those types:
+  $$ \text{dist}(x, y) = \left( \sum_{i \in \featurekeys} \left( \features{}{x}(i) - \features{}{y}(i) \right)^2 \right)^{\frac{1}{2}} $$
+\end{definition}
+
+For a conjecture $c \in \types$ the euclidean distance using $\text{dist}$ is computed for each known \coqobj $s \in \objs$.
+The $K \in \nat$ closest objects according to this distance measure are selected, which we call $\text{closest}_K(c)$.
+Their dependencies $\phi \in \depset$ are then suggested by the predictor.
+The usefulnes of each suggestion is dependant on the distance of their parents to conjecture $c$.
+
+\begin{definition}\glsadd{supremum}\label{def:supremum}
+  Given a partially ordered set $(X, \leq)$,
+  the \textbf{supremum} or \textbf{least upper bound}, denoted by $\top$, is the least element in $X$ that is greater than or equal to all elements of $X$,
+  if such an element exists.
+\end{definition}
+
+\begin{definition}\glsadd{upset}\label{def:upset}
+  Given a partially ordered set $(X, \leq)$ with an element $x \in X$, an \textbf{upper set} $\upset{X}{x}$ is a subset $U$ with if $x \leq y$, then $y \in U$.
+\end{definition}
+
+\begin{definition}{$\text{closest}_K(c)$}
+  \todo{this}
+\end{definition}
+
+\begin{definition}{\knn}
+  $$
+    P^K_\text{knn}(c, \phi) = \sum_{x \in \text{closest}_K(c)} \deps{x}(\phi) \times \text{dist}(c, x)
+  $$
+\end{definition}
+
+In future work we might experiment with different distance measures.
+
+\subsubsection{\knnadaptive}
+
+\todo{reference}
 
 \subsubsection{\nb}
 
-Given dependency candidate $\phi$, we compute for all features $x \in \featurekeys$:
+Given dependency candidate $\phi \in \depset$, we compute for all features $x \in \featurekeys$:
 \[
-	w_x = \tau + \sum_{\psi \in \parents[\phi]} \features[\psi](x) ~~\text{with}~~ W = \tau + \sum_{x \in \featurekeys} w_x - \tau
+  w_x = \tau + \sum_{\psi \in \parents[\phi]} \features{}{\psi}(x) ~~\text{with}~~ W = \tau + \sum_{x \in \featurekeys} w_x - \tau
 \]
 
 Now we can compute the likelyhood of candidate $\phi$ given some constants $\pi, \sigma, \tau$:
 \[
 	r_\text{nb}(\phi, c) = \ln W +
-	\sum_{x \in \featurekeys | w_x = 0} \features[c](x) \times \sigma +
-	\sum_{x \in \featurekeys | w_x \neq 0} \features[c](x) \times \ln(\pi \times w_x) - \ln(W)
+  \sum_{x \in \featurekeys | w_x = 0} \features{}{c}(x) \times \sigma +
+  \sum_{x \in \featurekeys | w_x \neq 0} \features{}{c}(x) \times \ln(\pi \times w_x) - \ln(W)
 \]
 
 By K\"uhlwein \cite{kuhlwein2013mash} it is suggested to use $\pi = 10$, $\sigma = -15$ and $\tau = 20$.

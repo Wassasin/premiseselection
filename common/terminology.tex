@@ -11,6 +11,14 @@
 % Math
 \newcommand{\nat}{\mathbb{N}}
 
+\newcommand{\supremum}{\top}
+\newglossaryentry{supremum}{name={\ensuremath{\supremum}},
+description={least element of a poset that is greater than or equal to all elements of that poset}}
+
+\newcommand{\upset}[2]{~{#1}\uparrow{#2}~}
+\newglossaryentry{upset}{name={\ensuremath{\upset{X}{x}}},
+description={subset of a poset $X$ where each element is larger or equal than a given element $x$}}
+
 % Languages
 \newcommand{\cpp}{C++\xspace}
 \newcommand{\ocaml}{OCaml\xspace}
@@ -33,6 +41,7 @@
 
 % Machine learning methods
 \newcommand{\knn}{$k$-Nearest Neighbor\xspace}
+\newcommand{\knnadaptive}{Adaptive Nearest Neighbor\xspace}
 \newcommand{\nb}{Naive Bayes\xspace}
 \newcommand{\ensemble}{Ensemble Learning\xspace}
 \newcommand{\omniscient}{Omniscient\xspace}
@@ -106,7 +115,7 @@ description={term of the \coqobj[s]}}
 \newglossaryentry{terms}{name={\ensuremath{\terms}},
 description={the set of all terms}}
 
-\newcommand{\emptyterm}{\top}
+\newcommand{\emptyterm}{\bot}
 \newglossaryentry{emptyterm}{name={\ensuremath{\emptyterm}}, sort=term-empty,
 description={the empty term}}
 
@@ -169,17 +178,21 @@ description={set of feature keys, or the set of the aspects with which an object
 
 \newcommand{\features}[2]{F^{#1}_{#2}}
 \newglossaryentry{features}{name={\ensuremath{\features{}{}}},
-description={function which computes the numeric values describing a \coqobj. These values are considered to be the features of the \coq object.}}
+description={function which computes the numeric values describing a \coqobj. These values are considered to be the features of the \coq object}}
 
 \newcommand{\depsym}{D}
 
 \newcommand{\deps}[1]{\depsym_{#1}}
 \newglossaryentry{deps}{name={\ensuremath{\deps{s}}},
-description={set of names of objects which have been used to define or prove a \coqobj $s$.}}
+description={set of names of objects which have been used to define or prove a \coqobj $s$}}
 
 \newcommand{\depset}{\depsym}
 \newglossaryentry{depset}{name={\ensuremath{\depset}},
-description={set of all possible dependencies.}}
+description={set of all possible dependencies}}
+
+\newcommand{\dist}{\text{dist}}
+\newglossaryentry{dist}{name={\ensuremath{\dist}},
+description={the euclidean distance between two types $a, b \in \types$ computed using the features $\features{}{a}$ and $\features{}{b}$ of those types}}
 
 \newcommand{\objs}[1][]{S_{#1}}
 \newcommand{\trainset}{\objs[{\text{train}}]}
