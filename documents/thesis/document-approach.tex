@@ -366,7 +366,7 @@ Their dependencies $\phi \in \depset$ are then suggested by the predictor.
 The usefulnes of each suggestion is dependant on the distance of their parents to conjecture $c$.
 \begin{definition}
   $$
-    P^K_\text{knn}(c, \phi) = \sum_{x \in \text{closest}_K(c)} \deps{x}(\phi) \times \text{dist}(c, x)
+    P_\text{knn}(c, \phi) = \sum_{x \in \text{closest}_K(c)} \deps{x}(\phi) \times \text{dist}(c, x)
   $$
 \end{definition}
 
@@ -380,12 +380,12 @@ In future work we might experiment with different distance measures.
 
 Given dependency candidate $\phi \in \depset$, we compute for all features $x \in \featurekeys$:
 \[
-  w_x = \tau + \sum_{\psi \in \parents[\phi]} \features{}{\psi}(x) ~~\text{with}~~ W = \tau + \sum_{x \in \featurekeys} w_x - \tau
+  W = \tau + \sum_{x \in \featurekeys} w_x - \tau ~~\text{with}~~ w_x = \tau + \sum_{\psi \in \parents[\phi]} \features{}{\psi}(x)
 \]
 
 Now we can compute the likelyhood of candidate $\phi$ given some constants $\pi, \sigma, \tau$:
 \[
-	r_\text{nb}(\phi, c) = \ln W +
+	P_\text{nb}(c, \phi) = \ln W +
   \sum_{x \in \featurekeys | w_x = 0} \features{}{c}(x) \times \sigma +
   \sum_{x \in \featurekeys | w_x \neq 0} \features{}{c}(x) \times \ln(\pi \times w_x) - \ln(W)
 \]
