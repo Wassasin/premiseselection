@@ -11,13 +11,17 @@
 % Math
 \newcommand{\nat}{\mathbb{N}}
 
-\newcommand{\supremum}{\top}
-\newglossaryentry{supremum}{name={\ensuremath{\supremum}},
-description={least element of a poset that is greater than or equal to all elements of that poset}}
+\newcommand{\infimum}{\bot}
+\newglossaryentry{infimum}{name={\ensuremath{\infimum}},
+description={greatest element of a poset that is less than or equal to all elements of that poset}}
 
-\newcommand{\upset}[2]{~{#1}\uparrow{#2}~}
-\newglossaryentry{upset}{name={\ensuremath{\upset{X}{x}}},
-description={subset of a poset $X$ where each element is larger or equal than a given element $x$}}
+\newcommand{\nth}[2]{\text{nth}({#1}, {#2})}
+\newglossaryentry{nth}{name={\ensuremath{\nth{n}{X}}},
+description={the $n^{\text{th}}$ bottom element in a totally ordered set}}
+
+\newcommand{\downset}[2]{~{#1}\downarrow{#2}~}
+\newglossaryentry{downset}{name={\ensuremath{\downset{X}{x}}},
+description={subset of a poset $X$ where each element is less than or equal to a given element $x$}}
 
 % Languages
 \newcommand{\cpp}{C++\xspace}
@@ -115,7 +119,7 @@ description={term of the \coqobj[s]}}
 \newglossaryentry{terms}{name={\ensuremath{\terms}},
 description={the set of all terms}}
 
-\newcommand{\emptyterm}{\bot}
+\newcommand{\emptyterm}{\top}
 \newglossaryentry{emptyterm}{name={\ensuremath{\emptyterm}}, sort=term-empty,
 description={the empty term}}
 
