@@ -1,0 +1,109 @@
+We wish to predict useful dependencies for a proof goal, or conjecture.
+For this we define predictors:
+
+\begin{definition}
+  A predictor $P$ is a function which given an unproven conjecture $c \in \types$ 
+  computes the likelyhood a dependency $\phi \in \depset$ is useful in proof of conjecture $c$.
+  $$
+    P : \types \rightarrow \depset \rightharpoonup \mathbb{R}
+  $$
+\end{definition}
+
+A weak total ordered subset of definitions useful for conjecture $c$ is formed by sorting on the resulting value of type $\mathbb{R}$.
+In the next few chapters we define a few of these predictors.
+
+\subsubsection{\knn}
+
+\todo{reference}
+
+For the \knn predictor several prerequisite definitions are required.
+
+\begin{definition}\defgls{dist}\label{def:dist}
+  Given two types $x, y \in \types$, the euclidean distance between these types can be computed using the features $\features{}{a}$ and $\features{}{b}$ of those types:
+  $$ \text{dist}(x, y) = \left( \sum_{i \in \featurekeys} \left( \features{}{x}(i) - \features{}{y}(i) \right)^2 \right)^{\frac{1}{2}} $$
+\end{definition}
+
+For a conjecture $c \in \types$ the euclidean distance using $\text{dist}$ is computed for each known \coqobj $s \in \objs$.
+A total order of these \coqobjs is constructed using the following ordering:
+
+\begin{definition}
+  $$
+    \text{closer}_\phi(x, y) = \text{dist}(x, \phi) \leq \text{dist}(y, \phi)
+  $$
+\end{definition}
+
+\begin{definition}\glsadd{infimum}\label{def:infimum}
+  Given a partially ordered set $(X, \leq)$,
+  the \textbf{infimum} or \textbf{greatest lower bound}, denoted by $\infimum$, is the greatest element in $X$ that is less than or equal to all elements of $X$,
+  if such an element exists.
+\end{definition}
+
+\begin{definition}\glsadd{nth}\label{def:nth}
+  Given a totally ordered set $(X, \leq)$ and a number $n \in \nat$, we define
+  $$
+    \nth{n}{X} = \left\{
+      \begin{array}{ll}
+        \infimum_X & \text{if}~n = 0 \\
+        \nth{n-1}{X \cap \infimum_X} & \text{if}~n > 0 \\
+      \end{array}
+    \right.
+  $$
+\end{definition}
+
+\begin{definition}\glsadd{downset}\label{def:downset}
+  Given a partially ordered set $(X, \leq)$ with an element $x \in X$, a \textbf{down set} $\downset{X}{x}$ is a subset $L$ with if $y \leq x$, then $y \in L$.
+\end{definition}
+
+The $K \in \nat$ closest objects according to this distance measure are selected, which we call $\text{closest}_K(c)$.
+\begin{definition}
+  $$
+    \text{closest}_K(c) = \downset{S}{\nth{K}{(S, \text{closer}_c)}}
+  $$
+\end{definition}
+
+Their dependencies $\phi \in \depset$ are then suggested by the predictor.
+The usefulnes of each suggestion is dependant on the distance of their parents to conjecture $c$.
+\begin{definition}
+  $$
+    P_\text{knn}(c, \phi) = \sum_{x \in \text{closest}_K(c)} \deps{x}(\phi) \times \text{dist}(c, x)
+  $$
+\end{definition}
+
+In future work we might experiment with different distance measures.
+
+\subsubsection{\knnadaptive}
+
+\todo{reference}
+
+\subsubsection{\nb}
+
+Given dependency candidate $\phi \in \depset$, we compute for all features $x \in \featurekeys$:
+\[
+  W = \tau + \sum_{x \in \featurekeys} w_x - \tau ~~\text{with}~~ w_x = \tau + \sum_{\psi \in \parents[\phi]} \features{}{\psi}(x)
+\]
+
+Now we can compute the likelyhood of candidate $\phi$ given some constants $\pi, \sigma, \tau$:
+\[
+	P_\text{nb}(c, \phi) = \ln W +
+  \sum_{x \in \featurekeys | w_x = 0} \features{}{c}(x) \times \sigma +
+  \sum_{x \in \featurekeys | w_x \neq 0} \features{}{c}(x) \times \ln(\pi \times w_x) - \ln(W)
+\]
+
+By K\"uhlwein \cite{kuhlwein2013mash} it is suggested to use $\pi = 10$, $\sigma = -15$ and $\tau = 20$.
+
+\subsubsection{Kernel methods}
+\subsubsection{Deep neural nets}
+\subsubsection{Random forests}
+\subsubsection{SInE}
+\subsubsection{MePo}
+\subsubsection{Ensembles}
+
+\subsection{Example}
+
+\begin{lstlisting}[language=Coq, mathescape, frame=none]
+$\defs = \{$nat$,$ 0$,$ S$,$ plus$\}$
+\end{lstlisting}
+
+\begin{lstlisting}[language=Coq, mathescape, frame=none]
+$\thms = \mathtt{dom}(S) \setminus \defs = \{$nat_ind$,$ plus_0_r$\}$
+\end{lstlisting}
