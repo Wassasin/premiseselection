@@ -301,11 +301,22 @@ However this is not used in this thesis.
 \subsection{Predictors}
 \input{document-approach-predictors}
 
-\subsection{Performance}
+\subsection{Estimating performance}
 The performance of a predictor is estimated by running the prediction on known corpora.
 The results of these predictions are quantified using a set of metrics.
 
-In order to prevent so-called overfitting bias, \crossvalidation is used.
+Continually running the predictors on the same dataset whilst developing said predictors invites so-called overfitting.
+A predictor that overfits has poor predictive performance because the underlying statistical model of the predictor describes noise instead of any relevant relationship.
+In order to prevent this overfitting bias, \crossvalidation is used.
+\crossvalidation estimates the performance of the predictor for an independant dataset (i.e. from a real problem).
+
+There are quite a few variants of \crossvalidation.
+In this thesis we use $k$-fold \crossvalidation with $k = 10$.
+In general $k$-fold \crossvalidation involves partitioning the dataset into several subsets.
+These subsets are combined such that there are two complementary subsets: a \emph{trainingset} $\trainset$ and a \emph{testset} $\testset$.
+The trainset is used to train a predictor, and the testset is used to perform the prediction on, yielding the performance metrics.
+The performance of the predictor is determined by averaging the performance metrics from all complementary combinations.
+\todo{cite}
 
 % Cross validation on Corpora
 % `Proof in Progress` -> step (aconstr)
@@ -313,24 +324,57 @@ In order to prevent so-called overfitting bias, \crossvalidation is used.
 % A corpus is divided into Proofs in Progress (each substep)
 % Ratio of guessed steps
 
-It is customary to implement cross validation for premise selection in the following manner:
-Construct a poset of objects from $\objs$ using the dependency relation for $x, y \in \objs$:
-\[
-	x <_D y ~~\leftrightarrow~~ \depstrans[x] \cap (\parentstrans[y] \cup \{y\}) \neq \emptyset
-\]
+For normal classification these subsets are randomly selected.
+For \premiseselection this is not adequate as the dataset is not just a set of datapoints, but a tree of definitions which are dependant on eachother.
+Randomly selecting from this tree to create a subset would result in an inconsistent dataset.
+Given randomly selected subsets, we use three different strategies to make these subsets consistent with regards to the dependants of conjectures.
 
-A linearized list is constructed from this poset, and each element in this list is first tested, i.e. treated as a conjecture.
-The predictor is asked for a prediction, and the performance is measured.
-Finally the element is learned to the predictor by adding it to the trainingset and adding it to the allowed set of dependencies.
+\subsubsection{Pessimistic}
+Given a conjecture $\phi \in \testset$ we individually filter the dependants $\parents$ of $\phi$ out of the trainset $\trainset$ for that prediction:
+\begin{definition}
+  \[
+    \trainset^{\phi} = \trainset \cap (\parentstrans[y] \cup \{y\})
+  \]
+\end{definition}
+This method removes the least amount of elements out of the dataset to make it consistent.
+It has the least risk of removing relevant elements, but also includes the most irrelevant datapoints.
+During the rest of this thesis we use this method to measure the performance of a predictor, unless otherwise specified.
 
-Currently, the predictor is trained using the entire trainingset of the fold, without the dependencies of the term-turned-conjecture $\phi$:
-\[
-	\trainset' = \trainset \setminus \depstrans[\phi] ~\text{and}~ \deps' = \deps \setminus \depstrans[\phi]
-\]
+\subsubsection{Canonical}
+In other research first a consistent order is chosen for the definitions.
+Given a corpus with a set of source files and a single given entry file, this order is already defined.
+The order in which the files are included dictate the order in which terms are defined.
 
-Using the customary approach, always an equal or better performance is reached.
-Trivially this can be concluded because some of the irrelevant terms are excluded from the trainingset, as a result of the poset linearization.
-\todo{Explain posetcons \{optimistic, pessimistic, canonical\}}
+The XML export functionality of \coq only yields a set of terms, not an order in which these have been defined.
+Our \emph{canonical} method reconstructs a consistent order, and simulates the in-order learning of terms and testing of conjectures.
+
+First the order for the poset is defined:
+\begin{definition}
+  Construct a poset of objects from $\objs$ using the dependency relation for $x, y \in \objs$:
+  \[
+    x <_D y ~~\leftrightarrow~~ \depstrans[x] \cap (\parentstrans[y] \cup \{y\}) \neq \emptyset
+  \]
+\end{definition}
+
+\todo{illustration}
+This poset is then linearized to an ordered list.
+The linearization is done in a random manner.
+
+\subsubsection{Optimistic}
+\todo{explain}
+
+% A linearized list is constructed from this poset, and each element in this list is first tested, i.e. treated as a conjecture.
+% The predictor is asked for a prediction, and the performance is measured.
+% Finally the element is learned to the predictor by adding it to the trainingset and adding it to the allowed set of dependencies.
+
+% The predictor is trained using the entire trainingset of the fold, without the dependencies of the term-turned-conjecture $\phi$:
+%\[
+%	\trainset' = \trainset \setminus \depstrans[\phi] ~\text{and}~ \deps' = \depsym \setminus \depstrans[\phi]
+%\]
+
+% Using the customary approach, always an equal or better performance is reached.
+% Trivially this can be concluded because some of the irrelevant terms are excluded from the trainingset, as a result of the poset linearization.
+% \todo{Explain posetcons \{optimistic, pessimistic, canonical\}}
 
 \subsection{Corpora}
 \label{section:corpora}
