@@ -330,10 +330,16 @@ Randomly selecting from this tree to create a subset would result in an inconsis
 Given randomly selected subsets, we use three different strategies to make these subsets consistent with regards to the dependants of conjectures.
 
 \subsubsection{Pessimistic}
+\begin{definition}
+  \[
+    \parents = \depsym^{T}
+  \]
+\end{definition}
+
 Given a conjecture $\phi \in \testset$ we individually filter the dependants $\parents$ of $\phi$ out of the trainset $\trainset$ for that prediction:
 \begin{definition}
   \[
-    \trainset^{\phi} = \trainset \cap (\parentstrans[y] \cup \{y\})
+    \trainset^{\phi} = \trainset \backslash \parentstrans[\phi]
   \]
 \end{definition}
 This method removes the least amount of elements out of the dataset to make it consistent.
@@ -346,7 +352,7 @@ Given a corpus with a set of source files and a single given entry file, this or
 The order in which the files are included dictate the order in which terms are defined.
 
 The XML export functionality of \coq only yields a set of terms, not an order in which these have been defined.
-Our \emph{canonical} method reconstructs a consistent order, and simulates the in-order learning of terms and testing of conjectures.
+Our `canonical' method reconstructs a consistent order, and simulates the in-order learning of terms and testing of conjectures.
 
 First the order for the poset is defined:
 \begin{definition}
@@ -362,6 +368,12 @@ The linearization is done in a random manner.
 
 \subsubsection{Optimistic}
 \todo{explain}
+
+\begin{definition}
+  \[
+    \trainset^{\phi} = \trainset \cap \parentstrans[\phi]
+  \]
+\end{definition}
 
 % A linearized list is constructed from this poset, and each element in this list is first tested, i.e. treated as a conjecture.
 % The predictor is asked for a prediction, and the performance is measured.

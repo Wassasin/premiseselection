@@ -172,10 +172,6 @@ description={set of names of all objects in the terms of all objects, excluding 
 \newcommand{\auc}{AUC\xspace}
 \newcommand{\volume}{Volume\xspace}
 
-\newcommand{\depstrans}[1][]{\deps{#1}^*}
-\newcommand{\parents}[1][]{P_{#1}}
-\newcommand{\parentstrans}[1][]{\parents[{#1}]^*}
-
 \newcommand{\featurekeys}{Z}
 \newglossaryentry{featurekeys}{name={\ensuremath{\featurekeys}},
 description={set of feature keys, or the set of the aspects with which an object can be described; based on the set of definitions $\defs$, but possibly extended with other aspects}}
@@ -193,6 +189,17 @@ description={set of names of objects which have been used to define or prove a \
 \newcommand{\depset}{\depsym}
 \newglossaryentry{depset}{name={\ensuremath{\depset}},
 description={set of all possible dependencies}}
+
+\newcommand{\depstrans}[1][]{\deps{#1}^*}
+
+\newcommand{\parentsym}{P}
+
+\newcommand{\parents}[1][]{\parentsym_{#1}}
+\newglossaryentry{parentsym}{name={\ensuremath{\parents{s}}},
+description={set of names of objects which use \coqobj $s$ to be defined to or proven}}
+
+\newcommand{\parentstrans}[1][]{\parents[{#1}]^*}
+
 
 \newcommand{\dist}{\text{dist}}
 \newglossaryentry{dist}{name={\ensuremath{\dist}},
