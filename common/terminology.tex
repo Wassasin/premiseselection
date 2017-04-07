@@ -158,10 +158,10 @@ description={set of names of all objects in the term of \coqobj[s]}}
 \newglossaryentry{typeset}{name={\ensuremath{\typeset{s}}}, sort=flatten-typeset,
 description={set of names of all objects in the type of \coqobj[s]}}
 
-\newcommand{\defs}[1][]{\texttt{Defs}_{}}
+\newcommand{\defs}[1][]{\texttt{Defs}_{#1}}
 \newglossaryentry{defs}{name={\ensuremath{\defs}},
 description={set of names of all objects in the types of all objects; used as the base of the set of features}}
-\newcommand{\thms}[1][]{\texttt{Thms}_{}}
+\newcommand{\thms}[1][]{\texttt{Thms}_{#1}}
 \newglossaryentry{thms}{name={\ensuremath{\thms}},
 description={set of names of all objects in the terms of all objects, excluding all $\defs$; used as set of dependencies}}
 
@@ -205,8 +205,12 @@ description={set of names of objects which use \coqobj $s$ to be defined to or p
 \newglossaryentry{dist}{name={\ensuremath{\dist}},
 description={the euclidean distance between two types $a, b \in \types$ computed using the features $\features{}{a}$ and $\features{}{b}$ of those types}}
 
-\newcommand{\objs}[1][]{S_{#1}}
+\newcommand{\objs}[1][]{\ensuremath{S_{#1}}}
 \newcommand{\trainset}{\objs[{\text{train}}]}
 \newcommand{\testset}{\objs[{\text{test}}]}
 
 \newcommand{\objdef}{:=}
+
+\newcommand{\topoo}[1][]{\ensuremath{\mathtt{top}_{100}(s)}}
+\newcommand{\required}[1][]{\ensuremath{{\mathtt{req}}_{#1}}}
+\newcommand{\suggestions}[1][]{\ensuremath{\mathtt{sugg}_{#1}}}
