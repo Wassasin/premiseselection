@@ -367,13 +367,21 @@ This poset is then linearized to an ordered list.
 The linearization is done in a random manner.
 
 \subsubsection{Optimistic}
-\todo{explain}
+
+In order to measure the effect of leaving out the rest of the corpus
+the `optimistic' method constructs a training set where only the bare minimum of entries is included.
+This method only includes all absolutely required parents of conjecture $\phi$.
 
 \begin{definition}
   \[
     \trainset^{\phi} = \trainset \cap \parentstrans[\phi]
   \]
 \end{definition}
+
+Intuitively our machine learning methods infer the required dependencies by looking at similar previously defined terms.
+The `optimistic' method minimizes noise, but also minimizes similar seemingly irrelevant terms which probably end up to be useful.
+Thus results from this method will reveal the role of irrelevant terms, but also will show the relevance of similar but not directly related terms.
+
 
 % A linearized list is constructed from this poset, and each element in this list is first tested, i.e. treated as a conjecture.
 % The predictor is asked for a prediction, and the performance is measured.
