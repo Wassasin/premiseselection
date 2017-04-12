@@ -427,23 +427,24 @@ can be computed by averaging the values of a metric for all elements in $\testse
   \[ \suggestions[s] = \{ d \in \depset ~|~ P(\type[s], d) ~\text{is defined} \} \]
 \end{definition}
 
-\begin{definition} We define $\topoo[s]$ to be
-  \[ \topoo[s] = \downset{\depset}{\nth{100}{(\suggestions[s], \lambda x~y. P(s, x) > P(s, y))}} \]
+\begin{definition} We define $\topn{n}{s}$ to be
+  \[ \topn{n}{s} = \downset{\depset}{\nth{n}{(\suggestions[s], \lambda x~y. P(s, x) > P(s, y))}} \]
 \end{definition}
 
 In this thesis we use the following metrics:
 \begin{definition}
   The coverage of the set of proof dependencies by the first 100 suggestions is defined as
-  \[ \text{100Cover} = \frac{ |\topoo[s] \bigcap \required[s]| } { |\required[s]| } \]
+  \[ \text{100Cover} = \frac{ |\topn{100}{s} \bigcap \required[s]| } { |\required[s]| } \]
 \end{definition}
 
 \begin{definition}
   The precision of the set of proof dependencies by the first 100 suggestions is defined as
-  \[ \text{100Precision} = \frac{ |\topoo[s] \bigcap \required[s]| } { |\topoo[s]| } \]
+  \[ \text{100Precision} = \frac{ |\topn{100}{s} \bigcap \required[s]| } { |\topn{100}{s}| } \]
 \end{definition}
 
 \begin{definition}
-  \[ \text{Recall} =  \]
+  The recall is defined to be the number of guesses that were made until the entire set of required dependencies is suggested
+  \[ \text{Recall} =  \text{first}(\lambda i. (i \leq |\suggestions[s]|) \rightarrow \required[s] \subseteq \topn{i}{s}) \]
 \end{definition}
 
 \begin{definition}{Rank}
