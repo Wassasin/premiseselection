@@ -274,7 +274,7 @@ as that is only relevant in parts of the results section (Section \ref{section:r
 \subsection{Dependencies}
 \label{sections:deps}
 
-Theorems 
+Theorems
 \begin{definition}\defgls{depset}\label{def:depset}
   The set of all possible dependencies $\depset$ is defined as the set of theorems.
   $$
@@ -399,6 +399,14 @@ Thus results from this method will reveal the role of irrelevant terms, but also
 \subsection{Corpora}
 \label{section:corpora}
 
+\begin{figure}[H]
+  \begin{tabular}{l|rrr}
+    Corpus & $|S|$ & $|\defs|$ & $|\thms|$ \\\hline
+    \input{data/counts}
+  \end{tabular}
+  \caption{Counts}
+\end{figure}
+
 \todo{patches}
 \todo{build instructions}
 
@@ -408,9 +416,9 @@ The following corpora are used as test cases:
 \begin{description}
 	\item[\coq stdlib]
 	\item[\compcert]
-    \item[\formalin]
-    \item[\corn]
-    \item[\mathcomp]
+  \item[\formalin]
+  \item[\corn]
+  \item[\mathcomp]
 \end{description}
 
 \subsection{Metrics}
@@ -452,4 +460,3 @@ In this thesis we use the following metrics:
 
 \begin{definition}{Area Under Curve (AUC)}
 \end{definition}
-
