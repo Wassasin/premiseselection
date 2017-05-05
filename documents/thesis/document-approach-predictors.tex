@@ -2,7 +2,7 @@ We wish to predict useful dependencies for a proof goal, or conjecture.
 For this we define predictors:
 
 \begin{definition}
-  A predictor $P$ is a function which given an unproven conjecture $c \in \types$ 
+  A predictor $P$ is a function which given an unproven conjecture $c \in \types$
   computes the likelyhood a dependency $\phi \in \depset$ is useful in proof of conjecture $c$.
   $$
     P : \types \rightarrow \depset \rightharpoonup \mathbb{R}
@@ -127,11 +127,14 @@ Now we can compute the likelyhood of candidate $\phi$ given some constants $\pi,
 By K\"uhlwein \cite{kuhlwein2013mash} it is suggested to use $\pi = 10$, $\sigma = -15$ and $\tau = 20$.
 
 \subsubsection{Kernel methods}
+\todo{implement}
 \subsubsection{Deep neural nets}
+\todo{implement}
 \subsubsection{Random forests}
-\subsubsection{SInE}
-\subsubsection{MePo}
+Random Forest decision algorithm adapted for the Ranking problem, called Ranking Forest \cite{clemenccon2013ranking}.
+
 \subsubsection{Ensembles}
+\todo{explain}
 
 \subsection{Example}
 
