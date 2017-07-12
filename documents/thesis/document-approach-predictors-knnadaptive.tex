@@ -1,0 +1,35 @@
+\todo{reference}
+
+An alternative to selecting a predefined $K$ number of neighbors, is keep selecting neighbors until a preset number of suggestions can be made.
+This strategy is used by the \knnadaptive predictor.
+
+\begin{definition}
+  Given $p \in \nat \rightarrow 2$:
+
+  $$
+    \begin{array}{ll}
+      \text{first}'(p, i) & = \left\{
+      \begin{array}{ll}
+         i & ~\text{if}~~ p(i) \\
+         \text{first}'(p, i+1) & ~\text{otherwise} \\
+      \end{array}
+      \right. \\
+      \\
+      \text{first}(p) & = \text{first}'(p, 0)
+    \end{array}
+  $$
+\end{definition}
+
+\begin{definition}
+  Given the $K \in \nat$ closest neighbors of conjecture $c \in \types$ we define the set of suggestions to be
+
+  $$
+    S(c, K) = \bigcup_{x \in \text{closest}_K(c)} \left\{ \phi \in \depset ~|~ \deps{x}(\phi) > 0 \right\}
+  $$
+\end{definition}
+
+\begin{definition}
+  $$
+    P_\text{aknn}(c, \phi) = P^{\text{first}(\lambda K . |S(c, K)| \geq 1024)}_\text{knn}(c, \phi)
+  $$
+\end{definition}

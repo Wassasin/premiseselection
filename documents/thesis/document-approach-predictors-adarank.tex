@@ -1,0 +1,101 @@
+The premise selection problem is similar to \ltr in information retrieval
+as in both cases relevant objects are sought from a large corpus.
+Ordering these objects by relevance (or `rank') is also a common theme in both fields of study.
+
+In order to determine in what manner these problems differ, and whether solutions
+from information retrieval could be transformed to also work for the premise selection problem,
+the Adarank algorithm \cite{xu2007adarank} is used as a showcase.
+
+\ltr is typically used in search engines to search for relevant documents.
+Given a search query $\query \in \queries$ composed of several terms, a preselection on the set of
+all documents is made. Given a document in this subset $\doc \in \docs{\query}$,
+the documents are sorted by rank $\rankdoc{\doc} \in \rat$.
+The rank is determined for a document relative to the query.
+Typically a document which mainly discusses terms from the query is rated highly.
+The information retrieval method determines how this rank is computed.
+
+Premise selection has neither the concepts of queries nor documents.
+
+\begin{definition}
+  Queries are formed from the features of each object $s \in \trainset$.
+  \[
+    \forall_{s \in \trainset} \features{}{s} \in \queries
+  \]
+\end{definition}
+
+\begin{definition}
+  We define the documents (that which we seek to rank) to be analogous to our dependencies.
+  \[
+    \forall_{\query \in \queries}~ \docs{\query} \subseteq \depset
+  \]
+\end{definition}
+
+For premise selection, we search for useful dependencies given a conjecture $c \in \types$.
+We reason over the types of objects $\objs$, instead of over the types of the dependencies.
+Thus in order to transform to \ltr, we need to reason over the types of objects related to each dependency.
+
+\begin{definition}
+  For dependency $d \in \depsym$ we define the features $G_d$ to be the sum of
+  the features $i \in \featurekeys$ of the parents $\parents[d]$ of $d$:
+  \[
+    G_d(i) = \sum_{p \in \parents[d]} \features{}{p}(i)
+  \]
+\end{definition}
+
+\begin{definition}
+  Given a query $\query \in \queries$ and document $d \in \docs{\query}$ the feature
+  vector is defined as:
+
+  \[
+    {\vec{x}}_{q d} = \Psi(\query, d) \in \mathcal{X}
+  \]
+\end{definition}
+
+\paragraph{Features}
+
+\begin{definition}
+  \[ c(w, d) \]
+\end{definition}
+
+\begin{definition}
+  \[ C \]
+\end{definition}
+
+\begin{definition}
+  \[ \text{idf}(\cdot) \]
+\end{definition}
+
+\begin{definition}
+  \[ \text{BM25 score} \]
+\end{definition}
+
+\begin{definition}
+  \[
+  \begin{array}{l}
+    \psi_0(q, d) = \sum_{w_i \in q \bigcap d} \text{ln}(c(w_i, d) + 1) \\
+    \psi_1(q, d) = \sum_{w_i \in q \bigcap d} \text{ln}(\frac{|C|}{c(w_i, C)} + 1) \\
+    \psi_2(q, d) = \sum_{w_i \in q \bigcap d} \text{ln}(\text{idf}(w_i)) \\
+    \psi_3(q, d) = \sum_{w_i \in q \bigcap d} \text{ln}(\frac{c(w_i, d)}{|d|} + 1) \\
+    \psi_4(q, d) = \sum_{w_i \in q \bigcap d} \text{ln}(\frac{c(w_i, d)}{|d|} \cdot \text{idf}(w_i) + 1) \\
+    \psi_5(q, d) = \sum_{w_i \in q \bigcap d} \text{ln}(\frac{c(w_i, d) \cdot |C|}{|d| \cdot c(w_i, C)} + 1) \\
+    \psi_6(q, d) = \text{ln}( \text{BM25 score} )
+  \end{array}
+  \]
+
+  \[
+    \Psi(q, d) = \left\{ \psi_0(q, d), ~\ldots~, \psi_6(q, d) \right\}
+  \]
+\end{definition}
+
+\subsubsection{Ensembles}
+\todo{explain}
+
+\subsection{Example}
+
+\begin{lstlisting}[language=Coq, mathescape, frame=none]
+$\defs = \{$nat$,$ 0$,$ S$,$ plus$\}$
+\end{lstlisting}
+
+\begin{lstlisting}[language=Coq, mathescape, frame=none]
+$\thms = \mathtt{dom}(S) \setminus \defs = \{$nat_ind$,$ plus_0_r$\}$
+\end{lstlisting}

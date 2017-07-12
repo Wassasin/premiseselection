@@ -1,0 +1,57 @@
+\todo{reference}
+\todo{intuition}
+
+For the \knn predictor several prerequisite definitions are required.
+
+\begin{definition}\defgls{dist}\label{def:dist}
+  Given two types $x, y \in \types$, the euclidean distance between these types can be computed using the features $\features{}{a}$ and $\features{}{b}$ of those types:
+  $$ \text{dist}(x, y) = \left( \sum_{i \in \featurekeys} \left( \features{}{x}(i) - \features{}{y}(i) \right)^2 \right)^{\frac{1}{2}} $$
+\end{definition}
+
+For a conjecture $c \in \types$ the euclidean distance using $\text{dist}$ is computed for each known \coqobj $s \in \objs$.
+A total order of these \coqobjs is constructed using the following ordering:
+
+\begin{definition}
+  $$
+    \text{closer}_\phi(x, y) = \text{dist}(x, \phi) \leq \text{dist}(y, \phi)
+  $$
+\end{definition}
+
+\begin{definition}\glsadd{infimum}\label{def:infimum}
+  Given a partially ordered set $(X, \leq)$,
+  the \textbf{infimum} or \textbf{greatest lower bound}, denoted by $\infimum$, is the greatest element in $X$ that is less than or equal to all elements of $X$,
+  if such an element exists.
+\end{definition}
+
+\begin{definition}\glsadd{nth}\label{def:nth}
+  Given a totally ordered set $(X, \leq)$ and a number $n \in \nat$, we define
+  $$
+    \nth{n}{X} = \left\{
+      \begin{array}{ll}
+        \infimum_X & \text{if}~n = 0 \\
+        \nth{n-1}{X \cap \infimum_X} & \text{if}~n > 0 \\
+      \end{array}
+    \right.
+  $$
+\end{definition}
+
+\begin{definition}\glsadd{downset}\label{def:downset}
+  Given a partially ordered set $(X, \leq)$ with an element $x \in X$, a \textbf{down set} $\downset{X}{x}$ is a subset $L$ with if $y \leq x$, then $y \in L$.
+\end{definition}
+
+The $K \in \nat$ closest objects according to this distance measure are selected, which we call $\text{closest}_K(c)$.
+\begin{definition}
+  $$
+    \text{closest}_K(c) = \downset{S}{\nth{K}{(S, \text{closer}_c)}}
+  $$
+\end{definition}
+
+Their dependencies $\phi \in \depset$ are then suggested by the predictor.
+The usefulnes of each suggestion is dependant on the distance of their parents to conjecture $c$.
+\begin{definition}
+  $$
+    P^K_\text{knn}(c, \phi) = \sum_{x \in \text{closest}_K(c)} \deps{x}(\phi) \times \text{dist}(c, x)
+  $$
+\end{definition}
+
+In future work we might experiment with different distance measures.
