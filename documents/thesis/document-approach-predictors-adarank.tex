@@ -44,10 +44,22 @@ Thus in order to transform to \ltr, we need to reason over the types of objects 
 
 \begin{definition}
   Given a query $\query \in \queries$ and document $d \in \docs{\query}$ the feature
-  vector is defined as:
+  vector ${\vec{x}}_{q d}$ is defined as:
 
   \[
-    {\vec{x}}_{q d} = \Psi(\query, d) \in \mathcal{X}
+  \begin{array}{l}
+    \psi_0(q, d) = \sum_{w_i \in q \bigcap d} \text{ln}(c(w_i, d) + 1) \\
+    \psi_1(q, d) = \sum_{w_i \in q \bigcap d} \text{ln}(\frac{|C|}{c(w_i, C)} + 1) \\
+    \psi_2(q, d) = \sum_{w_i \in q \bigcap d} \text{ln}(\text{idf}(w_i)) \\
+    \psi_3(q, d) = \sum_{w_i \in q \bigcap d} \text{ln}(\frac{c(w_i, d)}{|d|} + 1) \\
+    \psi_4(q, d) = \sum_{w_i \in q \bigcap d} \text{ln}(\frac{c(w_i, d)}{|d|} \cdot \text{idf}(w_i) + 1) \\
+    \psi_5(q, d) = \sum_{w_i \in q \bigcap d} \text{ln}(\frac{c(w_i, d) \cdot |C|}{|d| \cdot c(w_i, C)} + 1) \\
+    \psi_6(q, d) = \text{ln}( \text{BM25 score} )
+  \end{array}
+  \]
+
+  \[
+    {\vec{x}}_{q d} = \Psi(q, d) = \left\{ \psi_0(q, d), ~\ldots~, \psi_6(q, d) \right\}
   \]
 \end{definition}
 
@@ -70,32 +82,13 @@ Thus in order to transform to \ltr, we need to reason over the types of objects 
 \end{definition}
 
 \begin{definition}
-  \[
-  \begin{array}{l}
-    \psi_0(q, d) = \sum_{w_i \in q \bigcap d} \text{ln}(c(w_i, d) + 1) \\
-    \psi_1(q, d) = \sum_{w_i \in q \bigcap d} \text{ln}(\frac{|C|}{c(w_i, C)} + 1) \\
-    \psi_2(q, d) = \sum_{w_i \in q \bigcap d} \text{ln}(\text{idf}(w_i)) \\
-    \psi_3(q, d) = \sum_{w_i \in q \bigcap d} \text{ln}(\frac{c(w_i, d)}{|d|} + 1) \\
-    \psi_4(q, d) = \sum_{w_i \in q \bigcap d} \text{ln}(\frac{c(w_i, d)}{|d|} \cdot \text{idf}(w_i) + 1) \\
-    \psi_5(q, d) = \sum_{w_i \in q \bigcap d} \text{ln}(\frac{c(w_i, d) \cdot |C|}{|d| \cdot c(w_i, C)} + 1) \\
-    \psi_6(q, d) = \text{ln}( \text{BM25 score} )
-  \end{array}
-  \]
-
-  \[
-    \Psi(q, d) = \left\{ \psi_0(q, d), ~\ldots~, \psi_6(q, d) \right\}
-  \]
+  \[ \pi(q, d, f) \]
 \end{definition}
 
-\subsubsection{Ensembles}
-\todo{explain}
-
-\subsection{Example}
-
-\begin{lstlisting}[language=Coq, mathescape, frame=none]
-$\defs = \{$nat$,$ 0$,$ S$,$ plus$\}$
-\end{lstlisting}
-
-\begin{lstlisting}[language=Coq, mathescape, frame=none]
-$\thms = \mathtt{dom}(S) \setminus \defs = \{$nat_ind$,$ plus_0_r$\}$
-\end{lstlisting}
+\[
+  \alpha_t = \frac{1}{2} \cdot \ln \frac{
+    \sum^m_{i=1} P_t(i) \{ 1 + E(\pi(q_i, \docs{i}, h_t), y_i) \}
+  }{
+    t
+  }
+\]
