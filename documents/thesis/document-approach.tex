@@ -422,41 +422,4 @@ The following corpora are used as test cases:
 \end{description}
 
 \subsection{Metrics}
-Given a predictor $P$ and a test object $s \in \testset$,
-the performance of the predictor for this conjecture can be computed.
-The general performance of the predictor for a given $\testset$
-can be computed by averaging the values of a metric for all elements in $\testset$.
-
-\begin{definition} The set of dependencies required to solve conjecture $\type[s]$ is defined as
-  \[ \required[s] = \deps{s} \]
-\end{definition}
-
-\begin{definition} The set of suggestions done by predictor $P$ for test object $s$ is defined as
-  \[ \suggestions[s] = \{ d \in \depset ~|~ P(\type[s], d) ~\text{is defined} \} \]
-\end{definition}
-
-\begin{definition} We define $\topn{n}{s}$ to be
-  \[ \topn{n}{s} = \downset{\depset}{\nth{n}{(\suggestions[s], \lambda x~y. P(s, x) > P(s, y))}} \]
-\end{definition}
-
-In this thesis we use the following metrics:
-\begin{definition}
-  The coverage of the set of proof dependencies by the first 100 suggestions is defined as
-  \[ \text{100Cover} = \frac{ |\topn{100}{s} \bigcap \required[s]| } { |\required[s]| } \]
-\end{definition}
-
-\begin{definition}
-  The precision of the set of proof dependencies by the first 100 suggestions is defined as
-  \[ \text{100Precision} = \frac{ |\topn{100}{s} \bigcap \required[s]| } { |\topn{100}{s}| } \]
-\end{definition}
-
-\begin{definition}
-  The recall is defined to be the number of guesses that were made until the entire set of required dependencies is suggested
-  \[ \text{Recall} =  \text{first}(\lambda i. (i \leq |\suggestions[s]|) \rightarrow \required[s] \subseteq \topn{i}{s}) \]
-\end{definition}
-
-\begin{definition}{Rank}
-\end{definition}
-
-\begin{definition}{Area Under Curve (AUC)}
-\end{definition}
+\input{document-approach-metrics}
