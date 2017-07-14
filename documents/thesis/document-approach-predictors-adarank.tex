@@ -18,9 +18,9 @@ Premise selection has neither the concepts of queries nor documents.
 However a transformation can be applied, as the concepts are somewhat similar.
 
 \begin{definition}
-  Queries are formed from the features of each object $s \in \trainset$.
+  Queries are formed from the features of each object $s \in \objsym$.
   \[
-    \forall_{s \in \trainset} \features{}{s} \in \queries
+    \forall_{s \in \objsym} \features{}{s} \in \queries
   \]
 \end{definition}
 
@@ -37,8 +37,9 @@ instead of over the types of the dependencies as is the case with information re
 Thus in order to transform to \ltr, we need to reason over the types of objects related to each dependency.
 
 \begin{definition}
-  For dependency $d \in \depsym$ we define the features $G_d$ to be the sum of
-  the features $i \in \featurekeys$ of the parents $\parents[d]$ of $d$:
+  For dependency $d \in \depsym$ we define the features $G_d$ per single feature
+  $i \in \featurekeys$ the be the sum of the number of occurrences of that feature
+  in the parents $\parents[d]$ of $d$:
   \[
     G_d(i) = \sum_{p \in \parents[d]} \features{}{p}(i)
   \]
@@ -65,13 +66,13 @@ Thus in order to transform to \ltr, we need to reason over the types of objects 
 
   \[
   \begin{array}{l}
-    \psi_0(q, d) = \sum_{w_i \in q \bigcap d} \text{ln}(c(w_i, d) + 1) \\
-    \psi_1(q, d) = \sum_{w_i \in q \bigcap d} \text{ln}(\frac{|C|}{c(w_i, C)} + 1) \\
-    \psi_2(q, d) = \sum_{w_i \in q \bigcap d} \text{ln}(\text{idf}(w_i)) \\
-    \psi_3(q, d) = \sum_{w_i \in q \bigcap d} \text{ln}(\frac{c(w_i, d)}{|d|} + 1) \\
-    \psi_4(q, d) = \sum_{w_i \in q \bigcap d} \text{ln}(\frac{c(w_i, d)}{|d|} \cdot \text{idf}(w_i) + 1) \\
-    \psi_5(q, d) = \sum_{w_i \in q \bigcap d} \text{ln}(\frac{c(w_i, d) \cdot |C|}{|d| \cdot c(w_i, C)} + 1) \\
-    \psi_6(q, d) = \text{ln}( \text{BM25 score} )
+    \psi_0(q, d) = \sum_{w \in q \bigcap d} \text{ln}(c(w, d) + 1) \\
+    \psi_1(q, d) = \sum_{w \in q \bigcap d} \text{ln}(\frac{|C|}{c(w, C)} + 1) \\
+    \psi_2(q, d) = \sum_{w \in q \bigcap d} \text{ln}(\text{idf}(w)) \\
+    \psi_3(q, d) = \sum_{w \in q \bigcap d} \text{ln}(\frac{c(w, d)}{|d|} + 1) \\
+    \psi_4(q, d) = \sum_{w \in q \bigcap d} \text{ln}(\frac{c(w, d)}{|d|} \cdot \text{idf}(w) + 1) \\
+    \psi_5(q, d) = \sum_{w \in q \bigcap d} \text{ln}(\frac{c(w, d) \cdot |C|}{|d| \cdot c(w, C)} + 1) \\
+    \psi_6(q, d) = \ln( \text{BM25-score}(q, d) )
   \end{array}
   \]
 
@@ -81,19 +82,37 @@ Thus in order to transform to \ltr, we need to reason over the types of objects 
 \end{definition}
 
 \begin{definition}
-  \[ c(w, d) \]
+  We denote the frequency of word $w \in \featurekeys$ in document $d \in \depsym$ as follows:
+  \[ c(w, d) = \frac{G_d(w)}{ \sum_{v \in \featurekeys} G_d(v) }\]
 \end{definition}
 
 \begin{definition}
-  \[ C \]
+  We use $C$ to denote the collection of words in the entire collection of documents.
+  Thus if we use the following the denote the frequency of word $w \in \featurekeys$
+  in the entire collection of documents:
+  \[ c(w, C) =
+    \left( \sum_{d \in \depsym} G_d(w) \right) /
+    \left( \sum_{d \in \depsym} \sum_{v \in \featurekeys} G_d(v) \right)
+  \]
+\end{definition}
+
+\begin{definition} The \emph{inverse document frequency} is a measure that indicates
+  common a word is across all documents.
+  The frequency is determined by counting how many documents feature the word
+  at least once.
+  \[ \text{idf}(w) = \log(\frac{|\depsym|}{ 1 + \left| \{ d \in \depsym ~|~ G(d, w) > 0 \} \right|}) \]
 \end{definition}
 
 \begin{definition}
-  \[ \text{idf}(\cdot) \]
-\end{definition}
+  The \emph{Okapi BM25-score} \cite{robertson1995okapi} is used as a final feature:
+  \[
+    \text{BM25-score}(q, d) = \sum_{w \in q} \text{idf}(w) \cdot
+    \frac{c(w, d) \cdot (k_1 + 1)}
+      {c(w, d) + k_1 \cdot (1 - b + b \cdot \frac{|d|}{\text{avgdl}} )}
+  \]
 
-\begin{definition}
-  \[ \text{BM25 score} \]
+  \[ \text{with}~ k_1 = 1.5 ~\text{and}~ b = 0.75 \]
+  \[ \text{and}~ \text{avgdl} = \frac{ \sum_{d \in \depsym} |d| }{|\depsym|} \]
 \end{definition}
 
 \begin{definition}
@@ -106,11 +125,11 @@ Thus in order to transform to \ltr, we need to reason over the types of objects 
 
 Adarank is parameterized in the number of rounds $T \in \nat$ it should run for.
 Each round a weak ranker $h_t$, it's weight $\alpha_t$, a strong ranker $f_t$
-and a weight distribution $P_t : \trainset \rightarrow \rat$ is computed.
+and a weight distribution $P_t : \objsym \rightarrow \rat$ is computed.
 
 \begin{definition}
   Initially the weight distribution $P_0$ is defined as follows:
-  $$ P_0(s) = \frac{1}{|\trainset|} $$
+  $$ P_0(s) = \frac{1}{|\objsym|} $$
 \end{definition}
 
 \begin{definition}
@@ -118,7 +137,7 @@ and a weight distribution $P_t : \trainset \rightarrow \rat$ is computed.
   that has the optimal weighted performance given our metric function $E$:
 
   $$ h_t(\vec{x}) = \vec{x}[i] $$
-  with $$ i = \max_k \sum_{s \in \trainset} P_t(\type[s]) \cdot E(r_k(\type[s]), s) $$
+  with $$ i = \max_k \sum_{s \in \objsym} P_t(\type[s]) \cdot E(r_k(\type[s]), s) $$
   $$ r_k(q) = \pi(q, \docs{q}, \psi_k(q)) $$
 \end{definition}
 
@@ -126,9 +145,9 @@ and a weight distribution $P_t : \trainset \rightarrow \rat$ is computed.
   For round $t \in \nat$ the weight $\alpha_t$ of a weak ranker $h_t$ is determined as follows:
   \[
     \alpha_t = \frac{1}{2} \cdot \ln \frac{
-      \sum_{s \in \trainset} P_t(\type[s]) \cdot ( 1 + E(\pi(\type[s], \docs{\type[s]}, h_t), s) )
+      \sum_{s \in \objsym} P_t(\type[s]) \cdot ( 1 + E(\pi(\type[s], \docs{\type[s]}, h_t), s) )
     }{
-      \sum_{s \in \trainset} P_t(\type[s]) \cdot ( 1 - E(\pi(\type[s], \docs{\type[s]}, h_t), s) )
+      \sum_{s \in \objsym} P_t(\type[s]) \cdot ( 1 - E(\pi(\type[s], \docs{\type[s]}, h_t), s) )
     }
   \]
 \end{definition}
@@ -140,12 +159,12 @@ and a weight distribution $P_t : \trainset \rightarrow \rat$ is computed.
 \end{definition}
 
 \begin{definition}
-  The weight distribution for each subsequent round with $s \in \trainset$ is defined as follows:
+  The weight distribution for each subsequent round with $s \in \objsym$ is defined as follows:
   $$
     P_{t+1}(s) = \frac{
       \exp(- E(\pi(\type[s], \doc{\type[s]}, f_t), s))
     }{
-      \sum_{s' \in \trainset} \exp(- E(\pi(\type[s'], \doc{\type[s']}, f_t), s'))
+      \sum_{s' \in \objsym} \exp(- E(\pi(\type[s'], \doc{\type[s']}, f_t), s'))
     }
   $$
 \end{definition}
