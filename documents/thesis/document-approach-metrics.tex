@@ -1,0 +1,38 @@
+Given a predictor $P$ and a test object $s \in \testset$,
+the performance of the predictor for this conjecture can be computed.
+The general performance of the predictor for a given $\testset$
+can be computed by averaging the values of a metric for all elements in $\testset$.
+
+\begin{definition} The set of dependencies required to solve conjecture $\type[s]$ is defined as
+  \[ \required[s] = \deps{s} \]
+\end{definition}
+
+\begin{definition} The set of suggestions done by predictor $P$ for test object $s$ is defined as
+  \[ \suggestions{P}{s} = \{ d \in \depset ~|~ P(\type[s], d) ~\text{is defined} \} \]
+\end{definition}
+
+\begin{definition} We define $\topn{n}{P}{s}$ to be
+  \[ \topn{n}{P}{s} = \downset{\depset}{\nth{n}{(\suggestions{P}{s}, \lambda x~y. P(s, x) > P(s, y))}} \]
+\end{definition}
+
+In this thesis we use the following metrics:
+\begin{definition}
+  The coverage of the set of proof dependencies by the first 100 suggestions is defined as
+  \[ \oocoverf{P}{s} = \frac{ |\topn{100}{P}{s} \bigcap \required[s]| } { |\required[s]| } \]
+\end{definition}
+
+\begin{definition}
+  The precision of the set of proof dependencies by the first 100 suggestions is defined as
+  \[ \ooprecisionf{P}{s} = \frac{ |\topn{100}{P}{s} \bigcap \required[s]| } { |\topn{100}{P}{s}| } \]
+\end{definition}
+
+\begin{definition}
+  The recall is defined to be the number of guesses that were made until the entire set of required dependencies is suggested
+  \[ \recallf{P}{s} =  \text{first}(\lambda i. (i \leq |\suggestions{P}{s}|) \rightarrow \required[s] \subseteq \topn{i}{P}{s}) \]
+\end{definition}
+
+\begin{definition}{Rank}
+\end{definition}
+
+\begin{definition}{Area Under Curve (AUC)}
+\end{definition}

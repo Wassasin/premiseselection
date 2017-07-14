@@ -167,8 +167,11 @@ description={set of names of all objects in the types of all objects; used as th
 description={set of names of all objects in the terms of all objects, excluding all $\defs$; used as set of dependencies}}
 
 \newcommand{\oocover}{100Cover\xspace}
+\newcommand{\oocoverf}[2]{\ensuremath{\text{100Cover}({#1}, {#2})}}
 \newcommand{\ooprecision}{100Precision\xspace}
+\newcommand{\ooprecisionf}[2]{\ensuremath{\text{100Precision}({#1}, {#2})}}
 \newcommand{\recall}{Recall\xspace}
+\newcommand{\recallf}[2]{\ensuremath{\text{Recall}({#1}, {#2})}}
 \newcommand{\rank}{Rank\xspace}
 \newcommand{\auc}{AUC\xspace}
 \newcommand{\volume}{Volume\xspace}
@@ -212,9 +215,9 @@ description={the euclidean distance between two types $a, b \in \types$ computed
 
 \newcommand{\objdef}{:=}
 
-\newcommand{\topn}[2]{\ensuremath{\mathtt{top}_{#1}({#2})}}
+\newcommand{\topn}[3]{\ensuremath{\mathtt{top}_{#1}({#2}, {#3})}}
 \newcommand{\required}[1][]{\ensuremath{{\mathtt{req}}_{#1}}}
-\newcommand{\suggestions}[1][]{\ensuremath{\mathtt{sugg}_{#1}}}
+\newcommand{\suggestions}[2]{\ensuremath{\mathtt{sugg}_{#1}({#2})}}
 
 \newcommand{\ltr}{\emph{Learning to rank}\xspace}
 
