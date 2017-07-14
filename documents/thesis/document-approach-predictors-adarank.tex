@@ -9,12 +9,13 @@ the Adarank algorithm \cite{xu2007adarank} is used as a showcase.
 \ltr is typically used in search engines to search for relevant documents.
 Given a search query $\query \in \queries$ composed of several terms, a preselection on the set of
 all documents is made. Given a document in this subset $\doc \in \docs{\query}$,
-the documents are sorted by rank $\rankdoc{\doc} \in \rat$.
+the documents are sorted by rank.
 The rank is determined for a document relative to the query.
 Typically a document which mainly discusses terms from the query is rated highly.
 The information retrieval method determines how this rank is computed.
 
 Premise selection has neither the concepts of queries nor documents.
+However a transformation can be applied, as the concepts are somewhat similar.
 
 \begin{definition}
   Queries are formed from the features of each object $s \in \trainset$.
@@ -59,27 +60,6 @@ Thus in order to transform to \ltr, we need to reason over the types of objects 
 \end{definition}
 
 \begin{definition}
-  In the original Adarank paper \cite{xu2007adarank} a permutation function is defined, which for
-  our translation becomes trivial:
-
-  \[ \pi : \queries \rightarrow 2^\depsym \rightarrow (\depsym \rightarrow \rat) \rightarrow \rankings \]
-  \[ \pi(q, \docs{q}, f) = \lambda d \in \docs{q} . f(d) \]
-\end{definition}
-
-\begin{definition}
-  Also for $t \in \nat$ a weak ranker $h_t$ is defined, which chooses the feature $x \in \irfeatures$
-  that has the optimal weighted performance given our metric function $E$:
-
-  \[
-    h_t = \text{max}_k \sum_{s \in \trainset}
-      P_t(\type[s]) \cdot E(r_k(\type[s]), s)
-  \]
-  \[
-    \text{with}~ r_k(q) = \pi(q, \docs{q}, \psi_k(q, \docs{q}))
-  \]
-\end{definition}
-
-\begin{definition}
   Given a query $\query \in \queries$ and document $d \in \docs{\query}$ the
   associated feature vector ${\vec{x}}_{q d} \in \irfeatures$ is defined as:
 
@@ -96,7 +76,7 @@ Thus in order to transform to \ltr, we need to reason over the types of objects 
   \]
 
   \[
-    {\vec{x}}_{q d} = \Psi(q, d) = \left\{ \psi_0(q, d), ~\ldots~, \psi_6(q, d) \right\}
+    {\vec{x}}_{q d} = \Psi(q, d) = \left[ \psi_0(q, d), ~\ldots~, \psi_6(q, d) \right]
   \]
 \end{definition}
 
@@ -116,10 +96,67 @@ Thus in order to transform to \ltr, we need to reason over the types of objects 
   \[ \text{BM25 score} \]
 \end{definition}
 
-\[
-  \alpha_t = \frac{1}{2} \cdot \ln \frac{
-    \sum^m_{i=1} P_t(i) \{ 1 + E(\pi(q_i, \docs{i}, h_t), y_i) \}
-  }{
-    t
-  }
-\]
+\begin{definition}
+  In the original Adarank paper \cite{xu2007adarank} a permutation function is defined,
+  which computes the ranking given the features for document $d \in \docs{q}$:
+
+  \[ \pi : \queries \rightarrow 2^\depsym \rightarrow (\irfeatures \rightarrow \rat) \rightarrow \rankings \]
+  \[ \pi(q, \docs{q}, f) = \lambda d \in \docs{q} . f(\Psi(q, d)) \]
+\end{definition}
+
+Adarank is parameterized in the number of rounds $T \in \nat$ it should run for.
+Each round a weak ranker $h_t$, it's weight $\alpha_t$, a strong ranker $f_t$
+and a weight distribution $P_t : \trainset \rightarrow \rat$ is computed.
+
+\begin{definition}
+  Initially the weight distribution $P_0$ is defined as follows:
+  $$ P_0(s) = \frac{1}{|\trainset|} $$
+\end{definition}
+
+\begin{definition}
+  For round $t \in \nat$ a weak ranker $h_t : \irfeatures \rightarrow \rat$ is defined, which chooses the feature
+  that has the optimal weighted performance given our metric function $E$:
+
+  $$ h_t(\vec{x}) = \vec{x}[i] $$
+  with $$ i = \max_k \sum_{s \in \trainset} P_t(\type[s]) \cdot E(r_k(\type[s]), s) $$
+  $$ r_k(q) = \pi(q, \docs{q}, \psi_k(q)) $$
+\end{definition}
+
+\begin{definition}
+  For round $t \in \nat$ the weight $\alpha_t$ of a weak ranker $h_t$ is determined as follows:
+  \[
+    \alpha_t = \frac{1}{2} \cdot \ln \frac{
+      \sum_{s \in \trainset} P_t(\type[s]) \cdot ( 1 + E(\pi(\type[s], \docs{\type[s]}, h_t), s) )
+    }{
+      \sum_{s \in \trainset} P_t(\type[s]) \cdot ( 1 - E(\pi(\type[s], \docs{\type[s]}, h_t), s) )
+    }
+  \]
+\end{definition}
+
+\begin{definition}
+  Similarly for round $t \in \nat$ the strong ranker is defined to be the weighted
+  sums of all weak rankers of all previous rounds:
+  $$ f_t(\vec{x}) = \sum_{k=0}^{t} \alpha_k h_k(\vec{x}) $$
+\end{definition}
+
+\begin{definition}
+  The weight distribution for each subsequent round with $s \in \trainset$ is defined as follows:
+  $$
+    P_{t+1}(s) = \frac{
+      \exp(- E(\pi(\type[s], \doc{\type[s]}, f_t), s))
+    }{
+      \sum_{s' \in \trainset} \exp(- E(\pi(\type[s'], \doc{\type[s']}, f_t), s'))
+    }
+  $$
+\end{definition}
+
+\begin{definition}
+  We define the final ranker $f(\vec{x}) : \irfeatures \rightarrow \rat$ to be:
+  $$ f(\vec{x}) = f_T(\vec{x})$$
+\end{definition}
+
+\begin{definition}
+  In order to yield an actual predictor we need to convert a conjecture $c \in \types$
+  to a query and compute the rank for the computed features of the dependency candidate $\phi \in \depsym$:
+  $$ P_{\text{adarank}}^T(c, \phi) = f_T(\Psi(c, \phi)) $$
+\end{definition}
