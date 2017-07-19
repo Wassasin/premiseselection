@@ -162,9 +162,9 @@ and a weight distribution $P_t : \objsym \rightarrow \rat$ is computed.
   The weight distribution for each subsequent round with $s \in \objsym$ is defined as follows:
   $$
     P_{t+1}(s) = \frac{
-      \exp(- E(\pi(\type[s], \doc{\type[s]}, f_t), s))
+      \exp(- E(\pi(\type[s], \docs{\type[s]}, f_t), s))
     }{
-      \sum_{s' \in \objsym} \exp(- E(\pi(\type[s'], \doc{\type[s']}, f_t), s'))
+      \sum_{s' \in \objsym} \exp(- E(\pi(\type[s'], \docs{\type[s']}, f_t), s'))
     }
   $$
 \end{definition}
