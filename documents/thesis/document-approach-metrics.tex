@@ -4,35 +4,37 @@ The general performance of the predictor for a given $\testset$
 can be computed by averaging the values of a metric for all elements in $\testset$.
 
 \begin{definition}
-  A metrics function is of the type $\rankings \rightarrow \objs \rightarrow \rat$.
+  A metrics function takes a ranking and a known object and yields a rational number
+  that represents how the ranking relates to the actual ranking for the known object.
+  Such a function is of the type $\rankings \rightarrow \objs \rightarrow \rat$.
 \end{definition}
 
 \begin{definition} The set of dependencies required to solve conjecture $\type[s]$ is defined as
   \[ \required[s] = \deps{s} \]
 \end{definition}
 
-\begin{definition} The set of suggestions done by predictor $P$ for test object $s$ is defined as
-  \[ \suggestions{r}{s} = \{ d \in \depset ~|~ r(d) ~\text{is defined} \} \]
+\begin{definition} The set of suggestions done in a ranking is defined as
+  \[ \suggestions{r} = \{ d \in \depset ~|~ r(d) ~\text{is defined} \} \]
 \end{definition}
 
-\begin{definition} We define $\topn{n}{r}{s}$ to be
-  \[ \topn{n}{r}{s} = \downset{\depset}{\nth{n}{(\suggestions{r}{s}, \lambda x~y. r(x) > r(y))}} \]
+\begin{definition} We define $\topn{n}{r}$ to be
+  \[ \topn{n}{r} = \downset{\depset}{\nth{n}{(\suggestions{r}, \lambda x~y. r(x) > r(y))}} \]
 \end{definition}
 
 In this thesis we use the following metrics:
 \begin{definition}
   The coverage of the set of proof dependencies by the first 100 suggestions is defined as
-  \[ \oocoverf{r}{s} = \frac{ |\topn{100}{r}{s} \bigcap \required[s]| } { |\required[s]| } \]
+  \[ \oocoverf{r}{s} = \frac{ |\topn{100}{r} \bigcap \required[s]| } { |\required[s]| } \]
 \end{definition}
 
 \begin{definition}
   The precision of the set of proof dependencies by the first 100 suggestions is defined as
-  \[ \ooprecisionf{r}{s} = \frac{ |\topn{100}{r}{s} \bigcap \required[s]| } { |\topn{100}{r}{s}| } \]
+  \[ \ooprecisionf{r}{s} = \frac{ |\topn{100}{r} \bigcap \required[s]| } { |\topn{100}{r}| } \]
 \end{definition}
 
 \begin{definition}
   The recall is defined to be the number of guesses that were made until the entire set of required dependencies is suggested
-  \[ \recallf{r}{s} =  \text{first}(\lambda i. (i \leq |\suggestions{r}{s}|) \rightarrow \required[s] \subseteq \topn{i}{r}{s}) \]
+  \[ \recallf{r}{s} =  \text{first}(\lambda i. (i \leq |\suggestions{r}|) \rightarrow \required[s] \subseteq \topn{i}{r}) \]
 \end{definition}
 
 \begin{definition}{Rank}
