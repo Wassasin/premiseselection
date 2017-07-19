@@ -1,0 +1,9 @@
+\begin{definition}
+  Given a set of predictors and their predefined weights $C : \rat \times \predictors$ an ensemble can be made as follows:
+
+  \[
+    P_{\text{ensemble}}^C(c, \phi) =
+      \left( \sum_{(w, P) \in C} w \cdot P(c, \phi) \right)
+      \cdot \sum_{(w, P) \in C} \frac{1}{w}
+  \]
+\end{definition}
