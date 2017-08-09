@@ -1,0 +1,43 @@
+During compilation of a \coq project the \xml plugin has the capability to emit \xml files containing \acic objects.
+This plugin is shipped with \coq by default until version 8.4pl5.
+For later versions there is currently no equivalent functionality available for \coq.
+To instruct the plugin to emit \xml the following variables need to be set when calling \texttt{coqc} (for example via a Makefile):
+\begin{center}
+	\lstinline{COQ_XML=-xml COQ_XML_LIBRARY_ROOT=<dest>}
+\end{center}
+
+For some corpora it can be troublesome to have the compiler emit proper \xml.
+We have developed several patches for the datasets used in this thesis.
+For more information on the specific versions and patches used,
+view Section \ref{section:corpora} and the \texttt{data} folder in the repository for this thesis.
+
+From the parsed \xml files only the following \acic constructs are used:
+\begin{description}
+    \item[(Co)Inductive definitions]
+        These definitions are composed of a name, a type, and a list of constructors.
+        Each constructor also is composed of a name and a type.
+		A (Co)Inductive definition also yields an induction principle (\texttt{ind}) and a recursion scheme (\texttt{rec}) as separate terms.
+    \item[Constants (definitions / theorems / axioms)]
+		The types and bodies (the body is equivalent to the \acic term) of constants are defined in separate \xml files.
+		This separation is an optimization, as once defined the proofs (terms) of theorems are irrelevant.
+		For \coq it is sufficient to only know the type of a theorem.
+		For definitions the term is absolutely necessary, as the definitions needs to be substituted when applied.
+		However, conceptually theorems and definitions become indistinguishable when exported (see Section \ref{section:thmsdefs}).
+        Axioms only generate a type, as the term of an axiom is empty.
+\end{description}
+
+The following objects are not used, but could be useful in future work:
+\begin{description}
+    \item[Proof in progress]
+		Consists of a name, a type, a body and a list of dependencies (also called subgoals).
+        These dependencies still need to be satisfied to complete the proof.
+    \item[Tactics application]
+        On a higher level, tactics can be applied in order to form a proof.
+        These higher level constructs are dependent on the proof engine.
+        A proof consisting of tactics can thus become invalid given another \coq version.
+        For premise selection these tactics can help solve proofs more quickly, because the proofs they form are smaller.
+\end{description}
+
+\coq also exports variables, but these are not used.
+A variable consists of a name and a type, and becomes a parameter when a theory which uses the variable is applied.
+Thusfar there is no use for these variables within this thesis.
