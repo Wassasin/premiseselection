@@ -41,3 +41,61 @@ The following objects are not used, but could be useful in future work:
 \coq also exports variables, but these are not used.
 A variable consists of a name and a type, and becomes a parameter when a theory which uses the variable is applied.
 Thusfar there is no use for these variables within this thesis.
+
+\subsubsection{Formal extraction}
+In the repository \xml directory we have for each \coqobj[s] comprised of $\name \objdef \term : \type$
+one or two files: at least a file ending with \lstinline{.types.xml.gz} and
+possibly a file ending with \lstinline{.body.xml.gz} if the body is not empty, i.e. $\emptyterm$.
+The definition of the constructors as used by the parser and resolver can be found
+in the \roerei repository in the file \lstinline{src/preloader/acic.ml}.
+
+For each \coqobj[s] we count the names occuring in either the type or the term of the object.
+With each name we also yield the depth the name occures.
+This count function is rather straightforward.
+A specific flatten operation $\flattensym$ can transform this list of occurances to the desired summary $<\name[s], \termset{s}, \typeset{s}>$.
+
+\begin{definition}
+  We define a count function $c$ on \acic constructors yielding tuples of names and their depth in the \acic expression:
+  \[c : \text{constr} \rightarrow \nat \rightarrow \powerset{\names \times \nat} \]
+
+  \begin{tabular}{lll}
+    $c(\emptyterm, d)$            & $ = \varnothing $ & Empty term \\
+    $c(\text{ARel}(\cdots), d)$   & $ = \varnothing $ & \todo{unclear} Unused \\
+    $c(\text{AVar}(u), d)$        & $ = \{ (u, d) \} $ & (Local) variables \\
+    $c(\text{AEvar}(\vec{x}), d)$ & $ = \map{\vec{x}}{\lambda x . c(x, d+1)} $ & \todo{unclear} \\
+    $c(\text{ASort}(\cdots), d)$  & $ = \varnothing $ & The Sort of types, unused \\
+    $c(\text{ACast}(x, y), d)$    & $ = c(x, d+1) ~\cup~ c(y, d+1) $ & \todo{unclear} \\
+    $c(\text{AProds}(\vec{a}, t), d)$  & $ = c_{\times}(\vec{a}, t, d) $ & $\prod \vec{a} . t$ \\
+    $c(\text{ALambdas}(\vec{a}, t), d)$  & $ = c_{\times}(\vec{a}, t, d) $ & $\lambda \vec{a} . t$ \\
+    $c(\text{ALetIns}(\vec{a}, t), d)$  & $ = c_{\times}(\vec{a}, t, d) $ & $\text{let~} \vec{a} \text{~in~} t$ \\
+    $c(\text{AApp}(\vec{a}), d)$  & $ = \map{\vec{a}}{ \lambda a . c(a, d+1) ~\cup~ \{ (\text{special:app}, d) \} } $ & Application $(x~y)~z$ \\
+    $c(\text{AConst}(\cdots, u), d)$  & $ = \{ (u, d) \} $ & \todo{unclear} \\
+    $c(\text{AInd}(\cdots, u), d)$  & $ = \{ (u, d) \} $ & \todo{unclear} \\
+    $c(\text{AConstruct}(\cdots, u), d)$  & $ = \{ (u, d) \} $ & \todo{unclear} \\
+    $c(\text{ACase}(u, p, i, \vec{x}), d)$  &
+      = $ \begin{array}{l}
+        \{ (u, d) \} ~\cup~ c(p, d+1) ~\cup~ c(i, d+1) ~\cup \\
+        \map{\vec{x}}{\lambda x . c(x, d+1)}
+      \end{array}
+      $
+      & \todo{unclear} \\
+    $c(\text{AFix}(\vec{f}), d)$  & $ = \map{\vec{f}}{ \lambda (A, t) . c(A, d+1) ~\cup~ c(t, d+1) } $ & Fixpoint functions \\
+    $c(\text{ACoFix}(\vec{f}), d)$  & $ = \map{\vec{f}}{ \lambda (A, t) . c(A, d+1) ~\cup~ c(t, d+1) } $ & Co-fixpoint functions \\
+  \end{tabular}\\
+  with \[ c_{\times}(\vec{a}, t, d) = \map{\vec{a}}{
+    \lambda a . \begin{array}{l}
+        c(a, d+1) ~\cup \\
+        \{ (\text{special:prod}, d) \}
+      \end{array}
+    } \cup c(t, d+1) \]
+\end{definition}
+
+\vspace{1em}
+\begin{tabular}{ll}
+  $c_{\text{type}}(\text{AConstant}(n, A, t))$ & $= c(A, 0)$ \\
+  $c_{\text{type}}(\text{AInductiveDefinition}(n, \vec{d}))$ & $= \map{\vec{d}}{ \lambda (A, \vec{x}) ~.~ c(A, 0) ~\cup~ \text{map}(\vec{x}, \lambda x . c(x, 0)) } $\\
+  $c_{\text{type}}(-)$ & $= \varnothing$ \\
+  & \\
+  $c_{\text{term}}(\text{AConstant}(n, A, t))$ & $= c(t, 0)$ \\
+  $c_{\text{term}}(-)$ & $= \varnothing$ \\
+\end{tabular}
