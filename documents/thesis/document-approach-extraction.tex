@@ -87,6 +87,14 @@ A specific flatten operation $\flattensym$ can transform this list of occurances
 \end{definition}
 
 \begin{definition}
+  \[ \foldrsym : \forall X Y ~.~ (X \rightarrow Y \rightarrow Y) \rightarrow Y \rightarrow \listtype{A} \rightarrow Y \]
+  \[ \begin{array}{ll}
+      \foldr{f}{z}{\nil} & = z \\
+      \foldr{f}{z}{\cons{x}{l}} & = f(x,~ \foldr{f}{z}{l})
+    \end{array}\]
+\end{definition}
+
+\begin{definition}
   We define a count function $c$ on \acic constructors yielding tuples of names and their depth in the \acic expression:
   \[c : \text{constr} \rightarrow \nat \rightarrow \listtype{\names \times \nat} \]
 
@@ -151,6 +159,7 @@ A specific flatten operation $\flattensym$ can transform this list of occurances
   \end{tabular}
 \end{definition}
 
-\begin{definition}
-
+\begin{definition}[$\flatten{x}$]\defgls{flatten}
+  \[ \flattensym : \terms \rightarrow 2^{\names} \]
+  \[ \flatten{t} = \foldr{\lambda (n, d)~s ~.~ \{n\} \cup s}{\varnothing}{c(t, 0)} \]
 \end{definition}
