@@ -14,8 +14,6 @@
 
 \newcommand{\powerset}[1]{\ensuremath{\mathcal{P}({#1})}}
 
-\newcommand{\map}[2]{\ensuremath{\text{map}\left( {#1},~{#2}\right)}}
-
 \newcommand{\infimum}{\bot}
 \newglossaryentry{infimum}{name={\ensuremath{\infimum}},
 description={greatest element of a poset that is less than or equal to all elements of that poset}}
@@ -27,6 +25,17 @@ description={the $n^{\text{th}}$ bottom element in a totally ordered set}}
 \newcommand{\downset}[2]{~{#1}\downarrow{#2}~}
 \newglossaryentry{downset}{name={\ensuremath{\downset{X}{x}}},
 description={subset of a poset $X$ where each element is less than or equal to a given element $x$}}
+
+% Lists
+\newcommand{\listtype}[1]{\ensuremath{\mathcal{L}({#1})}}
+\newcommand{\nil}{\ensuremath{\text{nil}}}
+\newcommand{\cons}[2]{\ensuremath{\text{cons}({#1},~{#2})}}
+
+\newcommand{\mapsymbol}{\ensuremath{\text{map}}}
+\newcommand{\map}[2]{\ensuremath{\mapsymbol\left( {#1},~{#2}\right)}}
+
+\newcommand{\concatsymbol}{\ensuremath{\uplus}}
+\newcommand{\concat}[2]{{#1} ~\concatsymbol~ {#2}}
 
 % Languages
 \newcommand{\cpp}{C++\xspace}

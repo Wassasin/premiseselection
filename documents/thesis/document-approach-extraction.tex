@@ -55,6 +55,26 @@ This count function is rather straightforward.
 A specific flatten operation $\flattensym$ can transform this list of occurances to the desired summary $<\name[s], \termset{s}, \typeset{s}>$.
 
 \begin{definition}
+	\[ \listtype{X} = \nil ~|~ \cons{X}{\listtype{X}} \]
+\end{definition}
+
+\begin{definition}
+  \[ \mapsymbol : \forall X, Y . \listtype{X} \rightarrow (X \rightarrow Y) \rightarrow \listtype{Y} \]
+  \[ \begin{array}{ll}
+      \map{\nil}{f} & = \nil \\
+      \map{\cons{x}{l}}{f} & = \cons{f(x)}{\map{l}{f}} \\
+    \end{array} \]
+\end{definition}
+
+\begin{definition}
+  \[ \concatsymbol : \listtype{X} \rightarrow \listtype{X} \rightarrow \listtype{X} \]
+  \[ \begin{array}{ll}
+      \concat{\nil}{y} & = y \\
+      \concat{\cons{a}{x'}}{y} & = \cons{a}{\concat{x'}{y}} \\
+    \end{array} \]
+\end{definition}
+
+\begin{definition}
   We define a count function $c$ on \acic constructors yielding tuples of names and their depth in the \acic expression:
   \[c : \text{constr} \rightarrow \nat \rightarrow \powerset{\names \times \nat} \]
 
