@@ -75,39 +75,66 @@ A specific flatten operation $\flattensym$ can transform this list of occurances
 \end{definition}
 
 \begin{definition}
-  We define a count function $c$ on \acic constructors yielding tuples of names and their depth in the \acic expression:
-  \[c : \text{constr} \rightarrow \nat \rightarrow \powerset{\names \times \nat} \]
+  \[ \singleton{x} = \cons{x}{\nil} \]
+\end{definition}
 
-  \begin{tabular}{lll}
-    $c(\emptyterm, d)$            & $ = \varnothing $ & Empty term \\
-    $c(\text{ARel}(\cdots), d)$   & $ = \varnothing $ & \todo{unclear} Unused \\
-    $c(\text{AVar}(u), d)$        & $ = \{ (u, d) \} $ & (Local) variables \\
-    $c(\text{AEvar}(\vec{x}), d)$ & $ = \map{\vec{x}}{\lambda x . c(x, d+1)} $ & \todo{unclear} \\
-    $c(\text{ASort}(\cdots), d)$  & $ = \varnothing $ & The Sort of types, unused \\
-    $c(\text{ACast}(t, A), d)$    & $ = c(t, d+1) ~\cup~ c(A, d+1) $ & Type casting check \\
-    $c(\text{AProds}(\vec{a}, t), d)$  & $ = c_{\times}(\vec{a}, t, d) $ & $\prod \vec{a} . t$ \\
-    $c(\text{ALambdas}(\vec{a}, t), d)$  & $ = c_{\times}(\vec{a}, t, d) $ & $\lambda \vec{a} . t$ \\
-    $c(\text{ALetIns}(\vec{a}, t), d)$  & $ = c_{\times}(\vec{a}, t, d) $ & $\text{let~} n := a, \ldots \text{~in~} t$ \\
-    $c(\text{AApp}(\vec{a}), d)$  & $ = \map{\vec{a}}{ \lambda a . c(a, d+1) ~\cup~ \{ (\text{special:app}, d) \} } $ & Application $(x~y)~z$ \\
-    $c(\text{AConst}(\cdots, u), d)$  & $ = \{ (u, d) \} $ & Constant \\
-    $c(\text{AInd}(\cdots, u), d)$  & $ = \{ (u, d) \} $ & Inductive definition \\
-    $c(\text{AConstruct}(\cdots, u), d)$  & $ = \{ (u, d) \} $ & Constructor (of ind. def.) \\
-    $c(\text{ACase}(u, A, i, \vec{x}), d)$  &
-      $= \begin{array}{l}
-        \{ (u, d) \} ~\cup~ c(A, d+1) ~\cup~ c(i, d+1) ~\cup \\
-        \map{\vec{x}}{\lambda x . c(x, d+1)}
+\begin{definition}
+  \[ \flattenlistsym : \forall X . \listtype{\listtype{X}} \rightarrow \listtype{X} \]
+  \[ \begin{array}{ll}
+      \flattenlist{\nil} & = \nil \\
+      \flattenlist{\cons{x}{l}} & = \concat{x}{\flattenlist{l}} \\
+    \end{array} \]
+\end{definition}
+
+\begin{definition}
+  We define a count function $c$ on \acic constructors yielding tuples of names and their depth in the \acic expression:
+  \[c : \text{constr} \rightarrow \nat \rightarrow \listtype{\names \times \nat} \]
+
+  \begin{tabularx}{\textwidth}{lll}
+    $c(\emptyterm, d)$              & $ = \nil $ & Empty term \\
+    $c(\text{ARel}(\cdots), d)$     & $ = \nil $ & \todo{unclear} Unused \\
+    $c(\text{AVar}(u), d)$          & $ = \singleton{(u, d)} $ & (Local) variables \\
+    $c(\text{AEvar}(l), d)$         & $ = \flattenlist{\map{l}{\lambda x . c(x, d+1)}} $ & \todo{unclear} \\
+    $c(\text{ASort}(\cdots), d)$    & $ = \nil $ & The Sort of types, unused \\
+    $c(\text{ACast}(t, A), d)$      & $ = \concat{c(t, d+1)}{c(A, d+1)} $ & Type casting check \\
+    $c(\text{AProds}(l, t), d)$     & $ = c_{\times}(l, t, d) $ & $\prod l . t$ \\
+    $c(\text{ALambdas}(l, t), d)$   & $ = c_{\times}(l, t, d) $ & $\lambda l . t$ \\
+    $c(\text{ALetIns}(l, t), d)$    & $ = c_{\times}(l, t, d) $ & $\text{let~} n := a, \ldots \text{~in~} t$ \\
+    $c(\text{AApp}(l), d)$  & $ = \left(
+      \begin{array}{l}
+        \singleton{(\text{special:app}, d)} ~\concatsymbol \\
+        \map{l}{ \lambda a . c(a, d+1) }
       \end{array}
+      \right)
+      $ & Application $(x~y)~z$ \\
+    $c(\text{AConst}(\cdots, u), d)$  & $ = \singleton{(u, d)} $ & Constant \\
+    $c(\text{AInd}(\cdots, u), d)$  & $ = \singleton{(u, d)} $ & Inductive definition \\
+    $c(\text{AConstruct}(\cdots, u), d)$  & $ = \singleton{(u, d)} $ & Constructor (of ind. def.) \\
+    $c(\text{ACase}(u, A, i, l), d)$  &
+      $= \left(
+        \begin{array}{l}
+          \concat{\singleton{(u, d)}}{
+            \concat{c(A, d+1)}{c(i, d+1)}
+          }
+          ~\concatsymbol \\
+          \flattenlist{ \map{l}{\lambda x . c(x, d+1)} } \\
+        \end{array}
+        \right)
       $
       & Deconstruction (of ind. types) \\
-    $c(\text{AFix}(\vec{f}), d)$  & $ = \map{\vec{f}}{ \lambda (A, t) . c(A, d+1) ~\cup~ c(t, d+1) } $ & Fixpoint functions \\
-    $c(\text{ACoFix}(\vec{f}), d)$  & $ = \map{\vec{f}}{ \lambda (A, t) . c(A, d+1) ~\cup~ c(t, d+1) } $ & Co-fixpoint functions \\
-  \end{tabular}\\
-  with \[ c_{\times}(\vec{a}, t, d) = \map{\vec{a}}{
-    \lambda (n, a) . \begin{array}{l}
-        c(a, d+1) ~\cup \\
-        \{ (\text{special:prod}, d) \}
-      \end{array}
-    } \cup c(t, d+1) \]
+    $c(\text{AFix}(l), d)$        & $ = c_{\text{fix}}(l, d) $ & Fixpoint functions \\
+    $c(\text{ACoFix}(l), d)$      & $ = c_{\text{fix}}(l, d) $ & Co-fixpoint functions \\
+  \end{tabularx}
+  \vspace{1em}\\
+  with \[
+    \begin{array}{l}
+      c_{\times}(l, t, d) =
+        \concat{c(t, d+1)}{
+          \map{l}{ \lambda (n, a) ~.~ \cons{(\text{special:prod}, d)}{c(a, d+1)} }
+        }\\
+      c_{\text{fix}}(l, d) = \flattenlist{ \map{l}{ \lambda (A, t) . \concat{c(A, d+1)}{c(t, d+1)} } }
+    \end{array}
+    \]
 \end{definition}
 
 \begin{definition}
@@ -116,11 +143,11 @@ A specific flatten operation $\flattensym$ can transform this list of occurances
   \vspace{1em}
   \begin{tabular}{ll}
     $c_{\text{type}}(\text{AConstant}(n, A, t))$ & $= c(A, 0)$ \\
-    $c_{\text{type}}(\text{AInductiveDefinition}(n, \vec{d}))$ & $= \map{\vec{d}}{ \lambda (A, \vec{x}) ~.~ c(A, 0) ~\cup~ \text{map}(\vec{x}, \lambda x . c(x, 0)) } $\\
-    $c_{\text{type}}(-)$ & $= \varnothing$ \\
+    $c_{\text{type}}(\text{AInductiveDefinition}(n, l))$ & $= \flattenlist{\map{l}{ \lambda (A, m) ~.~ \concat{c(A, 0)}{\flattenlist{\text{map}(m, \lambda x . c(x, 0))}}} } $\\
+    $c_{\text{type}}(-)$ & $= \nil $ \\
     & \\
     $c_{\text{term}}(\text{AConstant}(n, A, t))$ & $= c(t, 0)$ \\
-    $c_{\text{term}}(-)$ & $= \varnothing$ \\
+    $c_{\text{term}}(-)$ & $= \nil $ \\
   \end{tabular}
 \end{definition}
 
