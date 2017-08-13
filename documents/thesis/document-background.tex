@@ -40,12 +40,14 @@ We define $\name \objdef \term$ to mean that term $\term$ is bound to name $\nam
 	\[\name \objdef \term : \type\]
 \end{definition}
 
-Note that the a might be empty, for example as is the case with an axiom or an inductive datatype.
+Note that the term $\term$ might be empty, for example as is the case with an axiom or an inductive datatype.
 In the case that $\term$ is empty, we write $\name : \type$ instead.
 
 \begin{definition}[sort]\defgls{sort}
 	The type of a type when manipulated as a term is called a sort.
-	\pcic uses an infinite well-founded typing hierarchy of sorts, with base sorts \sortprop\glsadd{sortprop} and \sortset\glsadd{sortset}, and with inductive sort \sorttype\glsadd{sorttype}.
+	\pcic uses an infinite well-founded typing hierarchy of sorts,
+	with base sorts \sortprop\glsadd{sortprop} and \sortset\glsadd{sortset},
+	and with a family of sorts \sorttype[{i}]\glsadd{sorttype}.
 	The set of sorts named $\sorts$\defgls{sorts} is defined by
 	\[\sorts \equiv \{ \sortprop, \sortset, \sorttype[{i}] ~|~ i \in \mathbb{N} \} \]
 
@@ -70,9 +72,12 @@ For example if we look at the types of the term $0$ and $\texttt{True}$:
 		\end{array}
 	\]
 
+We say a term $\term$ to be of sort $S$ when $\exists A ~.~ (t : A \text{~and~} A : S)$ holds.
+
 \subsubsection{\gallina}
-A proof in \coq is a statement written in the \gallina\glsadd{gallina} language \cite{huet1992gallina} and stored in a file.
-For a complete definition of the \gallina language please refer to the \coq reference manual\footnote{\coq Reference Manual, Chapter 1: The Gallina specification language\\ \url{https://coq.inria.fr/refman/Reference-Manual003.html}}.
+A proof in \coq is a text written in the \gallina\glsadd{gallina} language \cite{huet1992gallina} and stored in a file.
+For a complete definition of the \gallina language we refer to the \coq reference manual\footnote{\coq Reference Manual, Chapter 1: The Gallina specification language\\ \url{https://coq.inria.fr/refman/Reference-Manual003.html}}.
+\todo{Explain what a statement is.}
 A statement can reference other statements using their names.
 These statements need not be stored in the same file.
 Thus for a complete proof multiple files might need to be loaded.
@@ -82,13 +87,14 @@ A statement can be any of the following:
 	\item[Assumption] such as an axiom, conjecture and hypothesis, but also a parameter or variable.
 		An assumption is a name with only a type associated with it.
 	\item[Definition] for extending the environment with associations of names to terms.
-	\item[Inductive] for inductive and coinductive datatypes.
+	\item[Inductive / Coinductive] for (co)inductive datatypes.
 	\item[Fixpoint] for fixpoint, or a block of functions defined by mutual well-founded recursion, and cofixpoint, or a block of terms defined by a mutual guarded co-recursion.
-	\item[Assertion proof] for stating a proposition of which the proof is built.
-		This creates type (the proposition) and an inhabitant of the type (the proof).
+	\item[Lemma with proof] for stating a proposition of which the proof is built.
+		This creates a type (the proposition) and an inhabitant of the type (the proof).
 		This proof is always constructed using tactics, except in the case that a proof is admitted.
 		In this case the proposition is converted into an axiom.
 \end{description}
+\todo{Add a small example for each case in terms of n := t : A.}
 
 \coq translates \gallina statements contained in \coq vernac (.v) files to terms of \pcic.
 Most notably all tactics are resolved (or executed) into terms.
@@ -142,7 +148,7 @@ Qed.
 	$$
 	$$
 		\begin{array}{rclcl}
-			\texttt{nat\_id} & \objdef & \lambda x~.~x & : & \texttt{nat} \rightarrow \texttt{nat} \\
+			\texttt{nat\_id} & \objdef & \lambda x : \texttt{nat}~.~x & : & \texttt{nat} \rightarrow \texttt{nat} \\
 			\texttt{plus} & \objdef & \texttt{fix}~\ldots & : & \texttt{nat} \rightarrow \texttt{nat} \rightarrow \texttt{nat} \\
 		\end{array}
 	$$
