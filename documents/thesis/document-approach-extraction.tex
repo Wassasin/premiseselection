@@ -48,25 +48,27 @@ one or two files: at least a file ending with \lstinline{.types.xml.gz} and
 possibly a file ending with \lstinline{.body.xml.gz} if the body is not empty, i.e. $\emptyterm$.
 The definition of the constructors as used by the parser and resolver can be found
 in the \roerei repository in the file \lstinline{src/preloader/acic.ml}.
+The original source code for these functions can be found in \lstinline{src/preloader/interpreter.ml}.
+These functions are paraphrased here using some bare math.
+As these functions are programmed in \ocaml, we use a functional style to describe them.
+Before we can continue, we first need to define a list type $\listtype{-}$ and some operations on this type.
 
-For each \coqobj[s] we count the names occuring in either the type or the term of the object.
-With each name we also yield the depth the name occures.
-This count function is rather straightforward.
-A specific flatten operation $\flattensym$ can transform this list of occurances to the desired summary $<\name[s], \termset{s}, \typeset{s}>$.
-
-\begin{definition}
+\begin{definition}[\listtype{-}]
+  A list object for type $X$ consists of either an empty list, or a segment with a value of type $X$ followed by a tail.
 	\[ \listtype{X} = \nil ~|~ \cons{X}{\listtype{X}} \]
 \end{definition}
 
-\begin{definition}
-  \[ \mapsymbol : \forall X, Y . \listtype{X} \rightarrow (X \rightarrow Y) \rightarrow \listtype{Y} \]
+\begin{definition}[\mapsymbol]
+  The $\mapsymbol$ function transforms a list of type $\listtype{X}$ to a list of type $\listtype{Y}$ using a function $f$.
+  \[ \mapsymbol : \forall X, Y ~.~ \listtype{X} \rightarrow (X \rightarrow Y) \rightarrow \listtype{Y} \]
   \[ \begin{array}{ll}
       \map{\nil}{f} & = \nil \\
       \map{\cons{x}{l}}{f} & = \cons{f(x)}{\map{l}{f}} \\
     \end{array} \]
 \end{definition}
 
-\begin{definition}
+\begin{definition}[\concatsymbol]
+  Two lists can be concatenated using the infix $\concatsymbol$-function.
   \[ \concatsymbol : \listtype{X} \rightarrow \listtype{X} \rightarrow \listtype{X} \]
   \[ \begin{array}{ll}
       \concat{\nil}{y} & = y \\
@@ -74,11 +76,13 @@ A specific flatten operation $\flattensym$ can transform this list of occurances
     \end{array} \]
 \end{definition}
 
-\begin{definition}
+\begin{definition}[\singleton{-}]
+  We use a shorthand to denote lists with only one element:
   \[ \singleton{x} = \cons{x}{\nil} \]
 \end{definition}
 
-\begin{definition}
+\begin{definition}[\flattenlistsym]
+  Also a flatten operation can be defined to convert lists of lists $\listtype{\listtype{X}}$ to singular lists $\listtype{X}$.
   \[ \flattenlistsym : \forall X . \listtype{\listtype{X}} \rightarrow \listtype{X} \]
   \[ \begin{array}{ll}
       \flattenlist{\nil} & = \nil \\
@@ -86,7 +90,8 @@ A specific flatten operation $\flattensym$ can transform this list of occurances
     \end{array} \]
 \end{definition}
 
-\begin{definition}
+\begin{definition}[\foldrsym]
+  Finally we also use the folding operation to iterate over lists and gather a result using a callback function.
   \[ \foldrsym : \forall X Y ~.~ (X \rightarrow Y \rightarrow Y) \rightarrow Y \rightarrow \listtype{A} \rightarrow Y \]
   \[ \begin{array}{ll}
       \foldr{f}{z}{\nil} & = z \\
@@ -94,9 +99,14 @@ A specific flatten operation $\flattensym$ can transform this list of occurances
     \end{array}\]
 \end{definition}
 
-\begin{definition}
-  We define a count function $c$ on \acic constructors yielding tuples of names and their depth in the \acic expression:
-  \[c : \text{constr} \rightarrow \nat \rightarrow \listtype{\names \times \nat} \]
+For each \coqobj[s] we count the names occuring in either the type or the term of the object.
+With each name we also yield the depth the name occurs.
+This count function $c$ is rather straightforward.
+A specific flatten operation $\flattensym$ can transform this list of occurances to the desired summary $<\name[s], \termset{s}, \typeset{s}>$.
+
+\begin{definition}[$c$]
+  We define a count function $c$ on \acic constructor terms yielding tuples of names and their depth in the \acic expression:
+  \[c : \terms \rightarrow \nat \rightarrow \listtype{\names \times \nat} \]
 
   \begin{tabularx}{\textwidth}{lll}
     $c(\emptyterm, d)$              & $ = \nil $ & Empty term \\
@@ -145,7 +155,7 @@ A specific flatten operation $\flattensym$ can transform this list of occurances
     \]
 \end{definition}
 
-\begin{definition}
+\begin{definition}[$c_{\text{type}}, c_{\text{term}}$]
   We define the counting of types and terms for top level \coqobjs to be:
 
   \vspace{1em}
@@ -159,17 +169,25 @@ A specific flatten operation $\flattensym$ can transform this list of occurances
   \end{tabular}
 \end{definition}
 
+Finally we can define the various flatten operations on terms:
 \begin{definition}[$\flatten{x}$]\defgls{flatten}
+  The occurances of names can be extracted with the following:
   \[ \flattensym : \terms \rightarrow 2^{\names} \]
   \[ \flatten{t} = \foldr{\lambda (n, d)~s ~.~ \{n\} \cup s}{\varnothing}{c(t, 0)} \]
 \end{definition}
 
 \begin{definition}[$\countoccur{x}$]\defgls{countoccur}
+  The number of times a name $n$ occurs can be counted as follows:
   \[ \countoccursym : \terms \rightarrow \nat^{\names} \]
   \[ \countoccur{t} = \lambda n ~.~ \foldr{\lambda (m, d)~s ~.~ \text{if~} n = m \text{~then~} s+1 \text{~else~} s}{0}{c(t, 0)} \]
 \end{definition}
 
 \begin{definition}[$\depthoccur{x}$]\defgls{depthoccur}
+  The minimum depth a name $n$ occurs can be determined with function $\depthoccursym$.
+  Contrary to the counting function $\countoccursym$ there is no natural way to denote that a name does
+  not occur in a term.
+  That is why $\depthoccursym$ is a partial function.
+  
   \[ \depthoccursym : \terms \rightarrow \names \rightharpoonup \nat \]
   \[
     \begin{array}{l}
