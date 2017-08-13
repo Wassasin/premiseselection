@@ -140,7 +140,7 @@ A specific flatten operation $\flattensym$ can transform this list of occurances
         \concat{c(t, d+1)}{
           \map{l}{ \lambda (n, a) ~.~ \cons{(\text{special:prod}, d)}{c(a, d+1)} }
         }\\
-      c_{\text{fix}}(l, d) = \flattenlist{ \map{l}{ \lambda (A, t) . \concat{c(A, d+1)}{c(t, d+1)} } }
+      c_{\text{fix}}(l, d) = \flattenlist{ \map{l}{ \lambda (A, t) ~.~ \concat{c(A, d+1)}{c(t, d+1)} } }
     \end{array}
     \]
 \end{definition}
@@ -162,4 +162,23 @@ A specific flatten operation $\flattensym$ can transform this list of occurances
 \begin{definition}[$\flatten{x}$]\defgls{flatten}
   \[ \flattensym : \terms \rightarrow 2^{\names} \]
   \[ \flatten{t} = \foldr{\lambda (n, d)~s ~.~ \{n\} \cup s}{\varnothing}{c(t, 0)} \]
+\end{definition}
+
+\begin{definition}[$\countoccur{x}$]\defgls{countoccur}
+  \[ \countoccursym : \terms \rightarrow \nat^{\names} \]
+  \[ \countoccur{t} = \lambda n ~.~ \foldr{\lambda (m, d)~s ~.~ \text{if~} n = m \text{~then~} s+1 \text{~else~} s}{0}{c(t, 0)} \]
+\end{definition}
+
+\begin{definition}[$\depthoccur{x}$]\defgls{depthoccur}
+  \[ \depthoccursym : \terms \rightarrow \names \rightharpoonup \nat \]
+  \[
+    \begin{array}{l}
+      \depthoccur{t} = \lambda n ~.~ \foldr{\lambda (m, d)~s ~.~ \text{if~} n = m \text{~then~} f(d, s) \text{~else~} s}{\infimum}{c(t, 0)} \\
+      \\
+      \text{with~} \begin{array}{l}
+        f(d, \infimum) = d \\
+        f(d, s) = \text{min}(d, s) \\
+      \end{array}
+    \end{array}
+  \]
 \end{definition}
