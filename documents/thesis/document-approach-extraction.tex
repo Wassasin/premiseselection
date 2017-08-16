@@ -53,11 +53,6 @@ These functions are paraphrased here using some bare math.
 As these functions are programmed in \ocaml, we use a functional style to describe them.
 Before we can continue, we first need to define a list type $\listtype{-}$ and some operations on this type.
 
-\begin{definition}[\listtype{-}]
-  A list object for type $X$ consists of either an empty list, or a segment with a value of type $X$ followed by a tail.
-	\[ \listtype{X} = \nil ~|~ \cons{X}{\listtype{X}} \]
-\end{definition}
-
 \begin{definition}[\mapsymbol]
   The $\mapsymbol$ function transforms a list of type $\listtype{X}$ to a list of type $\listtype{Y}$ using a function $f$.
   \[ \mapsymbol : \forall X, Y ~.~ \listtype{X} \rightarrow (X \rightarrow Y) \rightarrow \listtype{Y} \]

@@ -2,19 +2,42 @@
 
 In order to perform \premiseselection for \coq we first need to examine what objects in \coq look like, and what we exactly want to predict.
 
+\subsubsection{\gallina}
+A proof in \coq is a text written in the \gallina\glsadd{gallina} language \cite{huet1992gallina} and stored in a file.
+For a complete definition of the \gallina language we refer to the \coq reference manual\footnote{\coq Reference Manual, Chapter 1: The Gallina specification language\\ \url{https://coq.inria.fr/refman/Reference-Manual003.html}}.
+\todo{Explain what a statement is.}
+A statement can reference other statements using their names.
+These statements need not be stored in the same file.
+Thus for a complete proof multiple files might need to be loaded.
+A statement can be any of the following:
+\begin{description}
+	\item[Assumption] such as an axiom, conjecture and hypothesis, but also a parameter or variable.
+		An assumption is a name with only a type associated with it.
+	\item[Definition] for extending the environment with associations of names to terms.
+	\item[Inductive / Coinductive] for (co)inductive datatypes.
+	\item[Fixpoint] for fixpoint, or a block of functions defined by mutual well-founded recursion, and cofixpoint, or a block of terms defined by a mutual guarded co-recursion.
+	\item[Lemma with proof] for stating a proposition of which the proof is built.
+		This creates a type (the proposition) and an inhabitant of the type (the proof).
+		This proof is always constructed using tactics, except in the case that a proof is admitted.
+		In this case the proposition is converted into an axiom.
+\end{description}
+
+\todo{Small gallina example}
+
 \subsubsection{\pcic}
 
-Internally \coq represents all objects as terms \glsadd{termclass} of \cic \glsadd{cic}.
+Internally \coq represents all objects as terms \glsadd{termclass} of \cic\glsadd{cic}.
 \cic is the Calculus of (Co)Inductive Constructions,
 or the Calculus of Constructions \cite{coquand1988calculus} with inductive types and coinduction \cite{huet1987induction} \cite{coquand1990inductively}.
 More recently, after \coq version 8, they switched to \pcic \glsadd{pcic}, or the Predicative Calculus of (Co)Inductive Constructions \cite{bertot2013interactive}.
 
 \begin{definition}[term]\glsadd{termclass}
 	A term is a noun or compound word of \pcic.
-	A term is typically denoted by $\term$\glsadd{term}, with $\terms$\glsadd{terms} being the set of all terms.
-	The empty term is written as $\emptyterm$\glsadd{emptyterm}.
+	A term is typically denoted by $\term$\glsadd{term},
+	with $\terms$\glsadd{terms} being the set of all terms.
 \end{definition}
-\begin{definition}[type]\glsadd{typeclass}
+
+\begin{definition}[type]\label{def:type}\glsadd{typeclass}
 	A type is denoted by the semantic subclass of types inside the syntactic class term.
 	A type is typically denoted by $\type$\glsadd{type}, with $\types$\glsadd{types} being the set of all types.
 \end{definition}
@@ -34,16 +57,7 @@ We are interested in these named terms for the purpose of \premiseselection,
 as we wish to select terms which are most likely to help prove a conjecture.
 We define $\name \objdef \term$ to mean that term $\term$ is bound to name $\name$.
 
-\begin{definition}[sentence]\defgls{sentence}
-	A sentence is a named term. It is comprised of a name $\name$ and a term $\term$. Each term has a type associated with it, which we denote with $\type$.
-	We write each sentence to be of the form
-	\[\name \objdef \term : \type\]
-\end{definition}
-
-Note that the term $\term$ might be empty, for example as is the case with an axiom or an inductive datatype.
-In the case that $\term$ is empty, we write $\name : \type$ instead.
-
-\begin{definition}[sort]\defgls{sort}
+\begin{definition}[sort]\label{def:sort}\defgls{sort}
 	The type of a type when manipulated as a term is called a sort.
 	\pcic uses an infinite well-founded typing hierarchy of sorts,
 	with base sorts \sortprop\glsadd{sortprop} and \sortset\glsadd{sortset},
@@ -74,27 +88,49 @@ For example if we look at the types of the term $0$ and $\texttt{True}$:
 
 We say a term $\term$ to be of sort $S$ when $\exists A ~.~ (t : A \text{~and~} A : S)$ holds.
 
-\subsubsection{\gallina}
-A proof in \coq is a text written in the \gallina\glsadd{gallina} language \cite{huet1992gallina} and stored in a file.
-For a complete definition of the \gallina language we refer to the \coq reference manual\footnote{\coq Reference Manual, Chapter 1: The Gallina specification language\\ \url{https://coq.inria.fr/refman/Reference-Manual003.html}}.
-\todo{Explain what a statement is.}
-A statement can reference other statements using their names.
-These statements need not be stored in the same file.
-Thus for a complete proof multiple files might need to be loaded.
-These statements all have correlating \pcic terms associated with them.
-A statement can be any of the following:
-\begin{description}
-	\item[Assumption] such as an axiom, conjecture and hypothesis, but also a parameter or variable.
-		An assumption is a name with only a type associated with it.
-	\item[Definition] for extending the environment with associations of names to terms.
-	\item[Inductive / Coinductive] for (co)inductive datatypes.
-	\item[Fixpoint] for fixpoint, or a block of functions defined by mutual well-founded recursion, and cofixpoint, or a block of terms defined by a mutual guarded co-recursion.
-	\item[Lemma with proof] for stating a proposition of which the proof is built.
-		This creates a type (the proposition) and an inhabitant of the type (the proof).
-		This proof is always constructed using tactics, except in the case that a proof is admitted.
-		In this case the proposition is converted into an axiom.
-\end{description}
 \todo{Add a small example for each case in terms of n := t : A.}
+
+Having described the sets for terms, types, names and sorts,
+we still need to define what each of these mean syntactically in the case of \pcic.
+Before we can summarize the structure of \pcic, we first need to define the list type $\listtype{-}$.
+
+\begin{definition}[\listtype{-}]
+	A list object for type $X$ consists of either an empty list, or a segment with a value of type $X$ followed by a tail.
+	  \[ \forall X ~.~ \listtype{X} = \nil ~|~ \cons{X}{\listtype{X}} \]
+  \end{definition}
+
+\begin{definition}
+	A \pcic term $t \in \terms$ is defined in terms of one of the following:
+
+	\vspace{1em}
+	\begin{tabular}{ll}
+		$\emptyterm : \terms$                                        & Empty term\glsadd{emptyterm} \\
+		$\text{Rel} : \nat \rightarrow \terms$                       & Variables as De Bruijn \cite{de1972lambda} index \\
+		$\text{Var} : \names \rightarrow \terms$                     & Named (local) variables \\
+		$\text{Evar} : \listtype{\terms} \rightarrow \terms $        & Existential quantification \\
+		$\text{Sort} : \names \rightarrow \terms$                    & Named Sort of types \\
+		$\text{Cast} : \terms \rightarrow \types \rightarrow \terms$ & Type casting check \\
+		$\text{Prods} : \names \rightarrow \types \rightarrow \types \rightarrow \terms $ & $\prod x:A ~.~ B$ \\
+		$\text{Lambdas} : \names \rightarrow \types \rightarrow \terms$   & $\lambda x:A ~.~ t$ \\
+		$\text{LetIns} : \names \rightarrow \terms \rightarrow \types \rightarrow \terms$    & $\text{let~} n := x : A \text{~in~} t$ \\
+		$\text{App} : \terms \rightarrow \listtype{\terms} \rightarrow \terms$ & Application $x~y_0 \ldots y_n$ \\
+		$\text{Const} : \names \rightarrow \sorts \rightarrow \terms$ & Constant \\
+		$\text{Ind} : \names \rightarrow \sorts \rightarrow \terms$  & Inductive definition \\
+		$\text{Construct} : \names \rightarrow \sorts \rightarrow \terms$ & Constructor (of ind. def.) \\
+		$\text{Case} : \terms \rightarrow \terms \rightarrow \listtype{\terms} \rightarrow \terms$ & Deconstruction (of ind. types) \\
+		$\text{Fix} : \listtype{\names} \rightarrow \listtype{\types} \rightarrow \listtype{\terms} \rightarrow \terms$ & Fixpoint functions \\
+		$\text{CoFix} : \listtype{\names} \rightarrow \listtype{\types} \rightarrow \listtype{\terms} \rightarrow \terms$ & Co-fixpoint functions \\
+	\end{tabular}
+\end{definition}
+
+\begin{definition}[sentence]\defgls{sentence}
+	A sentence is a named term. It is comprised of a name $\name$ and a term $\term$. Each term has a type associated with it, which we denote with $\type$.
+	We write each sentence to be of the form
+	\[\name \objdef \term : \type\]
+\end{definition}
+
+Note that the term $\term$ might be empty, for example as is the case with an axiom or an inductive datatype.
+In the case that $\term$ is empty, we write $\name : \type$ instead.
 
 \coq translates \gallina statements contained in \coq vernac (.v) files to terms of \pcic.
 Most notably all tactics are resolved (or executed) into terms.
