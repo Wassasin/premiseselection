@@ -136,13 +136,19 @@ In the case that $\term$ is empty, we write $\name : \type$ instead.
 Most notably all tactics are resolved (or executed) into terms.
 
 \begin{definition}[{\coqobj[s]}]\defgls{coqobj}
-	A \coqobj $s$ is a named term (also called a sentence).
+	A \coqobj $s$ is a named \pcic term (also called a sentence).
 	We denote the set of all \coq objects as $\objs$.
 	For convenience we denote the ownership of the associated properties with a subscript.
 	Each \coqobj $s \in \objs$ has a name $\name[s]$\glsadd{name},
 	a term $\term[s]$\glsadd{term} and a type $\type[s]$\glsadd{type} associated with it.
-\end{definition}
 
+	\begin{tabular}{l}
+		$\text{Constant} : \names \rightarrow \terms \rightarrow \types \rightarrow \objs$ \\
+		$\text{Variable} : \names \rightarrow \terms \rightarrow \types \rightarrow \objs$ \\
+		$\text{CurrentProof} : \names \rightarrow \listtype{\listtype{\types} \times \terms} \rightarrow \terms \rightarrow \types \rightarrow \objs$ \\
+		$\text{InductiveDefinition} : \listtype{\names \times \terms \times \listtype{\names \times \types}} \rightarrow \listtype{\objs}$
+	\end{tabular}
+\end{definition}
 
 Thus a \coq file can be considered to be a sequence of \coq objects:
 $$ \name[1] \objdef \term[1] : \type[1], ~~ \name[2] \objdef \term[2] : \type[2], ~~ \ldots $$
