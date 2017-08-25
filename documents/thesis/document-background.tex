@@ -142,11 +142,13 @@ Most notably all tactics are resolved (or executed) into terms.
 	Each \coqobj $s \in \objs$ has a name $\name[s]$\glsadd{name},
 	a term $\term[s]$\glsadd{term} and a type $\type[s]$\glsadd{type} associated with it.
 
+	\vspace{1em}
 	\begin{tabular}{l}
 		$\text{Constant} : \names \rightarrow \terms \rightarrow \types \rightarrow \objs$ \\
 		$\text{Variable} : \names \rightarrow \terms \rightarrow \types \rightarrow \objs$ \\
 		$\text{CurrentProof} : \names \rightarrow \listtype{\listtype{\types} \times \terms} \rightarrow \terms \rightarrow \types \rightarrow \objs$ \\
-		$\text{InductiveDefinition} : \listtype{\names \times \terms \times \listtype{\names \times \types}} \rightarrow \listtype{\objs}$
+		$\text{InductiveConstructor} : \names \times \types \rightarrow \objs$ \\
+		$\text{InductiveDefinition} : \names \times \terms \times \listtype{\text{InductiveConstructor}} \rightarrow \objs$
 	\end{tabular}
 \end{definition}
 
