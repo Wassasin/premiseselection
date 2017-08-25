@@ -104,22 +104,22 @@ Before we can summarize the structure of \pcic, we first need to define the list
 
 	\vspace{1em}
 	\begin{tabular}{ll}
-		$\emptyterm : \terms$                                        & Empty term\glsadd{emptyterm} \\
-		$\text{Rel} : \nat \rightarrow \terms$                       & Variables as De Bruijn \cite{de1972lambda} index \\
-		$\text{Var} : \names \rightarrow \terms$                     & Named (local) variables \\
-		$\text{Evar} : \listtype{\terms} \rightarrow \terms $        & Existential quantification \\
-		$\text{Sort} : \names \rightarrow \terms$                    & Named Sort of types \\
-		$\text{Cast} : \terms \rightarrow \types \rightarrow \terms$ & Type casting check \\
-		$\text{Prods} : \names \rightarrow \types \rightarrow \types \rightarrow \terms $ & $\prod x:A ~.~ B$ \\
-		$\text{Lambdas} : \names \rightarrow \types \rightarrow \terms$   & $\lambda x:A ~.~ t$ \\
-		$\text{LetIns} : \names \rightarrow \terms \rightarrow \types \rightarrow \terms$    & $\text{let~} n := x : A \text{~in~} t$ \\
-		$\text{App} : \terms \rightarrow \listtype{\terms} \rightarrow \terms$ & Application $x~y_0 \ldots y_n$ \\
-		$\text{Const} : \names \rightarrow \sorts \rightarrow \terms$ & Constant \\
-		$\text{Ind} : \names \rightarrow \sorts \rightarrow \terms$  & Inductive definition \\
-		$\text{Construct} : \names \rightarrow \sorts \rightarrow \terms$ & Constructor (of ind. def.) \\
-		$\text{Case} : \terms \rightarrow \terms \rightarrow \listtype{\terms} \rightarrow \terms$ & Deconstruction (of ind. types) \\
-		$\text{Fix} : \listtype{\names} \rightarrow \listtype{\types} \rightarrow \listtype{\terms} \rightarrow \terms$ & Fixpoint functions \\
-		$\text{CoFix} : \listtype{\names} \rightarrow \listtype{\types} \rightarrow \listtype{\terms} \rightarrow \terms$ & Co-fixpoint functions \\
+		$\emptyterm$                                        & Empty term\glsadd{emptyterm} \\
+		$\text{Rel}(i:\nat)$                       & Variables as De Bruijn \cite{de1972lambda} index \\
+		$\text{Var}(n:\names)$                     & Named (local) variables \\
+		$\text{Evar}(xs:\listtype{\terms}) $        & Existential quantification \\
+		$\text{Sort}(n:\names)$                    & Named Sort of types \\
+		$\text{Cast}(t:\terms,~ A:\types)$ & Type casting check \\
+		$\text{Prods}(x:\names,~ A:\types,~ B:\types$ & $\prod x:A ~.~ B$ \\
+		$\text{Lambdas}(x:\names,~ A:\types,~ t:\terms)$   & $\lambda x:A ~.~ t$ \\
+		$\text{LetIns}(n:\names,~ t:\terms,~ A:\types)$    & $\text{let~} n := t : A \text{~in~} t$ \\
+		$\text{App}(x:\terms,~ ys:\listtype{\terms})$ & Application $x~ys_0 \ldots ys_n$ \\
+		$\text{Const}(n:\names,~ S:\sorts)$ & Constant \\
+		$\text{Ind}(n:\names,~ S:\sorts)$  & Inductive definition \\
+		$\text{Construct}(n:\names,~ S:\sorts)$ & Constructor (of ind. def.) \\
+		$\text{Case}(n:\terms,~ t:\terms,~ ys:\listtype{\terms})$ & Deconstruction (of ind. types) \\
+		$\text{Fix}(n:\listtype{\names},~ A:\listtype{\types},~ ts:\listtype{\terms})$ & Fixpoint functions \\
+		$\text{CoFix}(n:\listtype{\names},~ AS:\listtype{\types},~ ts:\listtype{\terms})$ & Co-fixpoint functions \\
 	\end{tabular}
 \end{definition}
 
@@ -144,11 +144,19 @@ Most notably all tactics are resolved (or executed) into terms.
 
 	\vspace{1em}
 	\begin{tabular}{l}
-		$\text{Constant} : \names \rightarrow \terms \rightarrow \types \rightarrow \objs$ \\
-		$\text{Variable} : \names \rightarrow \terms \rightarrow \types \rightarrow \objs$ \\
-		$\text{CurrentProof} : \names \rightarrow \listtype{\listtype{\types} \times \terms} \rightarrow \terms \rightarrow \types \rightarrow \objs$ \\
-		$\text{InductiveConstructor} : \names \times \types \rightarrow \objs$ \\
-		$\text{InductiveDefinition} : \names \times \terms \times \listtype{\text{InductiveConstructor}} \rightarrow \objs$
+		$\text{Constant}(n:\names,~ t:\terms,~ A:\types)$ \\
+		$\text{Variable}(n:\names,~ t:\terms,~ A:\types)$ \\
+		$\text{CurrentProof}(n:\names,~ \text{hyps}:\listtype{\listtype{\types} \times \terms}, t:\terms, A:\types)$ \\
+		$\text{InductiveConstructor}(n:\names,~ A:\types)$ \\
+		$\text{InductiveDefinition}(n:\names,~ A:\types,~ cs:\listtype{\text{InductiveConstructor}})$
+	\end{tabular}
+
+	\begin{tabular}{l|l|l|l}
+		given $s = \text{Constant}(n,~ t,~ A)$ & $\name[s] = n$ & $\term[s] = t$ & $\type[s] = A$ \\
+		given $s = \text{Variable}(n,~ t,~ A)$ & $\name[s] = n$ & $\term[s] = t$ & $\type[s] = A$ \\
+		given $s = \text{CurrentProof}(n,~ \text{hyps},~ t,~ A)$ & $\name[s] = n$ & $\term[s] = t$ & $\type[s] = A$ \\
+		given $s = \text{InductiveConstructor}(n,~ A)$ & $\name[s] = n$ & $\term[s] = \emptyterm$ & $\type[s] = A$ \\
+		given $s = \text{InductiveDefinition}(n,~ A,~ cs)$ & $\name[s] = n$ & $\term[s] = \emptyterm$ & $\type[s] = A$
 	\end{tabular}
 \end{definition}
 
