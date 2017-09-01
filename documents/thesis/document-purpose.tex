@@ -1,19 +1,16 @@
-% Implement Premise selection for Coq.
-% Determine viability of approach on different Coq corpora.
-
-% Only go as far as Premise selection, as this is only a masters' thesis.
-% Could dedicate a few PhD positions to this.
 For the \coq interactive theorem prover automation is limited to the tactics \texttt{auto}%
 \footnote{\coq Reference Manual, Chapter 8: Tactics\\\url{https://coq.inria.fr/refman/Reference-Manual010.html\#hevea_tactic148}},
 which implements a Prolog-like resolution procedure, and \texttt{omega}%
 \footnote{\coq Reference Manual, Chapter 21: Omega: a solver of quantifier-free problems in Presburger Arithmetic\\\url{https://coq.inria.fr/refman/Reference-Manual024.html\#hevea_tactic220}},
 which is an automatic decision procedure for Presburger arithmetic.
 In this masters thesis we explore the feasibility of implementing a statistical automated theorem prover for \coq.
+\todo{statistical vs symbolical ATP; explain the difference}
+\todo{explain `hammer' approach and what use it is for premiseselection}
 Such an automated theorem prover consists of:
 \begin{description}
 \item[Premise selection] Filter the existing knowledgebase of proven theorems by usefullness for the current yet unproven conjecture.
-It yields a set of definitions and theorems which are likely to help in proving this conjecture.
-Subsequent ATP components thus will only need to consider useful theorems.
+It yields a set of theorems which are likely to help in proving this conjecture.
+Subsequent ATP components thus will only need to consider useful theorems. \todo{explain}
 \item[]
 \end{description}
 
