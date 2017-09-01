@@ -102,25 +102,27 @@ Before we can summarize the structure of \pcic, we first need to define the list
 \begin{definition}
 	A \pcic term $t \in \terms$ is defined in terms of one of the following:
 
-	\vspace{1em}
-	\begin{tabular}{ll}
-		$\emptyterm$                                        & Empty term\glsadd{emptyterm} \\
-		$\text{Rel}(i:\nat)$                       & Variables as De Bruijn \cite{de1972lambda} index \\
-		$\text{Var}(n:\names)$                     & Named (local) variables \\
-		$\text{Evar}(xs:\listtype{\terms}) $        & Existential quantification \\
-		$\text{Sort}(n:\names)$                    & Named Sort of types \\
-		$\text{Cast}(t:\terms,~ A:\types)$ & Type casting check \\
-		$\text{Prods}(x:\names,~ A:\types,~ B:\types$ & $\prod x:A ~.~ B$ \\
-		$\text{Lambdas}(x:\names,~ A:\types,~ t:\terms)$   & $\lambda x:A ~.~ t$ \\
-		$\text{LetIns}(n:\names,~ t:\terms,~ A:\types)$    & $\text{let~} n := t : A \text{~in~} t$ \\
-		$\text{App}(x:\terms,~ ys:\listtype{\terms})$ & Application $x~ys_0 \ldots ys_n$ \\
-		$\text{Const}(n:\names,~ S:\sorts)$ & Constant \\
-		$\text{Ind}(n:\names,~ S:\sorts)$  & Inductive definition \\
-		$\text{Construct}(n:\names,~ S:\sorts)$ & Constructor (of ind. def.) \\
-		$\text{Case}(n:\terms,~ t:\terms,~ ys:\listtype{\terms})$ & Deconstruction (of ind. types) \\
-		$\text{Fix}(n:\listtype{\names},~ A:\listtype{\types},~ ts:\listtype{\terms})$ & Fixpoint functions \\
-		$\text{CoFix}(n:\listtype{\names},~ AS:\listtype{\types},~ ts:\listtype{\terms})$ & Co-fixpoint functions \\
-	\end{tabular}
+	\begin{figure}[H]
+		\centering
+		\begin{tabular}{ll}
+			$\emptyterm$                                        & Empty term\glsadd{emptyterm} \\
+			$\text{Rel}(i:\nat)$                       & Variables as De Bruijn \cite{de1972lambda} index \\
+			$\text{Var}(n:\names)$                     & Named (local) variables \\
+			$\text{Evar}(xs:\listtype{\terms}) $        & Existential quantification \\
+			$\text{Sort}(n:\names)$                    & Named Sort of types \\
+			$\text{Cast}(t:\terms,~ A:\types)$ & Type casting check \\
+			$\text{Prods}(x:\names,~ A:\types,~ B:\types$ & $\prod x:A ~.~ B$ \\
+			$\text{Lambdas}(x:\names,~ A:\types,~ t:\terms)$   & $\lambda x:A ~.~ t$ \\
+			$\text{LetIns}(n:\names,~ t:\terms,~ A:\types)$    & $\text{let~} n := t : A \text{~in~} t$ \\
+			$\text{App}(x:\terms,~ ys:\listtype{\terms})$ & Application $x~ys_0 \ldots ys_n$ \\
+			$\text{Const}(n:\names,~ S:\sorts)$ & Constant \\
+			$\text{Ind}(n:\names,~ S:\sorts)$  & Inductive definition \\
+			$\text{Construct}(n:\names,~ S:\sorts)$ & Constructor (of ind. def.) \\
+			$\text{Case}(n:\terms,~ t:\terms,~ ys:\listtype{\terms})$ & Deconstruction (of ind. types) \\
+			$\text{Fix}(n:\listtype{\names},~ A:\listtype{\types},~ ts:\listtype{\terms})$ & Fixpoint functions \\
+			$\text{CoFix}(n:\listtype{\names},~ AS:\listtype{\types},~ ts:\listtype{\terms})$ & Co-fixpoint functions \\
+		\end{tabular}
+	\end{figure}
 \end{definition}
 
 \begin{definition}[sentence]\defgls{sentence}
@@ -142,22 +144,28 @@ Most notably all tactics are resolved (or executed) into terms.
 	Each \coqobj $s \in \objs$ has a name $\name[s]$\glsadd{name},
 	a term $\term[s]$\glsadd{term} and a type $\type[s]$\glsadd{type} associated with it.
 
-	\vspace{1em}
-	\begin{tabular}{l}
-		$\text{Constant}(n:\names,~ t:\terms,~ A:\types)$ \\
-		$\text{Variable}(n:\names,~ t:\terms,~ A:\types)$ \\
-		$\text{CurrentProof}(n:\names,~ \text{hyps}:\listtype{\listtype{\types} \times \terms}, t:\terms, A:\types)$ \\
-		$\text{InductiveConstructor}(n:\names,~ A:\types)$ \\
-		$\text{InductiveDefinition}(n:\names,~ A:\types,~ cs:\listtype{\text{InductiveConstructor}})$
-	\end{tabular}
+	\begin{figure}[H]
+		\centering
+		\begin{tabular}{l}
+			$\text{Constant}(n:\names,~ t:\terms,~ A:\types)$ \\
+			$\text{Variable}(n:\names,~ t:\terms,~ A:\types)$ \\
+			$\text{CurrentProof}(n:\names,~ \text{hyps}:\listtype{\listtype{\types} \times \terms}, t:\terms, A:\types)$ \\
+			$\text{InductiveConstructor}(n:\names,~ A:\types)$ \\
+			$\text{InductiveDefinition}(n:\names,~ A:\types,~ cs:\listtype{\text{InductiveConstructor}})$
+		\end{tabular}
+	\end{figure}
 
-	\begin{tabular}{l|l|l|l}
-		given $s = \text{Constant}(n,~ t,~ A)$ & $\name[s] = n$ & $\term[s] = t$ & $\type[s] = A$ \\
-		given $s = \text{Variable}(n,~ t,~ A)$ & $\name[s] = n$ & $\term[s] = t$ & $\type[s] = A$ \\
-		given $s = \text{CurrentProof}(n,~ \text{hyps},~ t,~ A)$ & $\name[s] = n$ & $\term[s] = t$ & $\type[s] = A$ \\
-		given $s = \text{InductiveConstructor}(n,~ A)$ & $\name[s] = n$ & $\term[s] = \emptyterm$ & $\type[s] = A$ \\
-		given $s = \text{InductiveDefinition}(n,~ A,~ cs)$ & $\name[s] = n$ & $\term[s] = \emptyterm$ & $\type[s] = A$
-	\end{tabular}
+	\begin{figure}[H]
+		\centering
+		\begin{tabular}{lccc}
+			$s = \text{Constant}(n,~ t,~ A)$ & $\name[s] = n$ & $\term[s] = t$ & $\type[s] = A$ \\
+			$s = \text{Variable}(n,~ t,~ A)$ & '' & '' & '' \\
+			$s = \text{CurrentProof}(n,~ \text{hyps},~ t,~ A)$ & '' & '' & '' \\
+			 & & & \\
+			$s = \text{InductiveConstructor}(n,~ A)$ & $\name[s] = n$ & $\term[s] = \emptyterm$ & $\type[s] = A$ \\
+			$s = \text{InductiveDefinition}(n,~ A,~ cs)$ & '' & '' & ''
+		\end{tabular}
+	\end{figure}
 \end{definition}
 
 Thus a \coq file can be considered to be a sequence of \coq objects:
