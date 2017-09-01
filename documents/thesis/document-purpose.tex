@@ -1,8 +1,57 @@
-For the \coq interactive theorem prover automation is limited to the tactics \texttt{auto}%
-\footnote{\coq Reference Manual, Chapter 8: Tactics\\\url{https://coq.inria.fr/refman/Reference-Manual010.html\#hevea_tactic148}},
-which implements a Prolog-like resolution procedure, and \texttt{omega}%
-\footnote{\coq Reference Manual, Chapter 21: Omega: a solver of quantifier-free problems in Presburger Arithmetic\\\url{https://coq.inria.fr/refman/Reference-Manual024.html\#hevea_tactic220}},
-which is an automatic decision procedure for Presburger arithmetic.
+For the \coq interactive theorem prover automation is limited to the following tactics:
+\begin{description}
+\item[assumption]
+  \footnote{
+    \coq Reference Manual, Chapter 8:
+    Tactics\\
+    \url{https://coq.inria.fr/refman/Reference-Manual010.html\#hevea_tactic5}
+  }
+  Searches in the local context for an hypothesis which fits the current goal.
+\item[auto]
+  \footnote{
+    \coq Reference Manual, Chapter 8:
+    Tactics\\
+    \url{https://coq.inria.fr/refman/Reference-Manual010.html\#hevea_tactic148}
+  }
+  Implements a Prolog-like resolution procedure to solve the current goal.
+  It first applies the \texttt{assumption} tactic, and reduces the goal using \texttt{intros}.
+  \texttt{auto} then runs a search for applicable tactics on the goal and subgoals, starting with the lowest cost tactic.
+  This tactic can be tweaked on with various parameters and hints, such as the search depth.
+\item[trivial]
+  \footnote{
+    \coq Reference Manual, Chapter 8:
+    Tactics\\
+    \url{https://coq.inria.fr/refman/Reference-Manual010.html\#hevea_tactic150}
+  }
+  A restriction of \texttt{auto} that is not recursive and only applies tactics with no cost.
+\item[tauto]
+  \footnote{
+    \coq Reference Manual, Chapter 8:
+    Tactics\\
+    \url{https://coq.inria.fr/refman/Reference-Manual010.html\#hevea_tactic154}
+  }
+  A decision procedure for intuitionistic propositional calculus.
+  Restricted to unfolding negations and logical equivalence.
+  \texttt{tauto} is based on LJT* calculus by Dyckhoff et al \cite{dyckhoff1992contraction}.
+\item[intuition \emph{tactic}]
+  \footnote{
+    \coq Reference Manual, Chapter 8:
+    Tactics\\
+    \url{https://coq.inria.fr/refman/Reference-Manual010.html\#hevea_tactic156}
+  }
+  Generates simplified subgoals and applies the provided tactic.
+  \text{intuition} succeeds if the provided tactic succeeds on all (simpler) subgoals, else it fails.
+  It is based on the decision procedure used in \texttt{tauto}.
+  The expression \texttt{intuition fail} is equivalent to \texttt{tauto}.
+\item[omega]
+  an automatic decision procedure for Presburger arithmetic \cite{stansifer1984presburger}.%
+  \footnote{
+    \coq Reference Manual, Chapter 21:
+    Omega: a solver of quantifier-free problems in Presburger Arithmetic\\
+    \url{https://coq.inria.fr/refman/Reference-Manual024.html\#hevea_tactic220}
+  }
+\end{description}
+
 In this masters thesis we explore the feasibility of implementing a statistical automated theorem prover for \coq.
 \todo{statistical vs symbolical ATP; explain the difference}
 \todo{explain `hammer' approach and what use it is for premiseselection}
