@@ -1,19 +1,23 @@
 Theorem proving is the process for which proofs are constructed as formal mathematical objects.
 These objects are inductively defined data structures which are constructed using axioms and inference rules.
-Proving theorems using computer programs is called automated theorem proving.
-A program which proves theorems is called a theorem prover.
+Whereas a normal proof need may contain errors (as they are sketched with various degrees of confidence),
+formal proofs yield complete confidence as to their so-called proof truth.
+Formalizing existing proofs, thus establishing the absolute proof truth of their theorems, is a popular field of study within formal mathematics.
 
-However theorem provers need not be fully automated.
-Interactive theorem provers (ITP's) or proof assistants often employ a graphical user interface designed to let a human guide the search for proofs.
-Interactive theorem provers often still employ some kind of automation.
+In general formal proofs are more verbose and require more work to formulate compared to normal proofs.
+With the assistance of computer programs called theorem provers this process has been simplified.
+This so-called automated theorem proving is in fact the driving force for the establishment of the computer sciences.
+
+However theorem provers employ various degrees of automation.
+Interactive theorem provers (ITP's) or proof assistants often contain a graphical user interface designed to let a human guide the search for proofs.
+Even with the help of humans, interactive theorem provers often still automate some aspects of the process.
 Notable ITP's include ACL2, Coq, HOL (Light), Isabelle, Mizar and PVS.
 
 Conversely fully automated theorem provers are just called automated theorem provers (ATP's), and need not have a (graphical) user interface.
 Fully automated ATP's include Alt-Ergo, E, Prover9 and Vampire.
 
-
-
-Automation for the \coq interactive theorem prover is limited to the following tactics:
+For this thesis we will be working towards partially developing full automation for the interactive theorem prover \coq.
+Currently automation for the \coq is limited to the following tactics:
 \begin{description}
 \item[assumption]
   \footnote{
