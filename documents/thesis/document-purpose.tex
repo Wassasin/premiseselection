@@ -11,12 +11,16 @@ This so-called automated theorem proving is in fact the driving force for the es
 However theorem provers employ various degrees of automation.
 Interactive theorem provers (ITP's) or proof assistants often contain a graphical user interface designed to let a human guide the search for proofs.
 Even with the help of humans, interactive theorem provers often still automate some aspects of the process.
+Automation of theorem provers is limited by the expressiveness of the logical language.
+Thus ITP's with not much automation generally have a relatively complex logical language.
 Notable ITP's include ACL2, Coq, HOL (Light), Isabelle, Mizar and PVS.
 
 Conversely fully automated theorem provers are just called automated theorem provers (ATP's), and need not have a (graphical) user interface.
 Fully automated ATP's include Alt-Ergo, E, Prover9 and Vampire.
 
 For this thesis we will be working towards partially developing full automation for the interactive theorem prover \coq.
+Full automation for \coq does not exist, as it has one of the most complex and expressive logical languages that exist.
+As \coq is very popular in the field of formalization, creating more or even full automation for the system would help significantly.
 Currently automation for the \coq is limited to the following tactics:
 \begin{description}
 \item[assumption]
@@ -71,8 +75,10 @@ Currently automation for the \coq is limited to the following tactics:
   }
 \end{description}
 
-In this masters thesis we explore the feasibility of implementing a statistical automated theorem prover for \coq.
-\todo{statistical vs symbolical ATP; explain the difference}
+Ideally we would like to make a new tactic which solves the current proof goal using statistical ATP techniques, specifically machine learning.
+This differs from the existing tactics in that they employ symbolical ATP, namely use symbolic operations such as applying, introducing and unfolding
+directly following from the current state of the proof goal. \todo{improve distinction}
+
 \todo{explain `hammer' approach and what use it is for premiseselection}
 
 Such an automated theorem prover consists of:
@@ -80,7 +86,8 @@ Such an automated theorem prover consists of:
 \item[Premise selection] Filter the existing knowledgebase of proven theorems by usefullness for the current yet unproven conjecture.
 It yields a set of theorems which are likely to help in proving this conjecture.
 Subsequent ATP components thus will only need to consider useful theorems. \todo{explain}
-\item[]
+\item[Proof synthesis] Application of previously discovered premises using tactics to generate new proof goals,
+in the hope that these new proof goals are easier to prove.
 \end{description}
 
 Because this endeavour is quite sizeable, we limit the research to implementing a \premiseselection tool.
