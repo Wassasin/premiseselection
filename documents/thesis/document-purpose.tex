@@ -13,15 +13,26 @@ Interactive theorem provers (ITP's) or proof assistants often contain a graphica
 Even with the help of humans, interactive theorem provers often still automate some aspects of the process.
 Automation of theorem provers is limited by the expressiveness of the logical language.
 Thus ITP's with not much automation generally have a relatively complex logical language.
-Notable ITP's include ACL2, Coq, HOL (Light), Isabelle, Mizar and PVS.
+Notable ITP's include ACL2, Coq \cite{bertot2013interactive}, HOL (Light), Isabelle, Mizar and PVS.
 
 Conversely fully automated theorem provers are just called automated theorem provers (ATP's), and need not have a (graphical) user interface.
 Fully automated ATP's include Alt-Ergo, E, Prover9 and Vampire.
 
-For this thesis we will be working towards partially developing full automation for the interactive theorem prover \coq.
-Full automation for \coq does not exist, as it has one of the most complex and expressive logical languages that exist.
+Interestingly tooling has been developed to combine various theorem proving systems.
+Specifically Sledgehammer \cite{meng2006automation} is a tool included in Isabelle that convert a subgoal into first order logic clause form and
+hands this expression to the first order automatic theorem provers E, Spass and Vampire.
+Asynchronically this expression is solved, and the first yielded proof is converted back into an Isabelle script.
+
+Sledgehammer has been improved upon using machine learning.
+MaSH \cite{kuhlwein2013mash} replaces a key component of Sledgehammer, the relevance filter.
+Whereas the standard MePo filter \cite{meng2009lightweight} selects and ranks fact similar to the current goal,
+MaSH employs a machine learning system that learns from succesful proofs.
+By combining both the MePo filter and the machine learning based filters a significantly better result is achieved.
+\todo{Explain hammer approach / HOL(y) hammer}
+
+Full automation for \coq does not exist, as it has one of the more complex and expressive logical languages.
 As \coq is very popular in the field of formalization, creating more or even full automation for the system would help significantly.
-Currently automation for the \coq is limited to the following tactics:
+Currently automation for \coq is limited to the following tactics:
 \begin{description}
 \item[assumption]
   \footnote{
@@ -76,10 +87,8 @@ Currently automation for the \coq is limited to the following tactics:
 \end{description}
 
 Ideally we would like to make a new tactic which solves the current proof goal using statistical ATP techniques, specifically machine learning.
-This differs from the existing tactics in that they employ symbolical ATP, namely use symbolic operations such as applying, introducing and unfolding
+This differs from the existing tactics in that they employ symbolical ATP. This means that they use symbolic operations such as applying, introducing and unfolding
 directly following from the current state of the proof goal. \todo{improve distinction}
-
-\todo{explain `hammer' approach and what use it is for premiseselection}
 
 Such an automated theorem prover consists of:
 \begin{description}
@@ -91,4 +100,13 @@ in the hope that these new proof goals are easier to prove.
 \end{description}
 
 Because this endeavour is quite sizeable, we limit the research to implementing a \premiseselection tool.
-We compare various machine learning algorithms and features for a variety of existing \coq corpora.
+In essence this work is very similar to that performed for the MaSH relevance filter.
+Early experiments have already been performed by Kaliszyk et al. \cite{kaliszyk2014machine}. \todo{expand attribution, explain}
+
+For our premise selection we compare various machine learning algorithms and features for a variety of existing \coq corpora.
+With this research we hope to answer the following questions:
+\begin{enumerate}
+\item How can we extract the necessary information from the \coq system in order to perform premise selection?
+\item What machine learning approaches are best suited?
+\item In what manner do various corpora influence the performance of these various approaches?
+\end{enumerate}
