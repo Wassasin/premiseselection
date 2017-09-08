@@ -3,19 +3,19 @@
 An alternative to selecting a predefined $K$ number of neighbors, is keep selecting neighbors until a preset number of suggestions can be made.
 This strategy is used by the \knnadaptive predictor.
 
-\begin{definition}
+\begin{definition}\label{def:first}
   Given $p \in \nat \rightarrow 2$:
 
   $$
     \begin{array}{ll}
-      \text{first}'(p, i) & = \left\{
+      \firstsym'(p, i) & = \left\{
       \begin{array}{ll}
          i & ~\text{if}~~ p(i) \\
-         \text{first}'(p, i+1) & ~\text{otherwise} \\
+         \firstsym'(p, i+1) & ~\text{otherwise} \\
       \end{array}
       \right. \\
       \\
-      \text{first}(p) & = \text{first}'(p, 0)
+      \firstsym(p) & = \firstsym'(p, 0)
     \end{array}
   $$
 \end{definition}

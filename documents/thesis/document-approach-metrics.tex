@@ -21,24 +21,68 @@ can be computed by averaging the values of a metric for all elements in $\testse
   \[ \topn{n}{r} = \downset{\depset}{\nth{n}{(\suggestions{r}, \lambda x~y. r(x) > r(y))}} \]
 \end{definition}
 
-In this thesis we use the following metrics:
 \begin{definition}
+  Given a totally ordered set $(X, \leq)$, and an element $x \in X$, we define $\findindex{X}{x}$ to be the position of $x$ in totally ordered set $X$.
+  \[ \findindex{X}{x} = \left\{
+    \begin{array}{ll}
+      0 & \text{if~} x = \infimum_X \\
+      \findindex{X \cap \infimum_X}{x}+1 & \text{if~} x \neq \infimum_X \\
+    \end{array}
+    \right.
+  \]
+\end{definition}
+
+In this thesis we use the following metrics:
+\begin{definition}[\oocover]
   The coverage of the set of proof dependencies by the first 100 suggestions is defined as
   \[ \oocoverf{r}{s} = \frac{ |\topn{100}{r} \bigcap \required[s]| } { |\required[s]| } \]
+  This is our primary metric for evaluating the performance of our premise selection algorithms.
+  An higher cover is better.
 \end{definition}
 
-\begin{definition}
+\begin{definition}[\ooprecision]
   The precision of the set of proof dependencies by the first 100 suggestions is defined as
   \[ \ooprecisionf{r}{s} = \frac{ |\topn{100}{r} \bigcap \required[s]| } { |\topn{100}{r}| } \]
+  An higher precision is better.
+  Typically by making less suggestions a better precision is achieved.
+  For the corpii we evaluated most of our algorithms yield more than 100 suggestions per proof goal.
+  Thus this metric should often yield around the same value for differing algorithms.
 \end{definition}
 
-\begin{definition}
-  The recall is defined to be the number of guesses that were made until the entire set of required dependencies is suggested
-  \[ \recallf{r}{s} =  \text{first}(\lambda i. (i \leq |\suggestions{r}|) \rightarrow \required[s] \subseteq \topn{i}{r}) \]
+\begin{definition}[\recall]
+  The recall is defined to be the number of guesses that were made until the entire set of required dependencies is suggested.
+  When the set of guesses does not include all required dependencies $\recallf{r}{s}$ yields $|\suggestions{r}|+1$,
+  or the number of suggestions plus one.
+  The function `$\firstsym$' is defined in Definition \ref{def:first}.
+  \[ \recallf{r}{s} = \firstsym(\lambda i. (i \leq |\suggestions{r}|) \rightarrow \required[s] \subseteq \topn{i}{r}) \]
+  A lower recall is better.
 \end{definition}
 
-\begin{definition}{Rank}
+\begin{definition}[\rank]
+  The rank is defined to be the average position of an actual proof dependency in the sequence of suggestions ordered by predicted relevance.
+  \[ \rankf{r}{s} = \frac{
+      \sum\limits_{r \in \required[s]} \left\{
+        \begin{array}{ll}
+          \findindex{\suggestions{s}}{r} & \text{if~} r \in \suggestions{s} \\
+          0 & \text{otherwise} \\
+        \end{array}
+        \right.
+    }{
+      |\suggestions{r} \bigcap \required[s]|
+    }
+  \]
+  A lower rank is better.
 \end{definition}
 
-\begin{definition}{Area Under Curve (AUC)}
+\begin{definition}[Area Under Curve (AUC)]
+  The area under the ROC Curve is defined to be the probability that a correctly suggested premise is ranked \emph{better} than an incorrectly suggested premise.
+  Given $X$ to be the correctly suggested premises $X = \suggestions{r} \bigcap \required[s]$ and $Y$ to be the incorrectly suggested premises $Y = \suggestions{r} - \required[s]$ we define the \auc to be:
+  \[
+    \aucf{r}{s} = \frac{
+      \sum_x^X \sum_y^Y {\findindex{\suggestions{s}}{x} < \findindex{\suggestions{s}}{y}}
+    }{
+      |X| \times |Y|
+    }
+  \]
+  An higher AUC indicates a better performance.
 \end{definition}
