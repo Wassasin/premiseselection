@@ -128,7 +128,7 @@ The premise selection tool works as follows, and can be summarised as in Figure 
 	\begin{tikzpicture}[auto, node distance=2.5cm, main/.style={draw,align=center}]
 		\node[main] (coq) {\coqobj[s]\\inside coq};
 		\node[main] (xml) [below of=coq] {XML\\representation};
-		\node[main] (term) [below of=xml] {\coqobj[s]\\$\name \objdef \term : \type$};
+		\node[main] (term) [-] {\coqobj[s]\\$\name \objdef \term : \type$};
 		\node[main] (summary) [below of=term] {Summary\\$<\name[s], \termset{s}, \typeset{s}>$};
 		\node[main] (definitions) [below right=2cm and 0cm of summary] {Definitions\\$\defs$};
 		\node[main] (theorems) [below left=2cm and 0cm of summary] {Theorems\\$\thms$};
@@ -358,28 +358,7 @@ Thus results from this method will reveal the role of irrelevant terms, but also
 
 \subsection{Corpora}
 \label{section:corpora}
-
-\begin{figure}[H]
-  \begin{tabular}{l|rrr}
-    Corpus & $|S|$ & $|\defs|$ & $|\thms|$ \\\hline
-    \input{data/counts}
-  \end{tabular}
-  \caption{Counts}
-\end{figure}
-
-\todo{patches}
-\todo{build instructions}
-
-A corpus can have different characteristics, which might reveal strengths or weaknesses of predictors.
-The following corpora are used as test cases:
-
-\begin{description}
-	\item[\coq stdlib]
-	\item[\compcert]
-  \item[\formalin]
-  \item[\corn]
-  \item[\mathcomp]
-\end{description}
+\input{document-approach-corpora}
 
 \subsection{Metrics}
 \input{document-approach-metrics}

@@ -3,19 +3,37 @@
 \begin{figure}[H]
   \centering
   \begin{tabular}{r|rrrrrr}
-    $k$ & \oocover & \ooprecision & \recall & \rank & \auc & \volume \\\hline
-    \input{data/knn-coq-frequency}
+    Method & \oocover & \ooprecision & \recall & \rank & \auc & \volume \\\hline
+    \input{data/best-coq-frequency}
   \end{tabular}
-  \caption{Performance of the \knn method for the \coq (frequency) dataset}
+  \caption{Performance of the various methods for the \coq (frequency) dataset}
 \end{figure}
 
 \begin{figure}[H]
   \centering
   \begin{tabular}{r|rrrrrr}
     Method & \oocover & \ooprecision & \recall & \rank & \auc & \volume \\\hline
-    \input{data/best-coq-frequency}
+    \input{data/best-corn-frequency}
   \end{tabular}
-  \caption{Performance of the various methods for the \coq (frequency) dataset}
+  \caption{Performance of the various methods for the \corn (frequency) dataset}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{tabular}{r|rrrrrr}
+    Method & \oocover & \ooprecision & \recall & \rank & \auc & \volume \\\hline
+    \input{data/best-mathclasses-frequency}
+  \end{tabular}
+  \caption{Performance of the various methods for the \mathclasses (frequency) dataset}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{tabular}{r|rrrrrr}
+    Method & \oocover & \ooprecision & \recall & \rank & \auc & \volume \\\hline
+    \input{data/best-mathcomp-frequency}
+  \end{tabular}
+  \caption{Performance of the various methods for the \mathcomp (frequency) dataset}
 \end{figure}
 
 \begin{figure}[H]

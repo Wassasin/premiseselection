@@ -1,0 +1,48 @@
+\begin{figure}[H]
+  \begin{tabular}{l|rrr}
+    Corpus & $|S|$ & $|\defs|$ & $|\thms|$ \\\hline
+    \input{data/counts}
+  \end{tabular}
+  \caption{Counts}
+\end{figure}
+
+\todo{patches}
+\todo{build instructions}
+
+A corpus can have different characteristics, which might reveal strengths or weaknesses of predictors.
+The following corpora are used as test cases:
+
+\todo{Graph?}
+\todo{Clustering?}
+\todo{Are dependencies loaded?}
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[auto, node distance=2.5cm, main/.style={align=center}]
+		\node[main] (coq) {\coq};
+    \node[main] (mathclasses) [below right=0.2cm and 2cm of coq] {\mathclasses};
+    \node[main] (formalin) [above=0.5cm of mathclasses] {\formalin};
+    \node[main] (compcert) [above=0.5cm of formalin] {\compcert};
+		\node[main] (mathcomp) [below=0.5cm of mathclasses] {\mathcomp};
+    \node[main] (corn) [right=1.5cm of mathclasses] {\corn};
+
+    \draw[->] (coq) to [out=0,in=180] (compcert);
+    \draw[->] (coq) to [out=0,in=180] (formalin);
+    \draw[->] (coq) to [out=0,in=180] (mathcomp);
+    
+    \draw[->] (coq) to [out=0,in=180] (mathclasses);
+    \draw[->] (mathclasses) to [out=0,in=180] (corn);
+    
+	\end{tikzpicture}
+	\caption{Dependencies between corpora.}
+	\label{figure:corporadeps}
+\end{figure}
+
+\begin{description}
+  \item[\coq stdlib]
+	\item[\compcert]
+  \item[\formalin]
+  \item[\corn]
+  \item[\mathclasses]
+  \item[\mathcomp]
+\end{description}
