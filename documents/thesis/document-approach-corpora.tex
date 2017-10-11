@@ -20,13 +20,11 @@ The following corpora are used as test cases:
 	\centering
 	\begin{tikzpicture}[auto, node distance=2.5cm, main/.style={align=center}]
 		\node[main] (coq) {\coq};
-    \node[main] (mathclasses) [below right=0.2cm and 2cm of coq] {\mathclasses};
+    \node[main] (mathclasses) [right=2cm of coq] {\mathclasses};
     \node[main] (formalin) [above=0.5cm of mathclasses] {\formalin};
-    \node[main] (compcert) [above=0.5cm of formalin] {\compcert};
 		\node[main] (mathcomp) [below=0.5cm of mathclasses] {\mathcomp};
     \node[main] (corn) [right=1.5cm of mathclasses] {\corn};
 
-    \draw[->] (coq) to [out=0,in=180] (compcert);
     \draw[->] (coq) to [out=0,in=180] (formalin);
     \draw[->] (coq) to [out=0,in=180] (mathcomp);
     

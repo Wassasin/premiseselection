@@ -1,47 +1,8 @@
 \label{section:results}
 
-\begin{figure}[H]
-  \centering
-  \begin{tabular}{r|rrrrrr}
-    Method & \oocover & \ooprecision & \recall & \rank & \auc & \volume \\\hline
-    \input{data/best-coq-frequency}
-  \end{tabular}
-  \caption{Performance of the various methods for the \coq (frequency) dataset}
-\end{figure}
+\subsection{Methods}
 
-\begin{figure}[H]
-  \centering
-  \begin{tabular}{r|rrrrrr}
-    Method & \oocover & \ooprecision & \recall & \rank & \auc & \volume \\\hline
-    \input{data/best-corn-frequency}
-  \end{tabular}
-  \caption{Performance of the various methods for the \corn (frequency) dataset}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-  \begin{tabular}{r|rrrrrr}
-    Method & \oocover & \ooprecision & \recall & \rank & \auc & \volume \\\hline
-    \input{data/best-mathclasses-frequency}
-  \end{tabular}
-  \caption{Performance of the various methods for the \mathclasses (frequency) dataset}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-  \begin{tabular}{r|rrrrrr}
-    Method & \oocover & \ooprecision & \recall & \rank & \auc & \volume \\\hline
-    \input{data/best-mathcomp-frequency}
-  \end{tabular}
-  \caption{Performance of the various methods for the \mathcomp (frequency) dataset}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics{knn-various-frequency-oocover.pdf}
-  \caption{\oocover of the \knn method for the \coq dataset for different values of $k$}
-\end{figure}
-
+\subsubsection{\knn}
 \begin{figure}[H]
   \centering
   \includegraphics{knn-coq-frequency-oocover.pdf}
@@ -54,6 +15,7 @@
   \caption{\oocover of the \knn method for the various (depth) datasets for different values of $k$}
 \end{figure}
 
+\subsubsection{\nb}
 \begin{figure}[H]
   \centering
   \includegraphics{nb-coq-frequency-oocover.pdf}
@@ -70,4 +32,57 @@
   \centering
   \includegraphics{nb-corn-frequency-oocover.pdf}
   \caption{\oocover of the \nb method for the \corn (frequency) dataset for $\sigma = -15$ or $\tau = 0$}
+\end{figure}
+
+\subsection{Prior knowledge}
+Prior vs. no prior
+
+\subsection{Datasets}
+
+\subsubsection{Frequency, depth and flat}
+\begin{figure}[H]
+  \centering
+  \includegraphics{knn-various-frequency-oocover.pdf}
+  \caption{\oocover of the \knn method for the \coq dataset for different values of $k$}
+\end{figure}
+
+\subsubsection{\coq}
+
+\begin{figure}[H]
+  \centering
+  \begin{tabular}{r|rrrrrr}
+    Method & \oocover & \ooprecision & \recall & \rank & \auc & \volume \\\hline
+    \input{data/best-coq-frequency}
+  \end{tabular}
+  \caption{Performance of the various methods for the \coq (frequency) dataset}
+\end{figure}
+
+\subsubsection{\corn}
+\begin{figure}[H]
+  \centering
+  \begin{tabular}{r|rrrrrr}
+    Method & \oocover & \ooprecision & \recall & \rank & \auc & \volume \\\hline
+    \input{data/best-corn-frequency}
+  \end{tabular}
+  \caption{Performance of the various methods for the \corn (frequency) dataset}
+\end{figure}
+
+\subsubsection{\mathclasses}
+\begin{figure}[H]
+  \centering
+  \begin{tabular}{r|rrrrrr}
+    Method & \oocover & \ooprecision & \recall & \rank & \auc & \volume \\\hline
+    \input{data/best-mathclasses-frequency}
+  \end{tabular}
+  \caption{Performance of the various methods for the \mathclasses (frequency) dataset}
+\end{figure}
+
+\subsubsection{\mathcomp}
+\begin{figure}[H]
+  \centering
+  \begin{tabular}{r|rrrrrr}
+    Method & \oocover & \ooprecision & \recall & \rank & \auc & \volume \\\hline
+    \input{data/best-mathcomp-frequency}
+  \end{tabular}
+  \caption{Performance of the various methods for the \mathcomp (frequency) dataset}
 \end{figure}
