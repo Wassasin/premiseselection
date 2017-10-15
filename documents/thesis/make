@@ -4,6 +4,10 @@ mkdir -p "build"
 cp -R "assets" "build"
 cp -R "data" "build"
 
+cp *.tex "build"
+cp *.sty "build"
+cp *.bib "build"
+
 mkdir -p "build/figures"
 cp figures/*.tex "build/figures"
 

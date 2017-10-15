@@ -1,0 +1,21 @@
+\documentclass{standalone}
+\input{../preamble}
+
+\begin{document}
+  \begin{tikzpicture}
+    \begin{axis}[
+        xlabel=$k$,
+        ylabel=\oocover,
+        legend pos=outer north east
+        ]
+      \addplot+[smooth, no markers] table [y index=1] {data/knn-corn-frequency-pessimistic.dat};
+      \addlegendentry{pessimistic}
+
+      \addplot+[smooth, no markers] table [y index=1] {data/knn-corn-frequency-canonical.dat};
+      \addlegendentry{canonical}
+
+      \addplot+[smooth, no markers] table [y index=1] {data/knn-corn-frequency-optimistic.dat};
+      \addlegendentry{optimistic}
+    \end{axis}
+  \end{tikzpicture}
+\end{document}

@@ -1,50 +1,62 @@
 \label{section:results}
 
+\subsection{Prior knowledge}
+\begin{figure}[H]
+  \centering
+  \begin{tabular}{r|cll}
+    Method & mode & \oocover & \auc \\\hline
+    \input{data/prior-vs-nonprior-corn-frequency-pessimistic}
+  \end{tabular}
+  \caption{Results for the \corn (frequency) dataset with pessimistic strategy, with prior knowledge compared to without}
+\end{figure}
+
+\subsection{Poset consistency}
+\begin{figure}[H]
+  \centering
+  \includegraphics{posetcons-knn-corn-frequency-oocover.pdf}
+  \caption{\oocover of the \knn method for the \corn dataset for different values of $k$ and various strategies}
+\end{figure}
+
+\subsection{Frequency, depth and flat}
+\begin{figure}[H]
+  \centering
+  \includegraphics{field-knn-corn-pessimistic-oocover.pdf}
+  \caption{\oocover of the \knn method with pessimistic strategy for the \corn dataset for different values of $k$}
+\end{figure}
+
 \subsection{Methods}
 
 \subsubsection{\knn}
 \begin{figure}[H]
   \centering
-  \includegraphics{knn-coq-frequency-oocover.pdf}
-  \caption{\oocover of the \knn method for the various (frequency) datasets for different values of $k$}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics{knn-coq-depth-oocover.pdf}
-  \caption{\oocover of the \knn method for the various (depth) datasets for different values of $k$}
+  \includegraphics{dataset-knn-frequency-pessimistic-oocover.pdf}
+  \caption{\oocover of the \knn method with pessimistic strategy for various datasets for different values of $k$}
 \end{figure}
 
 \subsubsection{\nb}
 \begin{figure}[H]
   \centering
-  \includegraphics{nb-coq-frequency-oocover.pdf}
-  \caption{\oocover of the \nb method for the \coq (frequency) dataset for $\sigma = -15$ or $\tau = 0$}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics{nb-coq-depth-oocover.pdf}
-  \caption{\oocover of the \nb method for the \coq (depth) dataset for $\sigma = -15$ or $\tau = 0$}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics{nb-corn-frequency-oocover.pdf}
+  \includegraphics{dataset-nb-frequency-pessimistic-oocover.pdf}
   \caption{\oocover of the \nb method for the \corn (frequency) dataset for $\sigma = -15$ or $\tau = 0$}
 \end{figure}
 
-\subsection{Prior knowledge}
-Prior vs. no prior
-
-\subsection{Datasets}
-
-\subsubsection{Frequency, depth and flat}
+\subsubsection{\adarank}
 \begin{figure}[H]
   \centering
-  \includegraphics{knn-various-frequency-oocover.pdf}
-  \caption{\oocover of the \knn method for the \coq dataset for different values of $k$}
+  \includegraphics{dataset-adarank-frequency-pessimistic-oocover.pdf}
+  \caption{\oocover of the \adarank method for the \corn (frequency) dataset for various values of $K$}
 \end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{tabular}{r|rrrrrr}
+    T & \oocover & \ooprecision & \recall & \rank & \auc & \volume \\\hline
+    \input{data/adarank-corn-frequency-pessimistic}
+  \end{tabular}
+  \caption{Performance of the \adarank method for the \corn (frequency) dataset}
+\end{figure}
+
+\subsection{Datasets}
 
 \subsubsection{\coq}
 
@@ -52,7 +64,7 @@ Prior vs. no prior
   \centering
   \begin{tabular}{r|rrrrrr}
     Method & \oocover & \ooprecision & \recall & \rank & \auc & \volume \\\hline
-    \input{data/best-coq-frequency}
+    \input{data/best-coq-frequency-pessimistic}
   \end{tabular}
   \caption{Performance of the various methods for the \coq (frequency) dataset}
 \end{figure}
@@ -62,7 +74,7 @@ Prior vs. no prior
   \centering
   \begin{tabular}{r|rrrrrr}
     Method & \oocover & \ooprecision & \recall & \rank & \auc & \volume \\\hline
-    \input{data/best-corn-frequency}
+    \input{data/best-corn-frequency-pessimistic}
   \end{tabular}
   \caption{Performance of the various methods for the \corn (frequency) dataset}
 \end{figure}
@@ -72,7 +84,7 @@ Prior vs. no prior
   \centering
   \begin{tabular}{r|rrrrrr}
     Method & \oocover & \ooprecision & \recall & \rank & \auc & \volume \\\hline
-    \input{data/best-mathclasses-frequency}
+    \input{data/best-mathclasses-frequency-pessimistic}
   \end{tabular}
   \caption{Performance of the various methods for the \mathclasses (frequency) dataset}
 \end{figure}
@@ -82,7 +94,7 @@ Prior vs. no prior
   \centering
   \begin{tabular}{r|rrrrrr}
     Method & \oocover & \ooprecision & \recall & \rank & \auc & \volume \\\hline
-    \input{data/best-mathcomp-frequency}
+    \input{data/best-mathcomp-frequency-pessimistic}
   \end{tabular}
   \caption{Performance of the various methods for the \mathcomp (frequency) dataset}
 \end{figure}
