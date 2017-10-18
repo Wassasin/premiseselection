@@ -9,8 +9,20 @@
           legend pos=outer north east
         ]
 
+        \addplot+[no markers] table [y index=1] {data/adarank-ch2o-frequency-pessimistic.dat};
+        \addlegendentry{\formalin}
+
+        \addplot+[no markers] table [y index=1] {data/adarank-coq-frequency-pessimistic.dat};
+        \addlegendentry{\coq}
+
+        \addplot+[no markers] table [y index=1] {data/adarank-mathclasses-frequency-pessimistic.dat};
+        \addlegendentry{\mathclasses}
+
         \addplot+[no markers] table [y index=1] {data/adarank-corn-frequency-pessimistic.dat};
         \addlegendentry{\corn}
+
+        \addplot+[no markers] table [y index=1] {data/adarank-mathcomp-frequency-pessimistic.dat};
+        \addlegendentry{\mathcomp}
       \end{axis}
     \end{tikzpicture}
   \end{document}

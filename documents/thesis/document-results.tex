@@ -1,6 +1,18 @@
 \label{section:results}
 
+We use the \corn dataset with the frequency model and the pessimistic strategy as a baseline for all comparisons.
+For a select logical variables various values are examined if applicable.
+First we see whether the use of prior knowledge affects the resulting performance.
+Secondly we verify whether our chosen poset consistency strategy works as intended.
+Thirdly we investigate whether the use of the flat, frequency or depth model works best.
+Fourth we iterate over all machine learning methods and how they most optimally can be configured.
+Finally we inspect all corpora and see how various configurations of machine learners perform.
+
 \subsection{Prior knowledge}
+
+\todo{figure depicting non-cv prior dataset}
+\todo{explanation in method?}
+
 \begin{figure}[H]
   \centering
   \begin{tabular}{r|cll}
@@ -10,6 +22,13 @@
   \caption{Results for the \corn (frequency) dataset with pessimistic strategy, with prior knowledge compared to without}
 \end{figure}
 
+This result is rather unexpected.
+The models that have not been trained on prior corpora (being \coq and \mathclasses) outperform
+those that have been.
+Normally we would expect more context to provide more suitable material to make an educated guess.
+Instead more noise was introduced into the models.
+It shows that the machine learning methods have a problem capturing the proper context.
+
 \subsection{Poset consistency}
 \begin{figure}[H]
   \centering
@@ -17,12 +36,21 @@
   \caption{\oocover of the \knn method for the \corn dataset for different values of $k$ and various strategies}
 \end{figure}
 
+As expected the optimistic strategy does not perform well at all.
+We conjecture that, contrary to the previous results, a lack of context results in this bad performance.
+It might be argueable that the pessimistic strategy does not remove enough information to fairly compare to the previous study by
+Kaliszyk. \cite{kaliszyk2014machine}
+
 \subsection{Frequency, depth and flat}
 \begin{figure}[H]
   \centering
   \includegraphics{field-knn-corn-pessimistic-oocover.pdf}
   \caption{\oocover of the \knn method with pessimistic strategy for the \corn dataset for different values of $k$}
 \end{figure}
+
+Interestingly the depth model outperforms the frequency model by quite some margin.
+It might be the case that this model is too descriptive and invites overfitting.
+If not so, than might prove to be even better with the frequency model combined.
 
 \subsection{Methods}
 
@@ -32,6 +60,12 @@
   \includegraphics{dataset-knn-frequency-pessimistic-oocover.pdf}
   \caption{\oocover of the \knn method with pessimistic strategy for various datasets for different values of $k$}
 \end{figure}
+
+Peak \oocover performance for each corpus occurs between $K=20$ and $K=50$.
+\corn and \mathclasses perform notably worse than the rest.
+After a sharp ascent, a slow decrease in performance occurs after peak performance.
+For low values of $K$ not enough suggestions are made.
+After the peak too many suggestions are made, and the relevant suggestions are more frequently made after the first one hundred.
 
 \subsubsection{\nb}
 \begin{figure}[H]
@@ -44,8 +78,10 @@
 \begin{figure}[H]
   \centering
   \includegraphics{dataset-adarank-frequency-pessimistic-oocover.pdf}
-  \caption{\oocover of the \adarank method for the \corn (frequency) dataset for various values of $K$}
+  \caption{\oocover of the \adarank method for the \corn (frequency) dataset for various values of $T$}
 \end{figure}
+
+A dip can be seen for $T=\{3,4\}$. Second improvement for $T=6$, especially for \corn and \mathcomp.
 
 \begin{figure}[H]
   \centering
