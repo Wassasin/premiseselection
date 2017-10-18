@@ -1,10 +1,16 @@
-\todo{reference} \todo{intuition}
+Naive bayes \cite{roth1998learning} is based on Bayes theorem with a strong independence assumption.
+It computes the probability that a fact $\phi$ is needed to prove conjecture $c$ based on the use of $\phi$ in proving other conjectures that are similar to $c$.
+The strong independence that is assumed means that the occurance of a feature is not related to the occurrence of every other feature.
+We implemented a weighted version of sparse naive Bayes \cite{kuhlwein2013mash}.
+
 Given dependency candidate $\phi \in \depset$, we compute for all features $x \in \featurekeys$:
 \[
   W = \tau + \sum_{x \in \featurekeys} w_x ~~\text{with}~~ w_x = \tau + \sum_{\psi \in \parents[\phi]} \left( \features{}{\psi}(x) > 0 \right)
 \]
-
-Now we can compute the likelyhood of candidate $\phi$ given some constants $\pi, \sigma, \tau$:
+Here $w_x$ is the descriptiveness of feature $x$ for dependency candidate $\phi$ as a weight, based on it's use in the parents of $\phi$.
+A baseline of value $\tau$ is used as the starting value of $w_x$.
+The sum of these weights is captured in $W$, again with a separate baseline $\tau$.
+Now we can compute the likelyhood of candidate $\phi$ to be useful in proving $c$ given the rewarding constant $\pi$ for known features, and punishing constant $\sigma$ for unknown features:
 \[
 	P_\text{nb}(c, \phi) = \ln W +
   \sum_{x \in \featurekeys | w_x = 0} \features{}{c}(x) \times \sigma +
@@ -12,3 +18,4 @@ Now we can compute the likelyhood of candidate $\phi$ given some constants $\pi,
 \]
 
 By K\"uhlwein \cite{kuhlwein2013mash} it is suggested to use $\pi = 10$, $\sigma = -15$ and $\tau = 20$.
+Note that with a value $\tau > 0$ the term for unknown features which uses $\sigma$ is never used.
