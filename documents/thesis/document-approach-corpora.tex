@@ -1,20 +1,51 @@
-\begin{figure}[H]
-  \begin{tabular}{l|rrr}
-    Corpus & $|S|$ & $|\defs|$ & $|\thms|$ \\\hline
-    \input{data/counts}
-  \end{tabular}
-  \caption{Counts}
-\end{figure}
-
-\todo{patches}
-\todo{build instructions}
-
 A corpus can have different characteristics, which might reveal strengths or weaknesses of predictors.
 The following corpora are used as test cases:
 
-\todo{Graph?}
-\todo{Clustering?}
-\todo{Are dependencies loaded?}
+\begin{figure}[H]
+  \begin{tabular}{lllrrr}
+    Corpus & commit & release date & $|S|$ & $|\defs|$ & $|\thms|$ \\\hline
+    \input{data/counts}
+  \end{tabular}
+  \caption{Corpora examined in this thesis, along with the relevant version, release date and number of objects, definitions and theorems.}
+\end{figure}
+
+All code was compiled using \coq version 8.4pl6.
+Newer versions no longer support the XML export plugin, and as such do not support the workflow of \roerei as of yet.
+
+\begin{description}
+  \item[\coq stdlib]
+  \item[\formalin]
+    (or $ch_2o$)
+  \item[\mathclasses] \cite{spitters2011type} \cite{krebbers2011type} \cite{krebbers2011computer}
+    A library of abstract interfaces for mathematical structures in \coq.
+    It is heavily based on Coq's Type Classes \cite{sozeau2008first} in order to share notations by overloading and specifying with abstract structures by quantification on contexts.
+    It provides interfaces for algebraic hierarchies (groups, rings, field, \ldots),
+    relations, orders, categories, functors, universal algebra,
+    numbers ($\mathbb{N}$, $\mathbb{Z}$, $\mathbb{Q}$, \ldots)
+    and operations (shift, power, abs, \ldots).
+    With it, \mathclasses provides structure inference, multiple inheritance, convenient algebraic manipulation
+    and idiomatic use of notations.
+    It contains relatively the least amount of theorems compared to the other corpora.
+  \item[\corn]
+    The \coq Constructive Repository at Nijmegen is a corpus comprised of various different projects developed (partially) at the Radboud University Nijmegen.
+    It depends on \mathclasses for the implementation of high performance exact real number arithmetic.
+    A relatively older version of \corn is examined, the same as examined by Kaliszyk \cite{kaliszyk2014machine}.
+    This in order to attempt to provide a fair comparison of our experimental results.
+    Currently it is (roughly) comprised of:
+    \begin{itemize}
+      \item Fundamental Theorem of Algebra and the algebraic hierarchy. \cite{geuvers2002constructive}
+      \item Fundamental Theorem of Calculus. \cite{cruz2002constructive}
+      \item Program extraction for real computation. \cite{cruz2006large}
+      \item Abstract model of the real numbers. \cite{niqui2008coinductive}
+      \item Efficient computation with real numbers and metric spaces. \cite{o2008certified}
+      \item Riemann integration. \cite{o2010computer}
+      \item Interface with Coq's standard library reals. \cite{kaliszyk2008computing}
+      \item The ForMath project, for which the \mathclasses library was developed. \cite{spitters2011type}
+        It includes an Ordinary Differential Equations solver. \cite{makarov2013picard}
+    \end{itemize}
+
+  \item[\mathcomp]
+\end{description}
 
 \begin{figure}[H]
 	\centering
@@ -36,11 +67,4 @@ The following corpora are used as test cases:
 	\label{figure:corporadeps}
 \end{figure}
 
-\begin{description}
-  \item[\coq stdlib]
-	\item[\compcert]
-  \item[\formalin]
-  \item[\corn]
-  \item[\mathclasses]
-  \item[\mathcomp]
-\end{description}
+\todo{Are dependencies loaded?}

@@ -68,20 +68,37 @@ For low values of $K$ not enough suggestions are made.
 After the peak too many suggestions are made, and the relevant suggestions are more frequently made after the first one hundred.
 
 \subsubsection{\nb}
+We have run \nb for a vast range of parameters.
+Graphs are rendered with interpolation enabled, computed with steps of $\Delta_\pi = 8$ and $\Delta_\tau = \Delta_\sigma = 2$.
+Most notably for the $\pi$-$\tau$-graph the edges are less fuzzy than depicted.
+
 \begin{figure}[H]
   \centering
   \includegraphics{dataset-nb-frequency-pessimistic-oocover.pdf}
   \caption{\oocover of the \nb method for the \corn (frequency) dataset for $\sigma = -15$ or $\tau = 0$}
 \end{figure}
 
+As expected, any value for $\tau \neq 0$ does not work properly.
+This implies that the implementation differs with the work by Kuhlwein \cite{kuhlwein2013mash} and Kaliszyk \cite{kaliszyk2014machine},
+as they recommend to use $\pi = 10$, $\sigma = -15$ and $\tau = 20$.
+Any value for $\pi \geq 10$ and $\sigma \leq -15$ seems to work fine.
+
 \subsubsection{\adarank}
+The \adarank method is parameterized in the number of rounds $T$ the learning algorithm is run for.
+This parameter is almost irrelevant for the computational time required to compute the performance on a testset.
+Also, in the learning algorithm most of the time is spent in computing values derived from the pairs of documents, and not in computing the rounds themselves.
+We plot the \oocover performance of \adarank parameterized in $T$ for several datasets:
+
 \begin{figure}[H]
   \centering
   \includegraphics{dataset-adarank-frequency-pessimistic-oocover.pdf}
-  \caption{\oocover of the \adarank method for the \corn (frequency) dataset for various values of $T$}
+  \caption{\oocover of the \adarank method for various (frequency) datasets for various values of $T$}
 \end{figure}
 
-A dip can be seen for $T=\{3,4\}$. Second improvement for $T=6$, especially for \corn and \mathcomp.
+A dip can be seen for $T=4$ and another relatively big improvement for $T=6$, especially for \corn and \mathcomp.
+Given that a high value of $T$ has almost no impact on computational resources required, the highest value for $T$ seems to be the best choice.
+As for each trainingset the derived features are ordered separately, it is not possible to state which derived feature performs best using this approach.
+This can be done as future work.
 
 \begin{figure}[H]
   \centering
@@ -92,7 +109,19 @@ A dip can be seen for $T=\{3,4\}$. Second improvement for $T=6$, especially for 
   \caption{Performance of the \adarank method for the \corn (frequency) dataset}
 \end{figure}
 
+Interestingly for $T=5$ the volume of suggestions is reduced by $12\%$, but the \oocover is not affected.
+Thus it succesfully discourages invalid suggestions.
+The \auc is marginally impacted negatively, so the order changes adversely slightly.
+
 \subsection{Datasets}
+
+Per dataset we've ran a batch of various machine learning methods and various parameter configurations.
+For each dataset we list the best performing parameter configuration.
+We can easily read which method performs best, but hopefully will also be able to infer aspects of the nature of the datasets.
+
+For this we've added the \emph{Omniscient} method, which is a cheating method that knows all aspects of the testset beforehand.
+It will try to formulate the optimal answer to the premise selection problem.
+By measuring the performance of these answers, we know the upper bound performance that a machine learning method can reach for that given dataset.
 
 \subsubsection{\coq}
 
@@ -104,6 +133,9 @@ A dip can be seen for $T=\{3,4\}$. Second improvement for $T=6$, especially for 
   \end{tabular}
   \caption{Performance of the various methods for the \coq (frequency) dataset}
 \end{figure}
+
+Adarank clearly performs best, with an outstanding performance on \auc.
+Though \auc is better if the \volume is higher, which is not necessarily useful.
 
 \subsubsection{\corn}
 \begin{figure}[H]

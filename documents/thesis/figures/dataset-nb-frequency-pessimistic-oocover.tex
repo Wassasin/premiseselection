@@ -11,9 +11,10 @@
         view={0}{90},
         shader=interp,
         mesh/ordering=x varies,
-        mesh/rows=11
+        mesh/rows=21
       ]
     \addplot3 [surf] table [z index=2] {data/nb-corn-frequency-pessimistic-pi-sigma.dat};
+    \input{../data/nb-corn-frequency-pessimistic-pi-sigma-best-oocover}
     \end{axis}
   \end{tikzpicture}
   \begin{tikzpicture}
@@ -25,9 +26,10 @@
         view={0}{90},
         shader=interp,
         mesh/ordering=x varies,
-        mesh/rows=11
+        mesh/rows=21
       ]
       \addplot3 [surf] table [z index=2] {data/nb-corn-frequency-pessimistic-pi-tau.dat};
+      \input{../data/nb-corn-frequency-pessimistic-pi-tau-best-oocover}
     \end{axis}
   \end{tikzpicture}
 \end{document}
