@@ -1,22 +1,27 @@
 \subsection{Relating to previous work}
 
-They also use 10-fold \crossvalidation.
-Something like the canonical consistensize method.
-On the \corn dataset.
+One of the goals our thesis is to at least reach the same level of performance compared to the work done by Kaliszyk. \cite{kaliszyk2014machine}
+For this purpose our experiments are at least set up in a comparable way.
+For example, in the experiments by Kaliszyk also 10-fold \crossvalidation is used, along with
+something like the canonical consistensize method.
+Their final results are also presented for the \corn dataset.
 
 \begin{figure}[H]
-  \begin{tabular}{lcccc}
-    - & \oocover & (ours) & \auc & (ours) \\
+  \begin{tabular}{lcccccc}
+    - & \oocover & (ours) & & \auc & (ours) & \\
     \hline
-    \knnadaptive & 0.723 & 0.367 ({\color{red}-49.2\%}) & 0.834 & 0.668 ({\color{red}-19.9\%}) \\
-    \nb & 0.726 & 0.520 ({\color{red}-28.3\%}) & 0.836 & 0.732 ({\color{red}-12.4\%}) \\
-    \ensemble & 0.749 & 0.528 ({\color{red}-29.5\%}) & 0.849 & 0.762 ({\color{red}-10.2\%}) \\
+    \input{data/relative}
   \end{tabular}
+  \caption{The relative performances of both the experiments in this thesis and the experiments as done by Kaliszyk.}
 \end{figure}
 
-The performance is markedly lower, and can not be explained away by minor differences in approach or parameters.
+Our \oocover performance is markedly lower, and can not be explained away by minor differences in approach or parameters.
 We discussed this discrepancy with Kaliszyk, but were not able to reach a conclusion as to why this is the case.
 Unfortunately their code is not available for further research.
+Surprisingly our \auc performance is quite similar.
+However as discussed earlier this does not help with regards to the premise selection problem.
+A small victory is achieved with \adarank, as it manages to get a better \auc performance.
+However this is insignificant as long as this unexplained discrepancy exists.
 
 \subsection{Reliability}
 The results compared to the work by Kaliszyk et al \cite{kaliszyk2014machine} bring the reliability of this thesis into question.
