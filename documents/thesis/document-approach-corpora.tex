@@ -14,8 +14,21 @@ Newer versions no longer support the XML export plugin, and as such do not suppo
 
 \begin{description}
   \item[\coq stdlib]
+    Provided with the \coq distribution.
+    Use of the library is optional.
+    For example, \ssreflect which is included in \mathcomp does not use the \coq stdlib.
+    The library has a relatively similar balance between theorems and definitions compared to other corpora.
+    It mainly provides algebraic hierarchies, relations and typical operations.
+    No complex theorems are included in this library.
+
   \item[\formalin]
-    (or $ch_2o$)
+    (or $CH_2O$) \cite{krebbers2015typed}
+    A formalisation of the ISO C11 standard of the C programming language.
+    It provides operational, executable, and axiomatic semantics for a significant fragment of C11.
+    Contrary to similar work done in \compcert \cite{leroy2009formally} and the $\mathbb{K}$-framework \cite{roșu2010overview}, \formalin provides a proof infrastructure that enables to
+    prove properties of the language like type preservation and progress.
+    The transformations from C to internal semantics are proved to be sound and complete.
+    It aims to precisely model the C11 standard, and not a specific implementation provided by a compiler such as with the other two projects.
   \item[\mathclasses] \cite{spitters2011type} \cite{krebbers2011type} \cite{krebbers2011computer}
     A library of abstract interfaces for mathematical structures in \coq.
     It is heavily based on Coq's Type Classes \cite{sozeau2008first} in order to share notations by overloading and specifying with abstract structures by quantification on contexts.
@@ -43,8 +56,12 @@ Newer versions no longer support the XML export plugin, and as such do not suppo
       \item The ForMath project, for which the \mathclasses library was developed. \cite{spitters2011type}
         It includes an Ordinary Differential Equations solver. \cite{makarov2013picard}
     \end{itemize}
-
   \item[\mathcomp]
+    An extensive body of mathematics formalized with the \ssreflect language.
+    The library has its roots in the formal proof of the Four Colour Theorem.
+    Most notably it provided a proof for the Odd Order Theorem \cite{gonthier2013machine}.
+    It is the largest of all corpora investigated in this thesis.
+
 \end{description}
 
 \begin{figure}[H]
@@ -61,10 +78,12 @@ Newer versions no longer support the XML export plugin, and as such do not suppo
     
     \draw[->] (coq) to [out=0,in=180] (mathclasses);
     \draw[->] (mathclasses) to [out=0,in=180] (corn);
-    
 	\end{tikzpicture}
 	\caption{Dependencies between corpora.}
 	\label{figure:corporadeps}
 \end{figure}
 
-\todo{Are dependencies loaded?}
+\todo{more detailed dependency graph}
+
+When estimating performance using \crossvalidation the dependencies of corpora are fully added to the trainingset.
+Only the specific corpus itself is split into separate parts and can form the testset.

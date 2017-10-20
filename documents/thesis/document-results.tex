@@ -147,6 +147,9 @@ Though \auc is better if the \volume is higher, which is not necessarily useful.
   \caption{Performance of the various methods for the \corn (frequency) dataset}
 \end{figure}
 
+Relative to the \coq corpus we perform a lot worse with the \corn dataset.
+Note that \adarank still performs reasonably well for \oocover, but also \nb and \ensemble perform quite well on \auc.
+
 \subsubsection{\mathclasses}
 \begin{figure}[H]
   \centering
@@ -157,6 +160,10 @@ Though \auc is better if the \volume is higher, which is not necessarily useful.
   \caption{Performance of the various methods for the \mathclasses (frequency) dataset}
 \end{figure}
 
+The \oocover performance for the \mathclasses corpus is quite similar to that of the \coq corpus.
+This is very interesting, because that means that all complexity of the \corn dataset is included in that dataset, and not in its dependency \mathclasses.
+The \auc performance is comparable to that for \corn.
+
 \subsubsection{\mathcomp}
 \begin{figure}[H]
   \centering
@@ -166,3 +173,8 @@ Though \auc is better if the \volume is higher, which is not necessarily useful.
   \end{tabular}
   \caption{Performance of the various methods for the \mathcomp (frequency) dataset}
 \end{figure}
+
+We perform worst on the \mathcomp corpus on the \oocover metric.
+The \auc metric is comparable to our \coq performance.
+Notably the \omniscient method does not get a perfect \oocover grading.
+This means that there are a few theorems that use more than a hundred definitions.
