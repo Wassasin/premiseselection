@@ -1,7 +1,8 @@
-\todo{reference}
-\todo{intuition}
-
-For the \knn predictor several prerequisite definitions are required.
+The \knn predictor we implemented is a variant on the canonical machine learning method also implemented by Kaliszyk. \cite{kaliszyk2013stronger}
+Given a conjecture the $k$ nearest \coqobjs are selected.
+The distance between objects is defined to be the euclidean distance between the features of the \coqobjs.
+The dependencies of these \coqobjs are selected as premises, and they are ranked relative to the frequency of their occurance as dependencies in this set.
+In order to precisely define the \knn predictor we require several prerequisite definitions.
 
 \begin{definition}\defgls{dist}\label{def:dist}
   Given two types $x, y \in \types$, the euclidean distance between these types can be computed using the features $\features{}{a}$ and $\features{}{b}$ of those types:
