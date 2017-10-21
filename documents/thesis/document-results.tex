@@ -28,6 +28,19 @@ those that have been.
 Normally we would expect more context to provide more suitable material to make an educated guess.
 Instead more noise was introduced into the models.
 It shows that the machine learning methods have a problem capturing the proper context.
+For \knn without prior knowledge performs better for a lower number of neighbors $k$.
+For \nb without prior knowledge performs better with a lower rewarding constant $s$ for known features.
+Finally \adarank performs better with a lower number of rounds $T$.
+This is at least indicative that the trainingset is smaller, which indeed it is.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics{prior-knn-corn-frequency-pessimistic-oocover.pdf}
+  \caption{\oocover of the \knn method for both the prior and non-prior versions of the \corn dataset for different values of $k$}
+\end{figure}
+
+When looking into the performance of the \knn method we see that it has the same behaviour regardless which dataset you have, except for
+the slightly lower performance for the prior dataset.
 
 \subsection{Poset consistency}
 \begin{figure}[H]

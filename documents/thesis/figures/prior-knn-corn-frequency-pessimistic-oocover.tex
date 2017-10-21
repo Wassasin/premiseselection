@@ -1,0 +1,19 @@
+\documentclass{standalone}
+  \input{../preamble}
+  
+  \begin{document}
+    \begin{tikzpicture}
+      \begin{axis}[
+          xlabel=$k$,
+          ylabel=\oocover,
+          legend pos=outer north east
+        ]
+        \addplot+[smooth, no markers] table [y index=1] {data/knn-corn-frequency-pessimistic.dat};
+        \addlegendentry{Prior}
+
+        \addplot+[smooth, no markers] table [y index=1] {data/knn-nonprior-corn-frequency-pessimistic.dat};
+        \addlegendentry{Non-prior}
+      \end{axis}
+    \end{tikzpicture}
+  \end{document}
+  

@@ -21,7 +21,7 @@ Unfortunately their code is not available for further research.
 Surprisingly our \auc performance is quite similar.
 However as discussed earlier this does not help with regards to the premise selection problem.
 A small victory is achieved with \adarank, as it manages to get a better \auc performance.
-However this is insignificant as long as this unexplained discrepancy exists.
+However this is irrelevant as long as this unexplained discrepancy exists.
 
 \subsection{Reliability}
 The results compared to the work by Kaliszyk et al \cite{kaliszyk2014machine} bring the reliability of this thesis into question.
@@ -29,8 +29,15 @@ There are several key differences compared to our approach.
 We have tried to account for these differences by measuring their effect.
 
 \subsubsection{Prior knowledge}
+We would expect the machine learning methods to perform better given the prior knowledge of corpora on which is depended.
+This however does not seem to be the case.
+The research by Kaliszyk \cite{kaliszyk2014machine} only states that 10-fold \crossvalidation is used, but not if the prior
+datasets are also tested as part of the testset.
 
 \subsubsection{Consistencize}
+The canonical method performs quite a bit worse than the pessimistic method.
+
+
 
 \subsection{Machine learning approaches}
 
