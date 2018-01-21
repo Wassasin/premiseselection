@@ -1,9 +1,9 @@
 \subsection{Relating to previous work}
 
-One of the goals our thesis is to at least reach the same level of performance compared to the work done by Kaliszyk. \cite{kaliszyk2014machine}
-For this purpose our experiments are at least set up in a comparable way.
+One of the goals of our thesis is to at least reach the same level of performance compared to the work done by Kaliszyk. \cite{kaliszyk2014machine}
+For this purpose our experiments are set up in a comparable way.
 For example, in the experiments by Kaliszyk also 10-fold \crossvalidation is used, along with
-something like the canonical consistensize method.
+something comparable to the canonical consistensize method.
 Their final results are also presented for the \corn dataset.
 
 \begin{figure}[H]
@@ -20,8 +20,6 @@ We discussed this discrepancy with Kaliszyk, but were not able to reach a conclu
 Unfortunately their code is not available for further research.
 Surprisingly our \auc performance is quite similar.
 However as discussed earlier this does not help with regards to the premise selection problem.
-A small victory is achieved with \adarank, as it manages to get a better \auc performance.
-However this is irrelevant as long as this unexplained discrepancy exists.
 
 \subsection{Reliability}
 The results compared to the work by Kaliszyk et al \cite{kaliszyk2014machine} bring the reliability of this thesis into question.
@@ -33,26 +31,49 @@ We would expect the machine learning methods to perform better given the prior k
 This however does not seem to be the case.
 The research by Kaliszyk \cite{kaliszyk2014machine} only states that 10-fold \crossvalidation is used, but not if the prior
 datasets are also tested as part of the testset.
+\todo{discuss why non-prior has better performance}
 
 \subsubsection{Consistencize}
 The canonical method performs quite a bit worse than the pessimistic method.
-
-
+This is however expected.
+\todo{discuss}
 
 \subsection{Machine learning approaches}
-
 \knnadaptive does not work at all.
-\nb works OK given correct parameters, but difficult to find.
+\nb works OK given suitable parameters. These values are hard to find however.
 \adarank works quite well but is expensive computationally and memory-wise.
-\ensemble has promise, but haven't dabbled too much.
+Also \adarank makes a gratuitious amount of suggestions.
+\ensemble shows promise, but we haven't dabbled with various combinations all too much.
+
+\adarank is interesting in that it succesfully maps solutions from
+the \emph{Learning to rank} domain to our \emph{Premise selection} domain.
+However the amount of resources that it requires results in that it can not be feasibly run
+with the current implementation or hardware.
+As such were we to implement a Clippy for \coq based on our experiments, it would be with a learner based on \ensemble.
+
+\subsection{Frequency, depth, flat models}
+The depth model seems to work best, as it is probably a more descriptive model of the dataset.
+The frequency model works fine.
+The flat model is not descriptive at all, and as such not useful.
+It would be interesting to see if models based on both frequency and depth will be significantly better.
 
 \subsection{Corpora}
-Depth seems to work best. Probably more descriptive of what is going on.
-Frequency is OK.
-Flat is not descriptive.
+Given the performance of our models it is hard to say anything about the various corpora used,
+except infer their triviality.
+For each corpus we've summarized the performance in the following table:
 
-Coq is relatively easy.
-\todo{The rest depends on prior experiments}
+\begin{figure}[H]
+  \begin{tabular}{lllrrr}
+    Corpus & $|S|$ & $|\defs|$ & $|\thms|$ & \oocover & \auc \\\hline
+    \input{data/counts-performance}
+  \end{tabular}
+  \caption{Corpora (depth model) examined in this thesis, number of objects, definitions and theorems and corresponding best performance
+    for any machine learning method with the canonical strategy}
+\end{figure}
+
+Surprisingly \formalin seems to be most trivial, followed by \coq, \mathclasses, \corn and finally \mathcomp.
+In retrospect \formalin is mostly comprised of mechanical proofs concerning language semantics, and thus would indeed contain the most trivial theorems.
+This relation is not linear with regards to their size.
 
 \subsection{Future work}
 \subsubsection{Deep learning}
