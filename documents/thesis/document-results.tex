@@ -1,6 +1,6 @@
 \label{section:results}
 
-We use the \corn dataset with the frequency model and the pessimistic strategy as a baseline for all comparisons.
+We use the \corn dataset with the frequency model and the canonical strategy as a baseline for all comparisons.
 For a select logical variables various values are examined if applicable.
 First we see whether the use of prior knowledge affects the resulting performance.
 Secondly we verify whether our chosen poset consistency strategy works as intended.
@@ -10,32 +10,36 @@ Finally we inspect all corpora and see how various configurations of machine lea
 
 \subsection{Prior knowledge}
 
-\todo{figure depicting non-cv prior dataset}
-\todo{explanation in method?}
+First we examine in which manner prior knowledge affects the performance of the various machine learning methods.
+Prior knowledge in this case means that we also train the models with the prerequisite datasets.
+We only examine the \corn dataset in this section.
+Thus for these results we've also trained the \emph{prior} models with the \coq standard library and \mathclasses.
+We expect that having this prior knowledge provides more context to the datasets, and will thus result in a better performance.
 
 \begin{figure}[H]
   \centering
   \begin{tabular}{r|cll}
     Method & mode & \oocover & \auc \\\hline
-    \input{data/prior-vs-nonprior-corn-frequency-pessimistic}
+    \input{data/prior-vs-nonprior-corn-frequency-canonical}
   \end{tabular}
-  \caption{Results for the \corn (frequency) dataset with pessimistic strategy, with prior knowledge compared to without}
+  \caption{Results for the \corn (frequency) dataset with canonical strategy, with prior knowledge compared to without}
 \end{figure}
 
-This result is rather unexpected.
+This result however is not consistent with regards to our expectations.
 The models that have not been trained on prior corpora (being \coq and \mathclasses) outperform
 those that have been.
+The only exception to this is the \adarank method, but only by a small margin.
 Normally we would expect more context to provide more suitable material to make an educated guess.
-Instead more noise was introduced into the models.
-It shows that the machine learning methods have a problem capturing the proper context.
-For \knn without prior knowledge performs better for a lower number of neighbors $k$.
-For \nb without prior knowledge performs better with a lower rewarding constant $s$ for known features.
+Instead we think more noise was introduced into the models.
+It shows that the machine learning methods have a problem capturing the proper context in this case.
+For \knn the dataset without prior knowledge performs better for a lower number of neighbors $k$.
+For \nb the dataset without prior knowledge performs better with a lower rewarding constant $s$ for known features.
 Finally \adarank performs better with a lower number of rounds $T$.
-This is at least indicative that the trainingset is smaller, which indeed it is.
+These facts are at least indicative of a smaller trainingset, which indeed the trainingset is.
 
 \begin{figure}[H]
   \centering
-  \includegraphics{prior-knn-corn-frequency-pessimistic-oocover.pdf}
+  \includegraphics{prior-knn-corn-frequency-canonical-oocover.pdf}
   \caption{\oocover of the \knn method for both the prior and non-prior versions of the \corn dataset for different values of $k$}
 \end{figure}
 
@@ -43,6 +47,13 @@ When looking into the performance of the \knn method we see that it has the same
 the slightly lower performance for the prior dataset.
 
 \subsection{Poset consistency}
+Previously we have formulated various strategies to filter out illegal knowledge from our trainingset.
+While these strategies may be better than the other in a performance sense, they should not be viewed in that light.
+Rather, some strategies should be regarded as being better suited in an academic sense.
+Whilst the canonical method is more consistent with regards to the research by Kaliszyk \cite{kaliszyk2014machine},
+the pessimistic method eliminates the factor of the order of the trainingset, which makes comparing results more fair.
+We now compare the performance between these strategies in order to validate our understanding of their relative effect on performance.
+
 \begin{figure}[H]
   \centering
   \includegraphics{posetcons-knn-corn-frequency-oocover.pdf}
@@ -50,15 +61,15 @@ the slightly lower performance for the prior dataset.
 \end{figure}
 
 As expected the optimistic strategy does not perform well at all.
-We conjecture that, contrary to the previous results, a lack of context results in this bad performance.
-It might be argueable that the pessimistic strategy does not remove enough information to fairly compare to the previous study by
-Kaliszyk. \cite{kaliszyk2014machine}
+We conjecture that a lack of context results in this bad performance, which is somewhat contrary to the previous results.
+As expected the pessimistic strategy performs better than the canonical method, as it removes the bare minimum of illegal knowledge
+from the test set.
 
 \subsection{Frequency, depth and flat}
 \begin{figure}[H]
   \centering
-  \includegraphics{field-knn-corn-pessimistic-oocover.pdf}
-  \caption{\oocover of the \knn method with pessimistic strategy for the \corn dataset for different values of $k$}
+  \includegraphics{field-knn-corn-canonical-oocover.pdf}
+  \caption{\oocover of the \knn method for the \corn dataset for different values of $k$}
 \end{figure}
 
 Interestingly the depth model outperforms the frequency model by quite some margin.
@@ -70,8 +81,8 @@ If not so, than might prove to be even better with the frequency model combined.
 \subsubsection{\knn}
 \begin{figure}[H]
   \centering
-  \includegraphics{dataset-knn-frequency-pessimistic-oocover.pdf}
-  \caption{\oocover of the \knn method with pessimistic strategy for various datasets for different values of $k$}
+  \includegraphics{dataset-knn-frequency-canonical-oocover.pdf}
+  \caption{\oocover of the \knn method for various datasets for different values of $k$}
 \end{figure}
 
 Peak \oocover performance for each corpus occurs between $K=20$ and $K=50$.
@@ -87,7 +98,7 @@ Most notably for the $\pi$-$\tau$-graph the edges are less fuzzy than depicted.
 
 \begin{figure}[H]
   \centering
-  \includegraphics{dataset-nb-frequency-pessimistic-oocover.pdf}
+  \includegraphics{dataset-nb-frequency-canonical-oocover.pdf}
   \caption{\oocover of the \nb method for the \corn (frequency) dataset for $\sigma = -15$ or $\tau = 0$}
 \end{figure}
 
@@ -104,7 +115,7 @@ We plot the \oocover performance of \adarank parameterized in $T$ for several da
 
 \begin{figure}[H]
   \centering
-  \includegraphics{dataset-adarank-frequency-pessimistic-oocover.pdf}
+  \includegraphics{dataset-adarank-frequency-canonical-oocover.pdf}
   \caption{\oocover of the \adarank method for various (frequency) datasets for various values of $T$}
 \end{figure}
 
@@ -117,7 +128,7 @@ This can be done as future work.
   \centering
   \begin{tabular}{r|rrrrrr}
     T & \oocover & \ooprecision & \recall & \rank & \auc & \volume \\\hline
-    \input{data/adarank-corn-frequency-pessimistic}
+    \input{data/adarank-corn-frequency-canonical}
   \end{tabular}
   \caption{Performance of the \adarank method for the \corn (frequency) dataset}
 \end{figure}
@@ -142,7 +153,7 @@ By measuring the performance of these answers, we know the upper bound performan
   \centering
   \begin{tabular}{r|rrrrrr}
     Method & \oocover & \ooprecision & \recall & \rank & \auc & \volume \\\hline
-    \input{data/best-coq-frequency-pessimistic}
+    \input{data/best-coq-frequency-canonical}
   \end{tabular}
   \caption{Performance of the various methods for the \coq (frequency) dataset}
 \end{figure}
@@ -155,7 +166,7 @@ Though \auc is better if the \volume is higher, which is not necessarily useful.
   \centering
   \begin{tabular}{r|rrrrrr}
     Method & \oocover & \ooprecision & \recall & \rank & \auc & \volume \\\hline
-    \input{data/best-corn-frequency-pessimistic}
+    \input{data/best-corn-frequency-canonical}
   \end{tabular}
   \caption{Performance of the various methods for the \corn (frequency) dataset}
 \end{figure}
@@ -168,7 +179,7 @@ Note that \adarank still performs reasonably well for \oocover, but also \nb and
   \centering
   \begin{tabular}{r|rrrrrr}
     Method & \oocover & \ooprecision & \recall & \rank & \auc & \volume \\\hline
-    \input{data/best-mathclasses-frequency-pessimistic}
+    \input{data/best-mathclasses-frequency-canonical}
   \end{tabular}
   \caption{Performance of the various methods for the \mathclasses (frequency) dataset}
 \end{figure}
@@ -182,7 +193,7 @@ The \auc performance is comparable to that for \corn.
   \centering
   \begin{tabular}{r|rrrrrr}
     Method & \oocover & \ooprecision & \recall & \rank & \auc & \volume \\\hline
-    \input{data/best-mathcomp-frequency-pessimistic}
+    \input{data/best-mathcomp-frequency-canonical}
   \end{tabular}
   \caption{Performance of the various methods for the \mathcomp (frequency) dataset}
 \end{figure}

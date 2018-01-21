@@ -1,0 +1,28 @@
+\documentclass{standalone}
+  \input{../preamble}
+
+  \begin{document}
+    \begin{tikzpicture}
+      \begin{axis}[
+          xlabel=$T$,
+          ylabel=\oocover,
+          legend pos=outer north east
+        ]
+
+        \addplot+[no markers] table [y index=1] {data/adarank-ch2o-frequency-canonical.dat};
+        \addlegendentry{\formalin}
+
+        \addplot+[no markers] table [y index=1] {data/adarank-coq-frequency-canonical.dat};
+        \addlegendentry{\coq}
+
+        \addplot+[no markers] table [y index=1] {data/adarank-mathclasses-frequency-canonical.dat};
+        \addlegendentry{\mathclasses}
+
+        \addplot+[no markers] table [y index=1] {data/adarank-corn-frequency-canonical.dat};
+        \addlegendentry{\corn}
+
+        \addplot+[no markers] table [y index=1] {data/adarank-mathcomp-frequency-canonical.dat};
+        \addlegendentry{\mathcomp}
+      \end{axis}
+    \end{tikzpicture}
+  \end{document}

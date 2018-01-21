@@ -8,10 +8,10 @@
           ylabel=\oocover,
           legend pos=outer north east
         ]
-        \addplot+[smooth, no markers] table [y index=1] {data/knn-corn-frequency-pessimistic.dat};
+        \addplot+[smooth, no markers] table [y index=1] {data/knn-corn-frequency-canonical.dat};
         \addlegendentry{Prior}
 
-        \addplot+[smooth, no markers] table [y index=1] {data/knn-nonprior-corn-frequency-pessimistic.dat};
+        \addplot+[smooth, no markers] table [y index=1] {data/knn-nonprior-corn-frequency-canonical.dat};
         \addlegendentry{Non-prior}
       \end{axis}
     \end{tikzpicture}

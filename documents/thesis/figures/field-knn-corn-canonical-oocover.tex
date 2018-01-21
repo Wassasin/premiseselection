@@ -8,13 +8,13 @@
         ylabel=\oocover,
         legend pos=outer north east
       ]
-      \addplot+[smooth, no markers] table [y index=1] {data/knn-corn-flat-pessimistic.dat};
+      \addplot+[smooth, no markers] table [y index=1] {data/knn-corn-flat-canonical.dat};
       \addlegendentry{flat}
 
-      \addplot+[smooth, no markers] table [y index=1] {data/knn-corn-depth-pessimistic.dat};
+      \addplot+[smooth, no markers] table [y index=1] {data/knn-corn-depth-canonical.dat};
       \addlegendentry{depth}
 
-      \addplot+[smooth, no markers] table [y index=1] {data/knn-corn-frequency-pessimistic.dat};
+      \addplot+[smooth, no markers] table [y index=1] {data/knn-corn-frequency-canonical.dat};
       \addlegendentry{frequency}
     \end{axis}
   \end{tikzpicture}

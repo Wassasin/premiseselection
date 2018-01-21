@@ -1,0 +1,28 @@
+\documentclass{standalone}
+\input{../preamble}
+
+\begin{document}
+  \begin{tikzpicture}
+    \begin{axis}[
+        xlabel=$k$,
+        ylabel=\oocover,
+        legend pos=outer north east
+      ]
+
+      \addplot+[smooth, no markers] table [y index=1] {data/knn-coq-frequency-canonical.dat};
+      \addlegendentry{\coq}
+
+      \addplot+[smooth, no markers] table [y index=1] {data/knn-ch2o-frequency-canonical.dat};
+      \addlegendentry{\formalin}
+
+      \addplot+[smooth, no markers] table [y index=1] {data/knn-mathclasses-frequency-canonical.dat};
+      \addlegendentry{\mathclasses}
+
+      \addplot+[smooth, no markers] table [y index=1] {data/knn-corn-frequency-canonical.dat};
+      \addlegendentry{\corn}
+
+      \addplot+[smooth, no markers] table [y index=1] {data/knn-mathcomp-frequency-canonical.dat};
+      \addlegendentry{\mathcomp}
+    \end{axis}
+  \end{tikzpicture}
+\end{document}
