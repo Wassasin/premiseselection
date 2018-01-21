@@ -66,6 +66,11 @@ As expected the pessimistic strategy performs better than the canonical method, 
 from the test set.
 
 \subsection{Frequency, depth and flat}
+The original research by Kaliszyk only uses a frequency-based model of the dataset.
+It is hard to say whether a depth-based model or a flat model will be better.
+We expect that a depth-based model is more indicative of the type of solutions that exist within a definition,
+and will thus perform better.
+
 \begin{figure}[H]
   \centering
   \includegraphics{field-knn-corn-canonical-oocover.pdf}
@@ -74,7 +79,7 @@ from the test set.
 
 Interestingly the depth model outperforms the frequency model by quite some margin.
 It might be the case that this model is too descriptive and invites overfitting.
-If not so, than might prove to be even better with the frequency model combined.
+If not so, than it might prove to be even better with the frequency model combined in some kind of ensemble.
 
 \subsection{Methods}
 

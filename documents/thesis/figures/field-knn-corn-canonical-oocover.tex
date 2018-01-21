@@ -6,7 +6,9 @@
     \begin{axis}[
         xlabel=$k$,
         ylabel=\oocover,
-        legend pos=outer north east
+        legend pos=outer north east,
+        thick,
+        cycle list name=Set1-5
       ]
       \addplot+[smooth, no markers] table [y index=1] {data/knn-corn-flat-canonical.dat};
       \addlegendentry{flat}

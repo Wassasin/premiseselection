@@ -6,7 +6,9 @@
       \begin{axis}[
           xlabel=$T$,
           ylabel=\oocover,
-          legend pos=outer north east
+          legend pos=outer north east,
+          thick,
+          cycle list name=Set1-5
         ]
 
         \addplot+[no markers] table [y index=1] {data/adarank-ch2o-frequency-canonical.dat};
