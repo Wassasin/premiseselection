@@ -82,6 +82,10 @@ It might be the case that this model is too descriptive and invites overfitting.
 If not so, than it might prove to be even better with the frequency model combined in some kind of ensemble.
 
 \subsection{Methods}
+% we iterate over all machine learning methods and how they most optimally can be configured.
+For this thesis we implemented various machine learning methods.
+These methods have varying parameters that can be configured.
+In this section we will explore how various configurations of these methods affect performance.
 
 \subsubsection{\knn}
 \begin{figure}[H]
@@ -90,16 +94,17 @@ If not so, than it might prove to be even better with the frequency model combin
   \caption{\oocover of the \knn method for various datasets for different values of $k$}
 \end{figure}
 
-Peak \oocover performance for each corpus occurs between $K=20$ and $K=50$.
+For the \knn method peak \oocover performance for each corpus occurs after $K\geq20$.
 \corn and \mathclasses perform notably worse than the rest.
-After a sharp ascent, a slow decrease in performance occurs after peak performance.
+After a sharp ascent, a slow stagnation or decrease in performance occurs after peak performance.
 For low values of $K$ not enough suggestions are made.
 After the peak too many suggestions are made, and the relevant suggestions are more frequently made after the first one hundred.
 
 \subsubsection{\nb}
-We have run \nb for a vast range of parameters.
-Graphs are rendered with interpolation enabled, computed with steps of $\Delta_\pi = 8$ and $\Delta_\tau = \Delta_\sigma = 2$.
-Most notably for the $\pi$-$\tau$-graph the edges are less fuzzy than depicted.
+The \nb method has three parameters: a baseline value $\tau$, a rewarding constant $\pi$ and punishing constant $\sigma$.
+We have run \nb for a vast range of these parameters in order to get a feeling on how they affect performance.
+The results of this have been plotted in graphs, which are rendered with interpolation enabled,
+computed with steps of $\Delta_\pi = 8$ and $\Delta_\tau = \Delta_\sigma = 2$.
 
 \begin{figure}[H]
   \centering
@@ -108,8 +113,11 @@ Most notably for the $\pi$-$\tau$-graph the edges are less fuzzy than depicted.
 \end{figure}
 
 As expected, any value for $\tau \neq 0$ does not work properly.
+The interpolation depicts fuzzy edges for the $\pi$-$\tau$-graph, whilst actually for any value of $\tau \neq 0$ the performance
+is radically worse.
 This implies that the implementation differs with the work by Kuhlwein \cite{kuhlwein2013mash} and Kaliszyk \cite{kaliszyk2014machine},
 as they recommend to use $\pi = 10$, $\sigma = -15$ and $\tau = 20$.
+This is either a bug (in either implementation), or an underspecification in the other papers.
 Any value for $\pi \geq 10$ and $\sigma \leq -15$ seems to work fine.
 
 \subsubsection{\adarank}
@@ -138,9 +146,9 @@ This can be done as future work.
   \caption{Performance of the \adarank method for the \corn (frequency) dataset}
 \end{figure}
 
-Interestingly for $T=5$ the volume of suggestions is reduced by $12\%$, but the \oocover is not affected.
+Interestingly for $T=5$ the volume of suggestions is reduced by $6\%$, but the \oocover is not affected.
 Thus it succesfully discourages invalid suggestions.
-The \auc is marginally impacted negatively, so the order changes adversely slightly.
+The \auc is marginally impacted negatively, so the order in which suggestions are made changes slightly for the worse.
 
 \subsection{Datasets}
 
@@ -148,7 +156,7 @@ Per dataset we've ran a batch of various machine learning methods and various pa
 For each dataset we list the best performing parameter configuration.
 We can easily read which method performs best, but hopefully will also be able to infer aspects of the nature of the datasets.
 
-For this we've added the \emph{Omniscient} method, which is a cheating method that knows all aspects of the testset beforehand.
+For this we've added the \emph{Omniscient} method, which is a method that cheats by knowing all aspects of the testset beforehand.
 It will try to formulate the optimal answer to the premise selection problem.
 By measuring the performance of these answers, we know the upper bound performance that a machine learning method can reach for that given dataset.
 
