@@ -15,9 +15,20 @@ However problems arose during this early implementation:
 \end{itemize}
 
 Thus we quickly decided to continue the implementation in C++.
-Currently only the first parser and resolver stages of \roerei are implemented in OCaml.
+Currently only the first parser and resolver stages of \roerei are implemented in OCaml as the \preloader.
 The parser shares the \acic type definitions from the \xml plugin in \coq 8.4.
+The data is summarized and exported as a file in the byte-packed \msgpack\footnote{\url{https://github.com/msgpack/msgpack}} format.
+The rest of the \roerei application uses this summarized dataset to analyze and experiment using the dataset.
+Currently \knn 10-fold \crossvalidation takes around 270 seconds for the \coq dataset.
+Comparatively the prototype OCaml implementation took hours for the same operation.
 
-
-Quite a bit faster for everything.
-Currently KNN CV takes 4.5 minutes
+We use the \texttt{boost} libraries and the \texttt{filesystem} en \texttt{threads} components to integrate with Linux.
+All machine learning components and mathematical operations, and matrix datastructures are custom implementations in \roerei.
+These implementations are optimized to make proper use of CPU cachelines.
+In the future we would make better use of custom allocators, to minimize the number of allocations and consequent system calls and/or pagefaults.
+On normal hardware this might be a small performance issue, but on machines with a high number of CPU's the number of pagefaults overwhelm the kernel.
+Heavy use is made of the \texttt{boost} component \texttt{fusion} and the strict C++14 type system in order to provide a measure of
+confidence in the correctness of the code.
+Also a small number of unit tests were implemented using libcheck \footnote{\url{https://libcheck.github.io/check/}}.
+Finally during development we used Linux \texttt{perf}\footnote{\url{https://perf.wiki.kernel.org}} and \texttt{valgrind}\footnote{\url{http://valgrind.org/}}
+to measure the performance of the code and check for memory leaks.
