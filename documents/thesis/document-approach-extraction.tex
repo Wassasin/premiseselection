@@ -106,9 +106,9 @@ A specific flatten operation $\flattensym$ can transform this list of occurances
 
   \begin{tabularx}{\textwidth}{lll}
     $c(\emptyterm, d)$              & $ = \nil $ & Empty term \\
-    $c(\text{ARel}(\cdots), d)$     & $ = \nil $ & \todo{unclear} Unused \\
+    $c(\text{ARel}(\cdots), d)$     & $ = \nil $ & Context reference, unused \\
     $c(\text{AVar}(u), d)$          & $ = \singleton{(u, d)} $ & (Local) variables \\
-    $c(\text{AEvar}(l), d)$         & $ = \flattenlist{\map{l}{\lambda x . c(x, d+1)}} $ & \todo{unclear} \\
+    $c(\text{AEvar}(l), d)$         & $ = \flattenlist{\map{l}{\lambda x . c(x, d+1)}} $ & Existential variables \\
     $c(\text{ASort}(\cdots), d)$    & $ = \nil $ & The Sort of types, unused \\
     $c(\text{ACast}(t, A), d)$      & $ = \concat{c(t, d+1)}{c(A, d+1)} $ & Type casting check \\
     $c(\text{AProds}(l, t), d)$     & $ = c_{\times}(l, t, d) $ & $\prod l . t$ \\
