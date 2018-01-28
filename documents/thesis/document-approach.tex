@@ -54,8 +54,9 @@ Thus we needed to re-implement various \machinelearning algorithms in \cpp.
 \subsection{Transformations}
 \label{section:transformations}
 The premise selection tool works as follows, and can be summarised as in Figure \ref{figure:transformations}:
+\subsubsection{Predicting}
 \begin{enumerate}
-    \item Export all \coq objects from the standard library and the selected corpora to XML files during their compilation.
+	\item Export all \coq objects from the standard library and the selected corpora to XML files during their compilation.
 		\coq has an XML export functionality built in, until version 8.4pl5.
 		Currently this is the only existing method to extract \coq objects.
 		This process is more thoroughly described in Section \ref{section:extraction}.
@@ -89,7 +90,7 @@ The premise selection tool works as follows, and can be summarised as in Figure 
 			\caption{Summaries yielded for the natural number example in Figure \ref{figure:natexample}}
 		\end{figure}
 		These summaries are written to disk, and read again into memory of \roerei.
-	\item Distinguish theorems from other definitions, which yields the features and dependencies.
+	\item Distinguish theorems from other definitions.
 		Ideally we would like to take all objects of sort \sortprop to be the theorems.
 		However this does not work in all cases, specifically for the \corn dataset.
 		In order to solve this we use a heuristic as defined by Kaliszyk et al.\ \cite{kaliszyk2014machine}.
@@ -110,18 +111,14 @@ The premise selection tool works as follows, and can be summarised as in Figure 
 			\]
 			\caption{$\defs$ and $\thms$ for the natural number example in Figure \ref{figure:natexample}}
 		\end{figure}
-    \item From the $\thms$ and $\defs$ generate a \dagraph of dependencies and feature vector for all \coq objects.
-      See Section \ref{section:feats} and Sections \ref{section:deps}.
-		\todo{dagraph dependencies} \todo{feature vector}
-	\item These features and dependencies can now be used to predict by bundling them with a predictor, for example \knn.
-		\todo{predictors}
+    \item From the $\thms$ and $\defs$ generate a \dagraph of dependencies (Section \ref{section:feats})
+			and feature vectors (Section \ref{section:deps}) for all \coq objects.
+		\todo{example dagraph dependencies} \todo{example feature vector}
+	\item These features and dependencies can now be used to predict by teaching them to a predictor, for example \knn.
+		For evaluating the performance for a given predictor method or corpus, we first use \crossvalidation in this step.
+		When used \emph{in the field} the entire body of knowledge can be used to teach a predictor.
+		See Section \ref{section:predictors} for more on the various predictors.
 \end{enumerate}
-
-\todo{crossvalidation}
-\todo{metrics}
-\todo{corpora}
-\todo{combine predictors}
-\todo{more features}
 
 \begin{figure}[H]
 	\centering
@@ -151,6 +148,13 @@ The premise selection tool works as follows, and can be summarised as in Figure 
 	\label{figure:transformations}
 \end{figure}
 
+\subsubsection{Measuring}
+When evaluating the performance of a specific premise selector we also need to a bit more work still.
+Given an imported corpus (see Section \ref{section:corpora}) as a graph of dependencies and a set of features,
+we need to create varying training sets and a test sets to evaluate our performance on.
+We use \crossvalidation to create these datasets (see Section \ref{section:estimating-performance}).
+Again various predictors (see Section \ref{section:predictors}) are run, yielding predictions.
+The performance of these predictions are evaluated using various metrics (see Section \ref{section:metrics}).
 
 \subsection{Extraction}
 \label{section:extraction}
@@ -232,7 +236,7 @@ In the following text we will not explicitly state which of these variants are u
 as that is only relevant in parts of the results section (Section \ref{section:results}) and onwards.
 
 \subsection{Dependencies}
-\label{sections:deps}
+\label{section:deps}
 
 Theorems
 \begin{definition}\defgls{depset}\label{def:depset}
@@ -259,9 +263,11 @@ We could also compute the depth and number of occurances of these dependencies.
 However this is not used in this thesis.
 
 \subsection{Predictors}
+\label{section:predictors}
 \input{document-approach-predictors}
 
 \subsection{Estimating performance}
+\label{section:estimating-performance}
 The performance of a predictor is estimated by running the prediction on known corpora.
 The results of these predictions are quantified using a set of metrics.
 
@@ -342,23 +348,10 @@ Intuitively our machine learning methods infer the required dependencies by look
 The `optimistic' method minimizes noise, but also minimizes similar seemingly irrelevant terms which probably end up to be useful.
 Thus results from this method will reveal the role of irrelevant terms, but also will show the relevance of similar but not directly related terms.
 
-
-% A linearized list is constructed from this poset, and each element in this list is first tested, i.e. treated as a conjecture.
-% The predictor is asked for a prediction, and the performance is measured.
-% Finally the element is learned to the predictor by adding it to the trainingset and adding it to the allowed set of dependencies.
-
-% The predictor is trained using the entire trainingset of the fold, without the dependencies of the term-turned-conjecture $\phi$:
-%\[
-%	\trainset' = \trainset \setminus \depstrans[\phi] ~\text{and}~ \deps' = \depsym \setminus \depstrans[\phi]
-%\]
-
-% Using the customary approach, always an equal or better performance is reached.
-% Trivially this can be concluded because some of the irrelevant terms are excluded from the trainingset, as a result of the poset linearization.
-% \todo{Explain posetcons \{optimistic, pessimistic, canonical\}}
-
 \subsection{Corpora}
 \label{section:corpora}
 \input{document-approach-corpora}
 
 \subsection{Metrics}
+\label{section:metrics}
 \input{document-approach-metrics}
