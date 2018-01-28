@@ -75,6 +75,11 @@ Surprisingly \formalin seems to be most trivial, followed by \coq, \mathclasses,
 In retrospect \formalin is mostly comprised of mechanical proofs concerning language semantics, and thus would indeed contain the most trivial theorems.
 This relation is not linear with regards to their size.
 
+\subsection{Tooling}
+We did not integrate our tooling into the CoqIDE GUI, as was one of the design goals for the \roerei tooling.
+As we quickly switched to C++ for the prediction component of \roerei, it is doubtful \roerei would ever be merged into the \coq main branch,
+even if the performance was significant.
+
 \subsection{Future work}
 \subsubsection{Deep learning}
 Josef Urban is experimenting with Deep Learning \cite{loos2017deep}, and shows a lot of promise.
@@ -84,3 +89,14 @@ Ensembles showed promise, but would need to have proper basis.
 Currently not terribly important because of bad performance relative to prior work.
 
 \todo{Combinining Depth+Frequency}
+
+\subsection{Conclusion}
+We have developed a method to extract the necessary information from the Coq system in order to perform premise selection
+inspired by the work of Kaliszyk and described in section \ref{section:extraction}.
+Several variants of this have been developed, of which the depth-model currently works best.
+
+Of our experiments the Adarank-method has the best performance, but requires significant amounts of resources.
+If resources are of import, than our single ensemble method works best.
+The Adarank method hints that other Learning-to-Rank solutions can also be transformed and might also perform well.
+
+\todo{corpus performance relating to methods}

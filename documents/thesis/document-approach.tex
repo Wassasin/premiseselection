@@ -128,7 +128,7 @@ The premise selection tool works as follows, and can be summarised as in Figure 
 	\begin{tikzpicture}[auto, node distance=2.5cm, main/.style={draw,align=center}]
 		\node[main] (coq) {\coqobj[s]\\inside coq};
 		\node[main] (xml) [below of=coq] {XML\\representation};
-		\node[main] (term) [-] {\coqobj[s]\\$\name \objdef \term : \type$};
+		\node[main] (term) [below of=xml] {\coqobj[s]\\$\name \objdef \term : \type$};
 		\node[main] (summary) [below of=term] {Summary\\$<\name[s], \termset{s}, \typeset{s}>$};
 		\node[main] (definitions) [below right=2cm and 0cm of summary] {Definitions\\$\defs$};
 		\node[main] (theorems) [below left=2cm and 0cm of summary] {Theorems\\$\thms$};
@@ -271,12 +271,11 @@ In order to prevent this overfitting bias, \crossvalidation is used.
 \crossvalidation estimates the performance of the predictor for an independant dataset (i.e. from a real problem).
 
 There are quite a few variants of \crossvalidation.
-In this thesis we use $k$-fold \crossvalidation with $k = 10$.
+In this thesis we use $k$-fold \crossvalidation with $k = 10$ \cite{kohavi1995study}.
 In general $k$-fold \crossvalidation involves partitioning the dataset into several subsets.
 These subsets are combined such that there are two complementary subsets: a \emph{trainingset} $\trainset$ and a \emph{testset} $\testset$.
 The trainset is used to train a predictor, and the testset is used to perform the prediction on, yielding the performance metrics.
 The performance of the predictor is determined by averaging the performance metrics from all complementary combinations.
-\todo{cite}
 
 % Cross validation on Corpora
 % `Proof in Progress` -> step (aconstr)
@@ -290,21 +289,22 @@ Randomly selecting from this tree to create a subset would result in an inconsis
 Given randomly selected subsets, we use three different strategies to make these subsets consistent with regards to the dependants of conjectures.
 
 \subsubsection{Pessimistic}
+We consider the dependants matrix $\parents$ to be the dependency matrix $\depsym$ transposed.
 \begin{definition}
   \[
     \parents = \depsym^{T}
   \]
 \end{definition}
 
-Given a conjecture $\phi \in \testset$ we individually filter the dependants $\parents$ of $\phi$ out of the trainset $\trainset$ for that prediction:
+Given a conjecture $\phi \in \testset$ we filter the dependants $\parents$ of $\phi$ transitively out of the trainset $\trainset$ for that prediction:
 \begin{definition}
   \[
     \trainset^{\phi} = \trainset \backslash \parentstrans[\phi]
   \]
 \end{definition}
-This method removes the least amount of elements out of the dataset to make it consistent.
+The pessimistic method removes the least amount of elements out of the dataset to make it consistent.
 It has the least risk of removing relevant elements, but also includes the most irrelevant datapoints.
-During the rest of this thesis we use this method to measure the performance of a predictor, unless otherwise specified.
+During the remainder of this thesis we use this method to measure the performance of a predictor, unless otherwise specified.
 
 \subsubsection{Canonical}
 In other research first a consistent order is chosen for the definitions.
@@ -312,7 +312,7 @@ Given a corpus with a set of source files and a single given entry file, this or
 The order in which the files are included dictate the order in which terms are defined.
 
 The XML export functionality of \coq only yields a set of terms, not an order in which these have been defined.
-Our `canonical' method reconstructs a consistent order, and simulates the in-order learning of terms and testing of conjectures.
+Our `canonical' method reconstructs a (random) consistent order, and simulates the in-order learning of terms and testing of conjectures.
 
 First the order for the poset is defined:
 \begin{definition}
@@ -322,9 +322,9 @@ First the order for the poset is defined:
   \]
 \end{definition}
 
-\todo{illustration}
 This poset is then linearized to an ordered list.
-The linearization is done in a random manner.
+The linearization is done in a random manner using Depth-first topological sorting \cite{tarjan1976edge}.
+This method comes closest to simulating the behaviour as described by Kaliszyk \cite{kaliszyk2014machine}.
 
 \subsubsection{Optimistic}
 
