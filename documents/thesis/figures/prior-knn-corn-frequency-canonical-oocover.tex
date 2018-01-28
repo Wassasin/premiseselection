@@ -1,21 +1,22 @@
 \documentclass{standalone}
-  \input{../preamble}
-  
-  \begin{document}
-    \begin{tikzpicture}
-      \begin{axis}[
-          xlabel=$k$,
-          ylabel=\oocover,
-          legend pos=outer north east,
-          thick,
-          cycle list name=Set1-5
-        ]
-        \addplot+[smooth, no markers] table [y index=1] {data/knn-corn-frequency-canonical.dat};
-        \addlegendentry{Prior}
+\input{../preamble}
 
-        \addplot+[smooth, no markers] table [y index=1] {data/knn-nonprior-corn-frequency-canonical.dat};
-        \addlegendentry{Non-prior}
-      \end{axis}
-    \end{tikzpicture}
-  \end{document}
-  
+\begin{document}
+  \begin{tikzpicture}
+    \begin{axis}[
+        xlabel=$k$,
+        ylabel=\oocover,
+        legend pos=outer north east,
+        thick,
+        cycle list name=Set1-5,
+        width=\textwidth,
+        height=6cm
+      ]
+      \addplot+[smooth, no markers] table [y index=1] {data/knn-corn-frequency-canonical.dat};
+      \addlegendentry{Prior}
+
+      \addplot+[smooth, no markers] table [y index=1] {data/knn-nonprior-corn-frequency-canonical.dat};
+      \addlegendentry{Non-prior}
+    \end{axis}
+  \end{tikzpicture}
+\end{document}

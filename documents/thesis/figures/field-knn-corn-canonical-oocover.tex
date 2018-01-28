@@ -8,7 +8,9 @@
         ylabel=\oocover,
         legend pos=outer north east,
         thick,
-        cycle list name=Set1-5
+        cycle list name=Set1-5,
+        width=\textwidth,
+        height=6cm
       ]
       \addplot+[smooth, no markers] table [y index=1] {data/knn-corn-flat-canonical.dat};
       \addlegendentry{flat}
