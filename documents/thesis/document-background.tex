@@ -144,11 +144,30 @@ Qed.
 
 	The following terms are of sort \sortprop, and are therefore always proofs:
 	$$
-		\begin{array}{rclcl}
-			\texttt{nat\_ind} & \objdef & \texttt{fix}~\ldots & : &
-				\forall P : \texttt{nat} \rightarrow \sortprop,~
-				P~\texttt{0} \rightarrow (\forall n : \texttt{nat},~ P~n \rightarrow P~(\texttt{S}~n)) \rightarrow \forall n : \texttt{nat},~ P~n \\
-			\texttt{plus\_0\_r} & \objdef & \ldots~\texttt{nat\_ind}~\ldots & : & \forall x : \texttt{nat},~ \texttt{plus}~x~0 = x
+		\begin{array}{rcl}
+%			fun (P : nat -> Type) (f : P O) (f0 : forall n : nat, P n -> P (S n)) =>
+%			fix F (n : nat) : P n :=
+%			  match n as n0 return (P n0) with
+%			    | O => f
+%				  | S n0 => f0 n0 (F n0)
+%				    end
+
+			\texttt{nat\_ind} & \objdef & \lambda~P~f_0~f_S ~.~ \texttt{fix}~F~n ~:~ P~n ~:= \\
+				&   &  \texttt{match}~ n ~\texttt{with} \\
+				&   &  ~~| ~0 => f_0 \\
+				&	&  ~~| ~S~m => f_S~m~(F~m) \\
+				&	&  \texttt{end} \\
+				& : &  \forall P : \texttt{nat} \rightarrow \sortprop,~
+					P~\texttt{0} \rightarrow (\forall n : \texttt{nat},~ P~n \rightarrow P~(\texttt{S}~n)) \rightarrow \forall n : \texttt{nat},~ P~n \\
+
+%			eq_sym
+%			  (nat_ind (fun x0 : nat => x0 = plus x0 O) eq_refl
+%			       (fun (x0 : nat) (IHx : x0 = plus x0 O) => f_equal S IHx) x)
+%				        : forall x : nat, plus x O = x
+
+			\texttt{plus\_0\_r} & \objdef & \texttt{eq\_sym}
+								~~(\texttt{nat\_ind}~(\lambda x~.~\texttt{plus}~x~0)~\texttt{eq\_refl}~(\lambda x~\texttt{IH}~.~\texttt{f\_equal}~S~\texttt{IH})~x) \\
+								& : & \forall x : \texttt{nat},~ \texttt{plus}~x~0 = x \\
 		\end{array}
 	$$
 	\caption{\coq file example defining natural numbers, and the corresponding \coq objects}
