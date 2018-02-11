@@ -3,13 +3,15 @@
 In order to perform \premiseselection for \coq we first need to examine what objects in \coq look like, and what we exactly want to predict.
 
 \subsubsection{\gallina}
-A proof in \coq is a text written in the \gallina\glsadd{gallina} language \cite{huet1992gallina} and stored in a file.
+A collection of proofs is represented in \coq as text written in the \gallina\glsadd{gallina} language \cite{huet1992gallina} and stored in a file.
 For a complete definition of the \gallina language we refer to the \coq reference manual\footnote{\coq Reference Manual, Chapter 1: The Gallina specification language\\ \url{https://coq.inria.fr/refman/Reference-Manual003.html}}.
-\todo{Explain what a statement is.}
-A statement can reference other statements using their names.
-These statements need not be stored in the same file.
+A proof is one of the commands in the language of commands within \gallina, \emph{The Vernacular}.
+These commands are written as sentences, starting with capital letter and ending with a dot.
+
+A sentence can reference other sentences using their names.
+These sentences need not be stored in the same file, but may reference other files.
 Thus for a complete proof multiple files might need to be loaded.
-A statement can be any of the following:
+A sentence can be any of the following:
 \begin{description}
 	\item[Assumption] such as an axiom, conjecture and hypothesis, but also a parameter or variable.
 		An assumption is a name with only a type associated with it.
@@ -22,8 +24,20 @@ A statement can be any of the following:
 		In this case the proposition is converted into an axiom.
 \end{description}
 
-\todo{Small gallina example}
-
+\begin{figure}[H]
+	\begin{lstlisting}[language=Coq, mathescape]
+Inductive nat : Set :=
+  | O : nat
+  | S : nat -> nat.
+Definition nat_id := fun x : nat => x.
+Fixpoint plus (n m : nat) : nat :=
+  match n with
+  | O => m
+  | S p => S (p + m)
+  end.
+	\end{lstlisting}
+	\caption{A small \gallina \coq file example defining natural numbers and the plus operation}
+\end{figure}
 \subsubsection{\pcic}
 
 Internally \coq represents all objects as terms \glsadd{termclass} of \cic\glsadd{cic}.
