@@ -49,7 +49,8 @@ The \preloader is implemented in \ocaml and handles importing the \xml generated
 All other work, such as making predictions and measuring it's own performance is done by \roerei, which is implemented in \cpp.
 
 The \machinelearning field favours \python and \matlab as the preferred development environments.
-Thus we needed to re-implement various \machinelearning algorithms in \cpp.
+Also our premise selection problem does not directly correspond to typical notions of classification or regression.
+Thus existing implementations are of marginal use to \roerei, and we needed to re-implement various \machinelearning algorithms in \cpp.
 
 \subsection{Transformations}
 \label{section:transformations}
