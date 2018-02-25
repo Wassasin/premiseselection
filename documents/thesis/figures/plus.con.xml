@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE ConstantType SYSTEM "http://mowgli.cs.unibo.it/dtd/cic.dtd">
+
+<ConstantType name="plus" params="" id="i79">
+  <PROD type="Set">
+    <decl id="i69" type="Set">
+      <MUTIND uri="cic:/nat/nat.ind" noType="0" id="i71"/>
+    </decl>
+    <decl id="i73" type="Set">
+      <MUTIND uri="cic:/nat/nat.ind" noType="0" id="i75"/>
+    </decl>
+    <target>
+      <MUTIND uri="cic:/nat/nat.ind" noType="0" id="i77"/>
+    </target>
+  </PROD>
+</ConstantType>

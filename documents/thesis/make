@@ -9,7 +9,7 @@ cp *.sty "build"
 cp *.bib "build"
 
 mkdir -p "build/figures"
-cp figures/*.tex "build/figures"
+cp figures/* "build/figures"
 
 pushd "build" 1>/dev/null
 rm -f "*.aux"

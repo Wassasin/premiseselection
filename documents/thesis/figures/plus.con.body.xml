@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE ConstantBody SYSTEM "http://mowgli.cs.unibo.it/dtd/cic.dtd">
+
+<ConstantBody for="cic:/nat/plus.con" params="" id="i79">
+  <FIX noFun="0" id="i0" sort="Set">
+    <FixFunction id="i6" name="plus" recIndex="0">
+      <type>
+        <PROD type="Set">
+          <decl id="i59" type="Set">
+            <MUTIND uri="cic:/nat/nat.ind" noType="0" id="i61"/>
+          </decl>
+          <decl id="i63" type="Set">
+            <MUTIND uri="cic:/nat/nat.ind" noType="0" id="i65"/>
+          </decl>
+          <target>
+            <MUTIND uri="cic:/nat/nat.ind" noType="0" id="i67"/>
+          </target>
+        </PROD>
+      </type>
+      <body>
+        <LAMBDA sort="Set">
+          <decl id="i7" type="Set" binder="n">
+            <MUTIND uri="cic:/nat/nat.ind" noType="0" id="i13"/>
+          </decl>
+          <decl id="i15" type="Set" binder="m">
+            <MUTIND uri="cic:/nat/nat.ind" noType="0" id="i19"/>
+          </decl>
+          <target>
+            <MUTCASE uriType="cic:/nat/nat.ind" noType="0" id="i21" sort="Set">
+              <patternsType>
+                <LAMBDA sort="Type">
+                  <decl id="i51" type="Set" binder="n0">
+                    <MUTIND uri="cic:/nat/nat.ind" noType="0" id="i55"/>
+                  </decl>
+                  <target>
+                    <MUTIND uri="cic:/nat/nat.ind" noType="0" id="i57"/>
+                  </target>
+                </LAMBDA>
+              </patternsType>
+              <inductiveTerm>
+                <REL value="2" binder="n" id="i49" idref="i7" sort="Set"/>
+              </inductiveTerm>
+              <pattern>
+                <REL value="1" binder="m" id="i47" idref="i15" sort="Set"/>
+              </pattern>
+              <pattern>
+                <LAMBDA sort="Set">
+                  <decl id="i23" type="Set" binder="p">
+                    <MUTIND uri="cic:/nat/nat.ind" noType="0" id="i27"/>
+                  </decl>
+                  <target>
+                    <APPLY id="i29" sort="Set">
+                      <MUTCONSTRUCT uri="cic:/nat/nat.ind" noType="0" noConstr="2" id="i43" sort="Set"/>
+                      <APPLY id="i31" sort="Set">
+                        <REL value="4" binder="plus" id="i37" idref="i6" sort="Set"/>
+                        <REL value="1" binder="p" id="i35" idref="i23" sort="Set"/>
+                        <REL value="2" binder="m" id="i33" idref="i15" sort="Set"/>
+                      </APPLY>
+                    </APPLY>
+                  </target>
+                </LAMBDA>
+              </pattern>
+            </MUTCASE>
+          </target>
+        </LAMBDA>
+      </body>
+    </FixFunction>
+  </FIX>
+</ConstantBody>
