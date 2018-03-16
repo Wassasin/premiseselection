@@ -52,7 +52,13 @@ As an example we take the definition of the \texttt{plus} operation as specified
 \begin{figure}[H]
 \centering
 \lstinputlisting[language=xml,basicstyle=\tiny]{figures/plus.con.xml}
-\caption{Contents of plus.con.xml}
+\caption{Contents of plus.con.xml before parsing}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \lstinputlisting[language=caml,basicstyle=\tiny]{figures/plus.con.types.txt}
+  \caption{Contents of plus.con.xml after parsing}
 \end{figure}
 
 And indeed \coq exports the definition of plus as a constant with type $\nat \rightarrow \nat \rightarrow \nat$ of sort \sortset.
@@ -69,9 +75,14 @@ Finally we can see that \texttt{plus} is a fixpoint constant which destructs a $
 \begin{figure}[H]
 \centering
 \lstinputlisting[language=xml,basicstyle=\tiny]{figures/plus.con.body.xml}
-\caption{Contents of plus.con.body.xml}
+\caption{Contents of plus.con.body.xml before parsing}
 \end{figure}
 
+\begin{figure}[H]
+  \centering
+  \lstinputlisting[language=caml,basicstyle=\tiny]{figures/plus.con.body.txt}
+  \caption{Contents of plus.con.body.xml after parsing}
+  \end{figure}
 
 The definition of the constructors as used by the parser and resolver can be found
 in the \roerei repository in the file \lstinline{src/preloader/acic.ml}.

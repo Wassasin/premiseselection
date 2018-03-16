@@ -1,0 +1,47 @@
+AFix(
+  "i0",
+  0,
+  [
+    [
+      "i6",
+      "plus",
+      0,
+      AProds(
+        [
+          [ "i59", "Anonymous", AInd( "i61", [ null, [  ] ], "cic:/nat/nat.ind", 0 ) ],
+          [ "i63", "Anonymous", AInd( "i65", [ null, [  ] ], "cic:/nat/nat.ind", 0 ) ]
+        ],
+        AInd( "i67", [ null, [  ] ], "cic:/nat/nat.ind", 0 )
+      ),
+      ALambdas(
+        [
+          [ "i7", Name( "n" ), AInd( "i13", [ null, [  ] ], "cic:/nat/nat.ind", 0 ) ],
+          [ "i15", Name( "m" ), AInd( "i19", [ null, [  ] ], "cic:/nat/nat.ind", 0 ) ]
+        ],
+        ACase(
+          "i21",
+          "cic:/nat/nat.ind",
+          0,
+          ALambdas(
+            [ [ "i51", Name( "n0" ), AInd( "i55", [ null, [  ] ], "cic:/nat/nat.ind", 0 ) ] ],
+            AInd( "i57", [ null, [  ] ], "cic:/nat/nat.ind", 0 )
+          ),
+          ARel( "i49", 2, "i7", "n" ),
+          [
+            ARel( "i47", 1, "i15", "m" ),
+            ALambdas(
+              [ [ "i23", Name( "p" ), AInd( "i27", [ null, [  ] ], "cic:/nat/nat.ind", 0 ) ] ],
+              AApp(
+                "i29",
+                [
+                  AConstruct( "i43", [ null, [  ] ], "cic:/nat/nat.ind", 0, 2 ),
+                  AApp( "i31", [ ARel( "i37", 4, "i6", "plus" ), ARel( "i35", 1, "i23", "p" ), ARel( "i33", 2, "i15", "m" ) ] )
+                ]
+              )
+            )
+          ]
+        )
+      )
+    ]
+  ]
+)
