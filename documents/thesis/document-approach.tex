@@ -235,10 +235,15 @@ We denote these variants of features as $\features{\countsym}{s}$ and $\features
 In the following text we will not explicitly state which of these variants are used,
 as that is only relevant in parts of the results section (Section \ref{section:results}) and onwards.
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.5\textwidth]{assets/nat-features}
+	\caption{Features for the natural numbers example depicted as a graph}
+\end{figure}
+
 \subsection{Dependencies}
 \label{section:deps}
 
-Theorems
 \begin{definition}\defgls{depset}\label{def:depset}
   The set of all possible dependencies $\depset$ is defined as the set of theorems.
   $$
@@ -261,6 +266,12 @@ The dependencies $\deps{s}$ of a \coqobj[s] are names of other objects which hav
 Later we will want to reproduce this set of dependencies given only the original proof goal (or type) of a \coqobj.
 We could also compute the depth and number of occurances of these dependencies.
 However this is not used in this thesis.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.5\textwidth]{assets/nat-dependencies}
+	\caption{Dependencies for the natural numbers example depicted as a graph}
+\end{figure}
 
 \subsection{Predictors}
 \label{section:predictors}
