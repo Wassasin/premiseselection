@@ -113,7 +113,6 @@ The premise selection tool works as follows, and can be summarised as in Figure 
 		\end{figure}
     \item From the $\thms$ and $\defs$ generate a \dagraph of dependencies (Section \ref{section:feats})
 			and feature vectors (Section \ref{section:deps}) for all \coq objects.
-		\todo{example dagraph dependencies} \todo{example feature vector}
 	\item These features and dependencies can now be used to predict by teaching them to a predictor, for example \knn.
 		For evaluating the performance for a given predictor method or corpus, we first use \crossvalidation in this step.
 		When used \emph{in the field} the entire body of knowledge can be used to teach a predictor.
