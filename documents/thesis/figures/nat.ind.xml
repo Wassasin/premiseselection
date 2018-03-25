@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE InductiveDefinition SYSTEM "http://mowgli.cs.unibo.it/dtd/cic.dtd">
+
+<InductiveDefinition noParams="0" id="i11" params="">
+  <InductiveType id="i0" name="nat" inductive="true">
+    <arity>
+      <SORT value="Set" id="i9"/>
+    </arity>
+    <Constructor name="O">
+      <MUTIND uri="cic:/nat/nat.ind" noType="0" id="i1"/>
+    </Constructor>
+    <Constructor name="S">
+      <PROD type="Set">
+        <decl id="i3" type="Set">
+          <MUTIND uri="cic:/nat/nat.ind" noType="0" id="i5"/>
+        </decl>
+        <target>
+          <MUTIND uri="cic:/nat/nat.ind" noType="0" id="i7"/>
+        </target>
+      </PROD>
+    </Constructor>
+  </InductiveType>
+</InductiveDefinition>

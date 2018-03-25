@@ -1,0 +1,19 @@
+digraph features {
+model="subset";
+splines="true";
+size="16.4, 10.7";
+overlap=false;
+rankdir="LR";
+root="Coq";
+"nat/plus_0_r";
+"nat/plus";
+"nat/nat_rec";
+"nat/nat_ind";
+"nat/nat";
+"Coq/Init/Logic/eq";
+"Coq/Init/Logic/eq" -> "nat/plus_0_r" [weight=1, label="1"];
+"nat/nat" -> "nat/nat_ind" [weight=1, label="1"];
+"nat/nat" -> "nat/nat_rec" [weight=1, label="1"];
+"nat/nat" -> "nat/plus_0_r" [weight=1, label="1"];
+"nat/plus" -> "nat/plus_0_r" [weight=1, label="1"];
+}

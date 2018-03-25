@@ -1,0 +1,19 @@
+digraph dependencies {
+model="subset";
+splines="true";
+size="16.4, 10.7";
+overlap=false;
+rankdir="LR";
+root="Coq";
+"nat/plus_0_r";
+"nat/nat_rect";
+"nat/nat_rec";
+"nat/nat_ind";
+"Coq/Init/Logic/f_equal";
+"Coq/Init/Logic/eq_sym";
+"Coq/Init/Logic/eq_sym" -> "nat/plus_0_r" [weight=1, label="1"];
+"Coq/Init/Logic/f_equal" -> "nat/plus_0_r" [weight=1, label="1"];
+"nat/nat_ind" -> "nat/nat_rect" [weight=1, label="1"];
+"nat/nat_ind" -> "nat/plus_0_r" [weight=1, label="1"];
+"nat/nat_rec" -> "nat/nat_rect" [weight=1, label="1"];
+}

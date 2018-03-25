@@ -1,0 +1,7 @@
+AProds(
+  [
+    [ "i69", "Anonymous", AInd( "i71", [ null, [  ] ], "cic:/nat/nat.ind", 0 ) ],
+    [ "i73", "Anonymous", AInd( "i75", [ null, [  ] ], "cic:/nat/nat.ind", 0 ) ]
+  ],
+  AInd( "i77", [ null, [  ] ], "cic:/nat/nat.ind", 0 )
+)

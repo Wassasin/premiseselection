@@ -47,6 +47,43 @@ Thusfar there is no use for these variables within this thesis.
 In the repository \xml directory we have for each \coqobj[s] comprised of $\name \objdef \term : \type$
 one or two files: at least a file ending with \lstinline{.types.xml.gz} and
 possibly a file ending with \lstinline{.body.xml.gz} if the body is not empty, i.e. $\emptyterm$.
+As an example we take the definition of the \texttt{plus} operation as specified in figure \ref{figure:natexample}.
+
+\begin{figure}[H]
+\centering
+\lstinputlisting[language=xml,basicstyle=\tiny]{figures/plus.con.xml}
+\caption{Contents of plus.con.xml before parsing}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \lstinputlisting[language=caml,basicstyle=\tiny]{figures/plus.con.types.txt}
+  \caption{Contents of plus.con.xml after parsing}
+\end{figure}
+
+And indeed \coq exports the definition of plus as a constant with type $\nat \rightarrow \nat \rightarrow \nat$ of sort \sortset.
+This constant does not have any inner types:
+
+\begin{figure}[H]
+\centering
+\lstinputlisting[language=xml,basicstyle=\tiny]{figures/plus.con.types.xml}
+\caption{Contents of plus.con.types.xml}
+\end{figure}
+
+Finally we can see that \texttt{plus} is a fixpoint constant which destructs a $\nat$ and applies itself recursively:
+
+\begin{figure}[H]
+\centering
+\lstinputlisting[language=xml,basicstyle=\tiny]{figures/plus.con.body.xml}
+\caption{Contents of plus.con.body.xml before parsing}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \lstinputlisting[language=caml,basicstyle=\tiny]{figures/plus.con.body.txt}
+  \caption{Contents of plus.con.body.xml after parsing}
+  \end{figure}
+
 The definition of the constructors as used by the parser and resolver can be found
 in the \roerei repository in the file \lstinline{src/preloader/acic.ml}.
 The original source code for these functions can be found in \lstinline{src/preloader/interpreter.ml}.
