@@ -215,11 +215,16 @@ Where we consider $\objs$ to be the set of all \coqobjs,
 \end{definition}
 
 \begin{definition}\defgls{thms}\label{def:thms}
-  we take the theorems to be the names in the terms of all \coqobj, excluding all definitions
+  we take the theorems to be the names in the terms of all \coqobjs, excluding all definitions
   \[ \thms = (\bigcup_{s \in \objs} \termset{s}) \setminus \defs \]
 \end{definition}
 
 This provides an adequate distinction for our purposes.
+For our natural numbers example this results in the set of definitions
+\lstinline[language=Coq, mathescape, frame=none]|$\defs = \{$nat$,$ 0$,$ S$,$ plus$\}$|
+and the set of theorems
+\lstinline[language=Coq, mathescape, frame=none]|$\thms = \{$nat_ind$,$ plus_0_r$\}$|
+.
 
 \subsection{Features}
 \label{section:feats}
