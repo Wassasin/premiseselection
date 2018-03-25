@@ -1,0 +1,13 @@
+<ConstantType name="cotransitive" params="cic:/CoRN/algebra/CSetoids/Properties_of_relations/A.var" id="i109">
+  <PROD type="Type">
+    <decl id="i93" type="Type">
+      <APPLY id="i95" sort="Type">
+        <CONST uri="cic:/CoRN/logic/CLogic/Crelation.con" id="i100" sort="Type"/>
+        <VAR uri="cic:/A.var" id="i97" sort="Type"/>
+      </APPLY>
+    </decl>
+    <target>
+      <SORT value="Type" id="i107"/>
+    </target>
+  </PROD>
+</ConstantType>

@@ -182,8 +182,29 @@ Thus on a logical level there is no distinction between a definition and a theor
 \coq tries to track this distinction by having the type of theorems be of sort \sortprop.
 Ideally we would like to take all objects of sort \sortprop to be the theorems.
 However this does not work in all cases, specifically for the \corn dataset.
-In the case of \corn the propositions are of type \cprop, which is of sort \sorttype.
-\todo{example-corn}
+In the case of \corn the propositions are of type \cprop, which is an alias for the sort \sorttype.
+
+\begin{figure}[H]
+	\begin{lstlisting}[language=Coq, mathescape]
+Notation "'CProp'" := Type.
+	\end{lstlisting}
+	\caption{The definition of CProp in \texttt{logic/CLogic.v} of the \corn dataset}
+\end{figure}
+
+Thus when inspecting \corn propositions, they are denoted as being of arbitrary types.
+Using the original distinction where objects of sort \sortprop are theorems, and types of other sort are definitions,
+all \corn propositions would be interpreted as being definitions.
+
+\begin{figure}[H]
+	\begin{lstlisting}[language=Coq, mathescape]
+Definition cotransitive (R : Crelation A) : CProp := forall x y : A,
+	R x y -> forall z : A, R x z or R z y.
+	\end{lstlisting}
+	\lstinputlisting[language=xml,basicstyle=\tiny]{figures/cotransitive.con.xml}
+	\lstinputlisting[language=xml,basicstyle=\tiny]{figures/cotransitive.con.body.xml}
+	\caption{The definition of an arbitrarily chosen \cprop proposition of the \corn dataset for cotransistive relations
+		and its subsequent interpretation of the type by \coq (from \texttt{algebra/CSetoids.v})}
+\end{figure}
 
 In order to solve this we use a heuristic as defined by Kaliszyk et al.\ \cite{kaliszyk2014machine}.
 Where we consider $\objs$ to be the set of all \coqobjs,

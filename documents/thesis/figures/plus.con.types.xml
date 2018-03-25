@@ -1,6 +1,2 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-
-<!DOCTYPE InnerTypes SYSTEM "http://mowgli.cs.unibo.it/dtd/cictypes.dtd">
-
 <InnerTypes of="cic:/nat/plus.con">
 </InnerTypes>

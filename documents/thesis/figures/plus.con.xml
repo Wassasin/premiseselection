@@ -1,7 +1,3 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-
-<!DOCTYPE ConstantType SYSTEM "http://mowgli.cs.unibo.it/dtd/cic.dtd">
-
 <ConstantType name="plus" params="" id="i79">
   <PROD type="Set">
     <decl id="i69" type="Set">

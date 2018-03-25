@@ -1,7 +1,3 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-
-<!DOCTYPE InductiveDefinition SYSTEM "http://mowgli.cs.unibo.it/dtd/cic.dtd">
-
 <InductiveDefinition noParams="0" id="i11" params="">
   <InductiveType id="i0" name="nat" inductive="true">
     <arity>

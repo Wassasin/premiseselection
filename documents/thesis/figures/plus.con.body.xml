@@ -1,7 +1,3 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-
-<!DOCTYPE ConstantBody SYSTEM "http://mowgli.cs.unibo.it/dtd/cic.dtd">
-
 <ConstantBody for="cic:/nat/plus.con" params="" id="i79">
   <FIX noFun="0" id="i0" sort="Set">
     <FixFunction id="i6" name="plus" recIndex="0">

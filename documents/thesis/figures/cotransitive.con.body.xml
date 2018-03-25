@@ -1,0 +1,45 @@
+<ConstantBody for="cic:/CoRN/algebra/CSetoids/cotransitive.con" params="cic:/CoRN/algebra/CSetoids/Properties_of_relations/A.var" id="i109">
+  <LAMBDA sort="Type">
+    <decl id="i0" type="Type" binder="R">
+      <APPLY id="i6" sort="Type">
+        <CONST uri="cic:/CoRN/logic/CLogic/Crelation.con" id="i11" sort="Type"/>
+        <VAR uri="cic:/A.var" id="i8" sort="Type"/>
+      </APPLY>
+    </decl>
+    <target>
+      <PROD type="Type">
+        <decl id="i18" type="Type" binder="x">
+          <VAR uri="cic:/A.var" id="i21" sort="Type"/>
+        </decl>
+        <decl id="i23" type="Type" binder="y">
+          <VAR uri="cic:/A.var" id="i25" sort="Type"/>
+        </decl>
+        <decl id="i27" type="Type">
+          <APPLY id="i29" sort="Type">
+            <REL value="3" binder="R" id="i35" idref="i0" sort="Type"/>
+            <REL value="2" binder="x" id="i33" idref="i18" sort="Type"/>
+            <REL value="1" binder="y" id="i31" idref="i23" sort="Type"/>
+          </APPLY>
+        </decl>
+        <decl id="i44" type="Type" binder="z">
+          <VAR uri="cic:/A.var" id="i46" sort="Type"/>
+        </decl>
+        <target>
+          <APPLY id="i48" sort="Type">
+            <MUTIND uri="cic:/Coq/Init/Datatypes/sum.ind" noType="0" id="i82"/>
+            <APPLY id="i66" sort="Type">
+              <REL value="5" binder="R" id="i73" idref="i0" sort="Type"/>
+              <REL value="4" binder="x" id="i71" idref="i18" sort="Type"/>
+              <REL value="1" binder="z" id="i69" idref="i44" sort="Type"/>
+            </APPLY>
+            <APPLY id="i50" sort="Type">
+              <REL value="5" binder="R" id="i57" idref="i0" sort="Type"/>
+              <REL value="1" binder="z" id="i55" idref="i44" sort="Type"/>
+              <REL value="3" binder="y" id="i53" idref="i23" sort="Type"/>
+            </APPLY>
+          </APPLY>
+        </target>
+      </PROD>
+    </target>
+  </LAMBDA>
+</ConstantBody>
