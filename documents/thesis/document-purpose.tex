@@ -90,16 +90,18 @@ Currently automation for \coq is limited to the following tactics:
 \end{description}
 
 Ideally we would like to make a new tactic which solves the current proof goal using statistical ATP techniques, specifically machine learning.
-This differs from existing tactics that employ symbolical ATP.
-This means that they use symbolic operations such as applying, introducing and unfolding
-directly following from the current state of the proof goal. \todo{improve distinction}
+This differs from existing tactics that employ symbolical ATP,
+which use symbolic operations such as applying, introducing and unfolding
+directly following from the current state of the proof goal.
+Statistical machine learning employs ranking, classification and regression on a theorem to form proofs and/or proof strategies.
 
 Such an automated theorem prover consists of:
 \begin{description}
 \item[Premise selection] Filter the existing knowledgebase of proven theorems by usefullness for the current yet unproven conjecture.
 It yields a set of theorems which are likely to help in proving this conjecture.
-Subsequent ATP components thus will only need to consider useful theorems. \todo{explain}
-\item[Proof synthesis] Application of previously discovered premises using tactics to generate new proof goals,
+Subsequent ATP components thus will only need to consider useful theorems, decreasing the size of their problem space.
+\item[Proof synthesis] Application of previously discovered premises using tactics
+such as resolution and unification \cite{dowek1993complete} to generate new proof goals,
 in the hope that these new proof goals are easier to prove.
 \end{description}
 
