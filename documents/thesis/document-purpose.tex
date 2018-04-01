@@ -19,16 +19,19 @@ Conversely fully automated theorem provers are just called automated theorem pro
 Fully automated ATP's include Alt-Ergo, E, Prover9 and Vampire.
 
 Interestingly tooling has been developed to combine various theorem proving systems.
-Specifically Sledgehammer \cite{meng2006automation} is a tool included in Isabelle that convert a subgoal into first order logic clause form and
+Specifically Sledgehammer \cite{meng2006automation} is a tool included in Isabelle that converts a subgoal into first order logic clause form and
 hands this expression to the first order automatic theorem provers E, Spass and Vampire.
 Asynchronically this expression is solved, and the first yielded proof is converted back into an Isabelle script.
+This is called the `hammer approach', and can similarly be applied to other proof systems.
 
-Sledgehammer has been improved upon using machine learning.
-MaSH \cite{kuhlwein2013mash} replaces a key component of Sledgehammer, the relevance filter.
+MaSH \cite{kuhlwein2013mash} improves upon Sledgehammer using machine learning and replaces the relevance filter, a key component of Sledgehammer.
 Whereas the standard MePo filter \cite{meng2009lightweight} selects and ranks fact similar to the current goal,
 MaSH employs a machine learning system that learns from succesful proofs.
 By combining both the MePo filter and the machine learning based filters a significantly better result is achieved.
-\todo{Explain hammer approach / HOL(y) hammer}
+
+HOL(y)Hammer \cite{kaliszyk2013hol} is an online theorem proving service for theorems in HOL Light and uses the hammer approach.
+Users of HOL(y)Hammer can upload their projects to the service and attempt to solve them.
+If these projects use concepts from previously uploaded projects, the system is more likely to solve them.
 
 Full automation for \coq does not exist, as it has one of the more complex and expressive logical languages.
 As \coq is very popular in the field of formalization, creating more or even full automation for the system would help significantly.
@@ -87,7 +90,8 @@ Currently automation for \coq is limited to the following tactics:
 \end{description}
 
 Ideally we would like to make a new tactic which solves the current proof goal using statistical ATP techniques, specifically machine learning.
-This differs from the existing tactics in that they employ symbolical ATP. This means that they use symbolic operations such as applying, introducing and unfolding
+This differs from existing tactics that employ symbolical ATP.
+This means that they use symbolic operations such as applying, introducing and unfolding
 directly following from the current state of the proof goal. \todo{improve distinction}
 
 Such an automated theorem prover consists of:
