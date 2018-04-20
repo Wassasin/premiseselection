@@ -72,7 +72,7 @@ For each corpus we've summarized the performance in the following table:
 \end{figure}
 
 Surprisingly \formalin seems to be most trivial, followed by \coq, \mathclasses, \corn and finally \mathcomp.
-In retrospect \formalin is mostly comprised of mechanical proofs concerning language semantics, and thus would indeed contain the most trivial theorems.
+In retrospect \formalin is mostly comprised of mechanical proofs concerning language semantics, and thus would indeed contain the more trivial theorems.
 This relation is not linear with regards to their size.
 
 \subsection{Tooling}
@@ -83,13 +83,20 @@ Due to the disappointing performance we decided to not invest the effort to actu
 
 \subsection{Future work}
 \subsubsection{Deep learning}
-Josef Urban is experimenting with Deep Learning \cite{loos2017deep}, and shows a lot of promise.
+Sarah Loos et al have experimented with proof guidance and clause selection for \mizar using Deep Learning \cite{loos2017deep}.
+Their research show a lot of promise.
+Adapting their work to the premise selection for \coq problem however is not straightforward, as the clause selection used is
+dependent on the First Order logic nature of \mizar and on operations on proofs in the Clausal Normal Form (CNF).
+Alternatively our transformation of the Learning to Rank problem for \adarank could be applied to previous Deep Learning solutions like
+those by Song \cite{song2018deep}.
 
 \subsubsection{Ensembles}
-Ensembles showed promise, but would need to have proper basis.
-Currently not terribly important because of bad performance relative to prior work.
-
-\todo{Combinining Depth+Frequency}
+For this thesis we've ran a small experiment using ensemble learning, which worked moderately well compared to
+the more simple solutions.
+With more solutions in the core, quite a few variants of ensembles can be tried out.
+Particularly different ensembles can be built from models using both the depth and frequency datasets.
+Also ensembles can be made where a part of the ensemble is only aware of local theorems, and others have a wide knowledge base.
+I think this might work because in some cases the models that did not learn from prior datasets performed better.
 
 \subsection{Conclusion}
 We have developed a method to extract the necessary information from the Coq system in order to perform premise selection
