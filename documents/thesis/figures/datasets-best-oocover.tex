@@ -1,0 +1,28 @@
+\documentclass{standalone}
+\input{../preamble}
+
+\begin{document}
+    \begin{tikzpicture}
+    \begin{axis}[
+        width=15cm,
+        height=7cm,
+        ybar,
+        ylabel={\oocover},
+        symbolic x coords={{coq},{corn},{formalin},{mathclasses},{mathcomp}},
+        xtick=data,
+        xticklabels={{\coq},{\corn},{\formalin},{\mathclasses},{\mathcomp}},
+        x tick label style={rotate=45,anchor=east},
+    ]
+    \addplot table[header=false] {data/best-knn-canonical.dat};
+    \addlegendentry{\knn}
+    \addplot table[header=false] {data/best-knn_adaptive-canonical.dat};
+    \addlegendentry{\knnadaptive}
+    \addplot table[header=false] {data/best-naive_bayes-canonical.dat};
+    \addlegendentry{\nb}
+    \addplot table[header=false] {data/best-ensemble-canonical.dat};
+    \addlegendentry{\ensemble}
+    \addplot table[header=false] {data/best-adarank-canonical.dat};
+    \addlegendentry{\adarank}
+    \end{axis}
+    \end{tikzpicture}
+\end{document}
