@@ -67,7 +67,7 @@ Therefor a type is inside the syntactic class term, and all types can be conside
 	A name is an element in the set of names $\names$\glsadd{names}, and is bound to a term. A name is typically denoted by $\name$\glsadd{name}.
 \end{definition}
 Names can be both global (qualid) and local (ident).
-In practice we transform the ident and qualid into a human readible canonical name.
+In practice we transform the ident and qualid into a human readable canonical name.
 For the purpose of this thesis we disregard this detail, and instead consider each name to be a unique identifier.
 We are interested in these named terms for the purpose of \premiseselection,
 as we wish to select terms which are most likely to help prove a conjecture.
@@ -176,7 +176,7 @@ Qed.
 
 Having described the sets for terms, types, names and sorts,
 we still need to define what each of these mean syntactically in the case of \pcic.
-Before we can summarize the structure of \pcic, we first need to define the list type $\listtype{-}$.
+Before we can summarise the structure of \pcic, we first need to define the list type $\listtype{-}$.
 
 \begin{definition}[\listtype{-}]
 	A list object for type $X$ consists of either an empty list, or a segment with a value of type $X$ followed by a tail.
@@ -255,6 +255,6 @@ Most notably all tactics are resolved (or executed) into terms.
 Thus a \coq file can be considered to be a sequence of \coq objects:
 $$ \name[1] \objdef \term[1] : \type[1], ~~ \name[2] \objdef \term[2] : \type[2], ~~ \ldots $$
 
-A \coq corpus (or library) is a collection of \coq files, possibly including eachother.
+A \coq corpus (or library) is a collection of \coq files, possibly including each other.
 It can thus be considered to be a partial ordered set of \coq objects, with the relation $R(a,b)$ for \coq objects $a, b \in \objs$ to be defined as
 \[R(a,b) = \name[b] \texttt{~is referenced in~} \term[a]\]
