@@ -23,7 +23,7 @@ However as discussed earlier this does not help with regards to the premise sele
 
 \subsection{Reliability}
 The results compared to the work by Kaliszyk et al \cite{kaliszyk2014machine} bring the reliability of this thesis into question.
-There are several key differences compared to our approach.
+There are two key differences compared to our approach.
 We have tried to account for these differences by measuring their effect.
 
 \subsubsection{Prior knowledge}
@@ -31,7 +31,23 @@ We would expect the machine learning methods to perform better given the prior k
 This however does not seem to be the case.
 The research by Kaliszyk \cite{kaliszyk2014machine} only states that 10-fold \crossvalidation is used, but not if the prior
 datasets are also tested as part of the testset.
-\todo{discuss why non-prior has better performance}
+Thus it is difficult to relate our results to that by Kaliszyk.
+
+As discussed in the results in Section \ref{section:prior}, we believe that the prior datasets introduce
+too much noise for the prediction methods to handle.
+This is purely conjecture, but we believe that this would be less of a problem when
+better descriptive features would be used.
+Currently each definition forms a feature, but a singular definition does not directly relate
+to which theorems would be useful.
+It is up to the model to internally relate definitions to useful theorems.
+If there is no prior context of usages of a theorem in relation to said definition,
+a model would not have a way to build these internal relations.
+Prior datasets increase the set of theorems and definitions, but do not necessarily
+generate a prior context which relates to the theorems of the testset.
+Thus they might make the problem to solve harder.
+Better descriptive features would be more abstract, but might provide a better context that follows
+naturally from that abstraction.
+Concretely the \emph{structure} of a theorem might help as a better feature.
 
 \subsubsection{Consistencize}
 The canonical method performs quite a bit worse than the pessimistic method.
