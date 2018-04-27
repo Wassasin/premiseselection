@@ -49,10 +49,27 @@ Better descriptive features would be more abstract, but might provide a better c
 naturally from that abstraction.
 Concretely the \emph{structure} of a theorem might help as a better feature.
 
-\subsubsection{Consistencize}
+\subsubsection{Poset consistency}
 The canonical method performs quite a bit worse than the pessimistic method.
-This is however expected.
-\todo{discuss}
+As mentioned in Section \ref{section:poset-consistency}, the canonical method performs
+worse because it removes more possibly relevant context from the trainingset compared to the
+pessimistic method.
+Which part is removed exactly depends on the random seed determining the dataset order used
+in the canonical method, whereas for the pessimistic method only (always the same) part of
+illegal theorems and definitions is removed.
+For the canonical method it is possible to come up with a different seed (and thus a different ordering)
+that yields wildly different results.
+In this thesis a singular random seed is consistently used for all of the results.
+
+The pessimistic method is not a fair comparison to the prior research, as it finds
+the optimal ordering (or even better). What it however does provide is an upper
+bound on the performance of the premise selection tools, as well as a novel less biased
+way of comparing similar solutions to the premise selection problem.
+Whilst the canonical method might yield worse results due to its
+random seed, the results from the pessimistic method still do not hold a candle to
+the results by Kaliszyk.
+Thus we can conclude that regardless of the random seed used, our solution will
+not yield a better result than that by Kaliszyk.
 
 \subsection{Machine learning approaches}
 \knnadaptive does not work at all.
