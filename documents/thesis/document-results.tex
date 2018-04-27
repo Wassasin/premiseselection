@@ -38,8 +38,7 @@ Finally \adarank performs better with a lower number of rounds $T$.
 These facts are at least indicative of a smaller trainingset, which indeed the trainingset is.
 
 \begin{figure}[H]
-  \centering
-  \includegraphics{prior-knn-corn-frequency-canonical-oocover.pdf}
+  \centerline{\includegraphics{prior-knn-corn-frequency-canonical-oocover.pdf}}
   \caption{\oocover of the \knn method for both the prior and non-prior versions of the \corn dataset for different values of $k$}
 \end{figure}
 
@@ -55,8 +54,7 @@ the pessimistic method eliminates the factor of the order of the trainingset, wh
 We now compare the performance between these strategies in order to validate our understanding of their relative effect on performance.
 
 \begin{figure}[H]
-  \centering
-  \includegraphics{posetcons-knn-corn-frequency-oocover.pdf}
+  \centerline{\includegraphics{posetcons-knn-corn-frequency-oocover.pdf}}
   \caption{\oocover of the \knn method for the \corn dataset for different values of $k$ and various strategies}
 \end{figure}
 
@@ -72,8 +70,7 @@ We expect that a depth-based model is more indicative of the type of solutions t
 and will thus perform better.
 
 \begin{figure}[H]
-  \centering
-  \includegraphics{field-knn-corn-canonical-oocover.pdf}
+  \centerline{\includegraphics{field-knn-corn-canonical-oocover.pdf}}
   \caption{\oocover of the \knn method for the \corn dataset for different values of $k$}
 \end{figure}
 
@@ -89,8 +86,7 @@ In this section we will explore how various configurations of these methods affe
 
 \subsubsection{\knn}
 \begin{figure}[H]
-  \centering
-  \includegraphics{dataset-knn-frequency-canonical-oocover.pdf}
+  \centerline{\includegraphics{dataset-knn-frequency-canonical-oocover.pdf}}
   \caption{\oocover of the \knn method for various datasets for different values of $k$}
 \end{figure}
 
@@ -107,8 +103,7 @@ The results of this have been plotted in graphs, which are rendered with interpo
 computed with steps of $\Delta_\pi = 8$ and $\Delta_\tau = \Delta_\sigma = 2$.
 
 \begin{figure}[H]
-  \centering
-  \includegraphics{dataset-nb-frequency-canonical-oocover.pdf}
+  \centerline{\includegraphics{dataset-nb-frequency-canonical-oocover.pdf}}
   \caption{\oocover of the \nb method for the \corn (frequency) dataset for $\sigma = -15$ or $\tau = 0$}
 \end{figure}
 
@@ -127,8 +122,7 @@ Also, in the learning algorithm most of the time is spent in computing values de
 We plot the \oocover performance of \adarank parameterized in $T$ for several datasets:
 
 \begin{figure}[H]
-  \centering
-  \includegraphics{dataset-adarank-frequency-canonical-oocover.pdf}
+  \centerline{\includegraphics{dataset-adarank-frequency-canonical-oocover.pdf}}
   \caption{\oocover of the \adarank method for various (frequency) datasets for various values of $T$}
 \end{figure}
 
@@ -155,16 +149,17 @@ The \auc is marginally impacted negatively, so the order in which suggestions ar
 Per dataset we've ran a batch of various machine learning methods and various parameter configurations.
 For each dataset we list the best performing parameter configuration.
 We can easily read which method performs best, but hopefully will also be able to infer aspects of the nature of the datasets.
-
-For this we've added the \emph{Omniscient} method, which is a method that cheats by knowing all aspects of the testset beforehand.
-It will try to formulate the optimal answer to the premise selection problem.
-By measuring the performance of these answers, we know the upper bound performance that a machine learning method can reach for that given dataset.
+As a preview we have compiled the \oocover performance of each method and each corpus in Figure \ref{fig:best-oocover}.
 
 \begin{figure}[H]
-  \centering
-  \includegraphics{datasets-best-oocover.pdf}
+  \centerline{\includegraphics{datasets-best-oocover.pdf}}
   \caption{\oocover performance of the various methods for all (frequency) datasets}
+  \label{fig:best-oocover}
 \end{figure}
+
+We have also added the \emph{Omniscient} method, which is a method that cheats by knowing all aspects of the testset beforehand.
+It will try to formulate the optimal answer to the premise selection problem.
+By measuring the performance of these answers, we know the upper bound performance that a machine learning method can reach for that given dataset.
 
 \subsubsection{\coq}
 
@@ -178,7 +173,9 @@ By measuring the performance of these answers, we know the upper bound performan
 \end{figure}
 
 Adarank clearly performs best, with an outstanding performance on \auc.
-Though \auc is better if the \volume is higher, which is not necessarily useful.
+The performance of \nb and \ensemble is respectable,
+especially considering it has a similar \auc compared to \adarank,
+but a far better \volume.
 
 \subsubsection{\formalin}
 
@@ -191,7 +188,7 @@ Though \auc is better if the \volume is higher, which is not necessarily useful.
   \caption{Performance of the various methods for the \formalin (frequency) dataset}
 \end{figure}
 
-The performance for \formalin is similar to that for \coq, but a bit better.
+The performance for \formalin is slighty better than the performance for \coq.
 The volume is a bit lower across all methods.
 
 \subsubsection{\corn}
@@ -206,6 +203,8 @@ The volume is a bit lower across all methods.
 
 Relative to the \coq corpus we perform a lot worse with the \corn dataset.
 Note that \adarank still performs reasonably well for \oocover, but also \nb and \ensemble perform quite well on \auc.
+Whilst with previous corpii the \knnadaptive performance could keep up with the \knn performance, this is no longer the
+case for the \corn dataset.
 
 \subsubsection{\mathclasses}
 \begin{figure}[H]

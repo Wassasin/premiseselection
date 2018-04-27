@@ -4,14 +4,18 @@
 \begin{document}
     \begin{tikzpicture}
     \begin{axis}[
-        width=15cm,
-        height=7cm,
+        width=13cm,
+        height=5cm,
+        ymajorgrids,
         ybar,
+        every axis plot/.append style={fill},
         ylabel={\oocover},
         symbolic x coords={{coq},{corn},{formalin},{mathclasses},{mathcomp}},
         xtick=data,
         xticklabels={{\coq},{\corn},{\formalin},{\mathclasses},{\mathcomp}},
         x tick label style={rotate=45,anchor=east},
+        legend style={at={(0,-0.45)},anchor=north west},
+        cycle list name=Set1-5
     ]
     \addplot table[header=false] {data/best-knn-canonical.dat};
     \addlegendentry{\knn}
