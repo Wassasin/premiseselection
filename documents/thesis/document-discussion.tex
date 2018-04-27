@@ -72,11 +72,12 @@ Thus we can conclude that regardless of the random seed used, our solution will
 not yield a better result than that by Kaliszyk.
 
 \subsection{Machine learning approaches}
-\knnadaptive does not work at all.
-\nb works OK given suitable parameters. These values are hard to find however.
-\adarank works quite well but is expensive computationally and memory-wise.
-Also \adarank makes a gratuitious amount of suggestions.
-\ensemble shows promise, but we haven't dabbled with various combinations all too much.
+Our main contribution to the premise selection problem for \coq is the implementation of various machine learning methods.
+We have discovered that the \knnadaptive method performs badly, regardless of corpus used.
+The \nb method works OK given suitable parameters.
+However these suitable parameters are hard to find.
+Our novel adaptation of \adarank works quite well, but is expensive computationally and memory-wise.
+Our quick \ensemble experiment shows promise, but we haven't dabbled with various combinations all too much.
 
 \adarank is interesting in that it succesfully maps solutions from
 the \emph{Learning to rank} domain to our \emph{Premise selection} domain.
