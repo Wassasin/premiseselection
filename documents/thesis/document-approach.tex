@@ -69,7 +69,7 @@ The premise selection tool works as follows, and can be summarised as in Figure 
 		Given that definition, $\termset{s}$\glsadd{termset} is the set of names of all objects in the term $\term[s]$,
 		and $\typeset{s}$\glsadd{typeset} is the set of all names in the type $\type[s]$.
 		Note that other variants for this $\flatten{x}$ can be used.
-    We can also extract the number of occurances of each name using $\countoccur{x}$\glsadd{countoccur}:
+    We can also extract the number of occurrences of each name using $\countoccur{x}$\glsadd{countoccur}:
     \begin{definition}[$\countoccur{x}$]\defgls{countoccur}
 			For a given term (or type) $x$, yield the number of times names are referenced in the term.
       \[ \countoccursym : \terms \rightarrow \mathbb{N}^{\names} \]
@@ -161,7 +161,7 @@ The performance of these predictions are evaluated using various metrics (see Se
 \subsection{Theorems and definitions}
 \label{section:thmsdefs}
 
-For the sake of \premiseselection, we would like to categorize all \coqobjs as either theorems or definitions.
+For the sake of \premiseselection, we would like to categorise all \coqobjs as either theorems or definitions.
 \begin{definition}[theorem]\glsadd{theorem}
     Theorems are \coqobjs that have been proved based on previously established \coqobjs.
     They logically follow from the defined axioms.
@@ -200,7 +200,7 @@ Definition cotransitive (R : Crelation A) : CProp := forall x y : A,
 	\end{lstlisting}
 	\lstinputlisting[language=xml,basicstyle=\tiny]{figures/cotransitive.con.xml}
 	\lstinputlisting[language=xml,basicstyle=\tiny]{figures/cotransitive.con.body.xml}
-	\caption{The definition of an arbitrarily chosen \cprop proposition of the \corn dataset for cotransistive relations
+	\caption{The definition of an arbitrarily chosen \cprop proposition of the \corn dataset for cotransitive relations
 		and its subsequent interpretation of the type by \coq (from \texttt{algebra/CSetoids.v})}
 \end{figure}
 
@@ -287,7 +287,7 @@ The dependencies $\deps{s}$ of a \coqobj[s] are names of other objects which hav
 \end{definition}
 
 Later we will want to reproduce this set of dependencies given only the original proof goal (or type) of a \coqobj.
-We could also compute the depth and number of occurances of these dependencies.
+We could also compute the depth and number of occurrences of these dependencies.
 However this is not used in this thesis.
 
 \begin{figure}[H]
@@ -307,7 +307,7 @@ The results of these predictions are quantified using a set of metrics.
 Continually running the predictors on the same dataset whilst developing said predictors invites so-called overfitting.
 A predictor that overfits has poor predictive performance because the underlying statistical model of the predictor describes noise instead of any relevant relationship.
 In order to prevent this overfitting bias, \crossvalidation is used.
-\crossvalidation estimates the performance of the predictor for an independant dataset (i.e. from a real problem).
+\crossvalidation estimates the performance of the predictor for an independent dataset (i.e. from a real problem).
 
 There are quite a few variants of \crossvalidation.
 In this thesis we use $k$-fold \crossvalidation with $k = 10$ \cite{kohavi1995study}.
@@ -323,7 +323,7 @@ The performance of the predictor is determined by averaging the performance metr
 % Ratio of guessed steps
 
 For normal classification these subsets are randomly selected.
-For \premiseselection this is not adequate as the dataset is not just a set of datapoints, but a tree of definitions which are dependant on eachother.
+For \premiseselection this is not adequate as the dataset is not just a set of datapoints, but a tree of definitions which are dependant on each other.
 Randomly selecting from this tree to create a subset would result in an inconsistent dataset.
 Given randomly selected subsets, we use three different strategies to make these subsets consistent with regards to the dependants of conjectures.
 
@@ -361,8 +361,8 @@ First the order for the poset is defined:
   \]
 \end{definition}
 
-This poset is then linearized to an ordered list.
-The linearization is done in a random manner using Depth-first topological sorting \cite{tarjan1976edge}.
+This poset is then linearised to an ordered list.
+The linearisation is done in a random manner using Depth-first topological sorting \cite{tarjan1976edge}.
 This method comes closest to simulating the behaviour as described by Kaliszyk \cite{kaliszyk2014machine}.
 
 \subsubsection{Optimistic}
@@ -378,7 +378,7 @@ This method only includes all absolutely required parents of conjecture $\phi$.
 \end{definition}
 
 Intuitively our machine learning methods infer the required dependencies by looking at similar previously defined terms.
-The `optimistic' method minimizes noise, but also minimizes similar seemingly irrelevant terms which probably end up to be useful.
+The `optimistic' method minimises noise, but also minimises similar seemingly irrelevant terms which probably end up to be useful.
 Thus results from this method will reveal the role of irrelevant terms, but also will show the relevance of similar but not directly related terms.
 
 \subsection{Corpora}
