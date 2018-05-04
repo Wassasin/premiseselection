@@ -1,6 +1,6 @@
 Theorem proving is the process for which proofs are constructed as formal mathematical objects.
 These objects are inductively defined data structures which are constructed using axioms and inference rules.
-Whereas a normal proof need may contain errors (as they are sketched with various degrees of confidence),
+Whereas a normal proof may contain errors (as they are sketched with various degrees of confidence),
 formal proofs yield complete confidence as to their so-called proof truth.
 Formalizing existing proofs, thus establishing the absolute proof truth of their theorems, is a popular field of study within formal mathematics.
 
@@ -8,7 +8,7 @@ In general formal proofs are more verbose and require more work to formulate com
 With the assistance of computer programs called theorem provers this process has been simplified.
 This so-called automated theorem proving is in fact the driving force for the establishment of the computer sciences.
 
-However theorem provers employ various degrees of automation.
+Theorem provers employ various degrees of automation.
 Interactive theorem provers (ITP's) or proof assistants often contain a graphical user interface designed to let a human guide the search for proofs.
 Even with the help of humans, interactive theorem provers often still automate some aspects of the process.
 Automation of theorem provers is limited by the expressiveness of the logical language.
@@ -77,27 +77,27 @@ Currently automation for \coq is limited to the following tactics:
     \url{https://coq.inria.fr/refman/Reference-Manual010.html\#hevea_tactic156}
   }
   Generates simplified subgoals and applies the provided tactic.
-  \text{intuition} succeeds if the provided tactic succeeds on all (simpler) subgoals, else it fails.
+  \texttt{intuition} succeeds if the provided tactic succeeds on all (simpler) subgoals.
+  When the tactic fails on any of the subgoals, \texttt{intuition} also fails.
   It is based on the decision procedure used in \texttt{tauto}.
   The expression \texttt{intuition fail} is equivalent to \texttt{tauto}.
 \item[omega]
-  an automatic decision procedure for Presburger arithmetic \cite{stansifer1984presburger}.%
   \footnote{
     \coq Reference Manual, Chapter 21:
     Omega: a solver of quantifier-free problems in Presburger Arithmetic\\
     \url{https://coq.inria.fr/refman/Reference-Manual024.html\#hevea_tactic220}
   }
+  An automatic decision procedure for Presburger arithmetic \cite{stansifer1984presburger}.
 \end{description}
 
-Ideally we would like to make a new tactic which solves the current proof goal using statistical ATP techniques, specifically machine learning.
+Ideally we would like to make a new tactic which solves the current proof goal using statistical ATP techniques like machine learning.
 This differs from existing tactics that employ symbolical ATP,
 which use symbolic operations such as applying, introducing and unfolding
 directly following from the current state of the proof goal.
 Statistical machine learning employs ranking, classification and regression on a theorem to form proofs and/or proof strategies.
-
 Such an automated theorem prover consists of:
 \begin{description}
-\item[Premise selection] Filter the existing knowledgebase of proven theorems by usefullness for the current yet unproven conjecture.
+\item[Premise selection] Filter the existing knowledgebase of proven theorems by usefulness for the current yet unproven conjecture.
 It yields a set of theorems which are likely to help in proving this conjecture.
 Subsequent ATP components thus will only need to consider useful theorems, decreasing the size of their problem space.
 \item[Proof synthesis] Application of previously discovered premises using tactics
@@ -111,8 +111,8 @@ Early experiments have already been performed by Kaliszyk et al. \cite{kaliszyk2
 They developed and evaluated premise selection techniques for \coq on the Constructive \coq Repository at Nijmegen (\corn) dataset.
 Specifically they implemented \knn, \nb, \mepo, and created weighted harmonic ensembles.
 
-For our premise selection we wish to confirm and improve upon their research.
-The improvements will consist of implementing variants on and more types of machine learning algorithms.
+For our premise selection we wish to validate and improve upon their research.
+The improvements will consist of implementing variants and additional kinds of machine learning algorithms.
 We will also test our algorithms on a variety of existing \coq corpora.
 With this research we hope to answer the following questions:
 \begin{enumerate}

@@ -44,7 +44,7 @@ Fixpoint plus (n m : nat) : nat :=
 Internally \coq represents all objects as terms \glsadd{termclass} of \cic{}\glsadd{cic}.
 \cic is the Calculus of (Co)Inductive Constructions,
 or the Calculus of Constructions \cite{coquand1988calculus} with inductive types and coinduction \cite{huet1987induction} \cite{coquand1990inductively}.
-More recently, after \coq version 8, they switched to \pcic \glsadd{pcic}, or the Predicative Calculus of (Co)Inductive Constructions \cite{bertot2013interactive}.
+More recently after \coq version 8 the switch was made to \glsadd{pcic}\pcic, or the Predicative Calculus of (Co)Inductive Constructions \cite{bertot2013interactive}.
 
 \begin{definition}[term]\glsadd{termclass}
 	A term is a noun or compound word of \pcic.
@@ -66,7 +66,7 @@ Therefor a type is inside the syntactic class term, and all types can be conside
 \begin{definition}[name]
 	A name is an element in the set of names $\names$\glsadd{names}, and is bound to a term. A name is typically denoted by $\name$\glsadd{name}.
 \end{definition}
-Names can be both global (qualid) and local (ident).
+Names can be either global (a qualid) or local (an ident).
 In practice we transform the ident and qualid into a human readable canonical name.
 For the purpose of this thesis we disregard this detail, and instead consider each name to be a unique identifier.
 We are interested in these named terms for the purpose of \premiseselection,
@@ -76,8 +76,8 @@ We define $\name \objdef \term$ to mean that term $\term$ is bound to name $\nam
 \begin{definition}[sort]\label{def:sort}\defgls{sort}
 	The type of a type when manipulated as a term is called a sort.
 	\pcic uses an infinite well-founded typing hierarchy of sorts,
-	with base sorts \sortprop\glsadd{sortprop} and \sortset\glsadd{sortset},
-	and with a family of sorts \sorttype[{i}]\glsadd{sorttype}.
+	with base sorts \glsadd{sortprop}\sortprop and \glsadd{sortset}\sortset,
+	and with a family of sorts \glsadd{sorttype}\sorttype[{i}].
 	The set of sorts named $\sorts$\defgls{sorts} is defined by
 	\[\sorts \equiv \{ \sortprop, \sortset, \sorttype[{i}] ~|~ i \in \mathbb{N} \} \]
 
@@ -104,6 +104,9 @@ For example if we look at the types of the term $0$ and $\texttt{True}$:
 
 We say a term $\term$ to be of sort $S$ when $\exists A ~.~ (t : A \text{~and~} A : S)$ holds.
 
+In the rest of this thesis, we will use the following \coq file, which contains a the definition
+of natural numbers and a simple proof, to showcase the effects of each describe step in our methods pipeline.
+
 \begin{figure}[H]
 	\begin{lstlisting}[language=Coq, mathescape]
 Inductive nat : Set :=
@@ -127,24 +130,29 @@ apply f_equal.
 exact IHx.
 Qed.
 	\end{lstlisting}
-	\texttt{0} and \texttt{S} can be regarded as constructors or objects. \texttt{nat\_id} and \texttt{plus} can be regarded as functions, which are also objects.
-	The following terms are all of sort \sortset.
-	$$
-		\begin{array}{rcl}
-			\texttt{0} & : & \texttt{nat} \\
-			\texttt{S} & : & \texttt{nat} \rightarrow \texttt{nat}
-		\end{array}
-	$$
-	$$
-		\begin{array}{rclcl}
-			\texttt{nat\_id} & \objdef & \lambda x : \texttt{nat}~.~x & : & \texttt{nat} \rightarrow \texttt{nat} \\
-			\texttt{plus} & \objdef & \texttt{fix}~\ldots & : & \texttt{nat} \rightarrow \texttt{nat} \rightarrow \texttt{nat} \\
-		\end{array}
-	$$
+	\caption{\coq file example defining natural numbers}
+	\label{figure:natexample}
+\end{figure}
 
-	The following terms are of sort \sortprop, and are therefore always proofs:
-	$$
-		\begin{array}{rcl}
+In our example in Figure \ref{figure:natexample}, \texttt{0} and \texttt{S} can be regarded as constructors or objects.
+Both \texttt{nat\_id} and \texttt{plus} can be regarded as functions, which are also objects.
+The following terms are all of sort \sortset:
+$$
+	\begin{array}{rcl}
+		\texttt{0} & : & \texttt{nat} \\
+		\texttt{S} & : & \texttt{nat} \rightarrow \texttt{nat}
+	\end{array}
+$$
+$$
+	\begin{array}{rclcl}
+		\texttt{nat\_id} & \objdef & \lambda x : \texttt{nat}~.~x & : & \texttt{nat} \rightarrow \texttt{nat} \\
+		\texttt{plus} & \objdef & \texttt{fix}~\ldots & : & \texttt{nat} \rightarrow \texttt{nat} \rightarrow \texttt{nat} \\
+	\end{array}
+$$
+
+The following terms are of sort \sortprop, and are therefore always proofs:
+$$
+	\begin{array}{rcl}
 %			fun (P : nat -> Type) (f : P O) (f0 : forall n : nat, P n -> P (S n)) =>
 %			fix F (n : nat) : P n :=
 %			  match n as n0 return (P n0) with
@@ -152,27 +160,24 @@ Qed.
 %				  | S n0 => f0 n0 (F n0)
 %				    end
 
-			\texttt{nat\_ind} & \objdef & \lambda~P~f_0~f_S ~.~ \texttt{fix}~F~n ~:~ P~n ~:= \\
-				&   &  \texttt{match}~ n ~\texttt{with} \\
-				&   &  ~~| ~0 => f_0 \\
-				&	&  ~~| ~S~m => f_S~m~(F~m) \\
-				&	&  \texttt{end} \\
-				& : &  \forall P : \texttt{nat} \rightarrow \sortprop,~
-					P~\texttt{0} \rightarrow (\forall n : \texttt{nat},~ P~n \rightarrow P~(\texttt{S}~n)) \rightarrow \forall n : \texttt{nat},~ P~n \\
+		\texttt{nat\_ind} & \objdef & \lambda~P~f_0~f_S ~.~ \texttt{fix}~F~n ~:~ P~n ~:= \\
+			&   &  \texttt{match}~ n ~\texttt{with} \\
+			&   &  ~~| ~0 => f_0 \\
+			&	&  ~~| ~S~m => f_S~m~(F~m) \\
+			&	&  \texttt{end} \\
+			& : &  \forall P : \texttt{nat} \rightarrow \sortprop,~
+				P~\texttt{0} \rightarrow (\forall n : \texttt{nat},~ P~n \rightarrow P~(\texttt{S}~n)) \rightarrow \forall n : \texttt{nat},~ P~n \\
 
 %			eq_sym
 %			  (nat_ind (fun x0 : nat => x0 = plus x0 O) eq_refl
 %			       (fun (x0 : nat) (IHx : x0 = plus x0 O) => f_equal S IHx) x)
 %				        : forall x : nat, plus x O = x
 
-			\texttt{plus\_0\_r} & \objdef & \texttt{eq\_sym}
-								~~(\texttt{nat\_ind}~(\lambda x~.~\texttt{plus}~x~0)~\texttt{eq\_refl}~(\lambda x~\texttt{IH}~.~\texttt{f\_equal}~S~\texttt{IH})~x) \\
-								& : & \forall x : \texttt{nat},~ \texttt{plus}~x~0 = x \\
-		\end{array}
-	$$
-	\caption{\coq file example defining natural numbers, and the corresponding \coq objects}
-	\label{figure:natexample}
-\end{figure}
+		\texttt{plus\_0\_r} & \objdef & \texttt{eq\_sym}
+							~~(\texttt{nat\_ind}~(\lambda x~.~\texttt{plus}~x~0)~\texttt{eq\_refl}~(\lambda x~\texttt{IH}~.~\texttt{f\_equal}~S~\texttt{IH})~x) \\
+							& : & \forall x : \texttt{nat},~ \texttt{plus}~x~0 = x \\
+	\end{array}
+$$
 
 Having described the sets for terms, types, names and sorts,
 we still need to define what each of these mean syntactically in the case of \pcic.
