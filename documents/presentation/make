@@ -1,0 +1,15 @@
+#!/bin/bash
+echo -e "\033[32mDeploying document files to build\033[0m"
+mkdir -p "build"
+
+cp *.tex "build"
+cp *.cls "build"
+cp -R backgrounds "build"
+
+pushd "build" 1>/dev/null
+rm -f "*.aux"
+
+echo -e "\033[32mBuilding latex [Pass 1/1: xelatex preprocess]\033[0m"
+xelatex -halt-on-error -file-line-error "presentation.tex" 1>&2 || exit 1
+
+popd 1>/dev/null
