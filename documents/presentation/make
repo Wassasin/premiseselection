@@ -6,6 +6,7 @@ cp *.tex "build"
 cp *.cls "build"
 cp *.sty "build"
 cp ../thesis/*.bib "build"
+cp ../thesis/terminology.tex "build"
 cp -R backgrounds "build"
 cp -R figures "build"
 

@@ -16,17 +16,42 @@
 
 \date{\today}
 
-\usepackage{listings}
 \usepackage{color}
+\definecolor{green}{rgb}{0.0,0.5,0.0}
+\definecolor{red}{rgb}{0.5,0.0,0.0}
+\definecolor{darkred}{rgb}{0.4,0.0,0.0}
+\definecolor{purple}{rgb}{0.5,0.0,0.3}
+\definecolor{darkviolet}{rgb}{0.58, 0.0, 0.83}
+\definecolor{lightblue}{rgb}{0.1, 0.1, 0.9}
+\definecolor{darkgreen}{rgb}{0.0, 0.2, 0.13}
+\definecolor{darkblue}{rgb}{0.0, 0.4, 0.0}
+
 \usepackage{xspace}
 
+\usepackage[sc]{mathpazo}
+\usepackage{amsthm}
+\usepackage{algorithmic}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{glossaries}
+
+\input{terminology}
+
 \usepackage{tikz}
+\usepackage{tabularx}
 \usepackage{prooftree}
 
 \usepackage{pgfplots}
 \usepackage{pgfplotstable}
 
 \usepackage{bibentry}
+
+\usepackage{listings}
+\usepackage{prettylistings}
+\usepackage{lang-coq}
 
 \begin{document}
 \renewcommand{\dept}{icis}
@@ -189,6 +214,243 @@
 	\begin{center}
 		\bibentry{kaliszyk2014machine}
 	\end{center}
+\end{frame}
+
+\begin{frame}{Roerei}
+	Open source and is available from:
+	\begin{center}
+		\url{https://github.com/Wassasin/roerei}
+	\end{center}
+	\bigskip
+	Design goals of this tool were to:
+	\begin{itemize}
+		\item Support offline learning and analysis of \machinelearning on the various corpora.
+		\item Enable integration in the \coqide GUI.
+		\item Enable merging of the premise selection tool in the \coq main branch as a plugin.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Gallina}
+\begin{lstlisting}[language=Coq, mathescape,basicstyle=\footnotesize,frame=none]
+Inductive nat : Set :=
+| O : nat
+| S : nat -> nat.
+Fixpoint plus (n m : nat) : nat :=
+match n with
+| O => m
+| S p => S (plus p m)
+end.
+Lemma plus_0_r : $\forall$ x , plus x 0 = x.
+Proof.
+intro x.
+apply eq_sym.
+induction x.
+unfold plus.
+apply eq_refl.
+unfold plus.
+apply f_equal.
+exact IHx.
+Qed.
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{\pcic: terms}
+	Language on which \coq operates internally.\\
+	\bigskip
+	\begin{definition}[term]
+		A term is a noun or compound word of \pcic.
+		A term is typically denoted by $\term$,
+		with $\terms$ being the set of all terms.
+	\end{definition}
+	\bigskip
+	\begin{definition}[name]
+		A name is an element in the set of names $\names$, and is bound to a term.
+	\end{definition}
+\end{frame}
+
+\begin{frame}{\pcic: types}
+
+	\begin{definition}[type]
+		A type is denoted by the semantic subclass of types inside the syntactic class term.
+		A type is typically denoted by $\type$, with $\types$ being the set of all types.
+	\end{definition}
+	\bigskip
+	\begin{lemma}
+	\coq is based on the Curry-Howard isomorphism.
+	Therefor a type is inside the syntactic class term, and all types can also be considered to be terms.
+	\[ \types \subseteq \terms \]
+	\end{lemma}
+\end{frame}
+
+\begin{frame}{\pcic: sorts}
+	\begin{definition}[sort]
+		The type of a type when manipulated as a term is called a sort.
+		\pcic uses an infinite well-founded typing hierarchy of sorts,
+		with base sorts \sortprop and \sortset,
+		and with a family of sorts \sorttype[{i}].
+		The set of sorts named $\sorts$ is defined by
+		\[\sorts \equiv \{ \sortprop, \sortset, \sorttype[{i}] ~|~ i \in \mathbb{N} \} \]
+	
+		Their types are defined as
+		\[
+			\rowcolors{0}{}{}
+			\begin{array}{rcl}
+				\sortprop & : & \sorttype[1] \\
+				\sortset & : & \sorttype[1] \\
+				\forall_{i \in \mathbb{N}}~ \sorttype[i] & : & \sorttype[{i+1}]
+			\end{array}
+		\]
+	\end{definition}
+\end{frame}
+
+\begin{frame}{\pcic: example}
+From our natural numbers example the following terms are of sort \sortset:
+$$
+	\rowcolors{0}{}{}
+	\begin{array}{rcl}
+		\texttt{0} & : & \texttt{nat} \\
+		\texttt{S} & : & \texttt{nat} \rightarrow \texttt{nat}
+	\end{array}
+$$
+$$
+	\rowcolors{0}{}{}
+	\begin{array}{rclcl}
+		\texttt{nat\_id} & \objdef & \lambda x : \texttt{nat}~.~x & : & \texttt{nat} \rightarrow \texttt{nat} \\
+		\texttt{plus} & \objdef & \texttt{fix}~\ldots & : & \texttt{nat} \rightarrow \texttt{nat} \rightarrow \texttt{nat} \\
+	\end{array}
+$$
+\end{frame}
+
+\begin{frame}{\pcic: example}
+From our natural numbers example the following terms are of sort \sortprop:
+$$
+	\rowcolors{0}{}{}
+	\begin{array}{rcl}
+		\texttt{nat\_ind} & \objdef & \lambda~P~f_0~f_S ~.~ \texttt{fix}~F~n ~:~ P~n ~:= \\
+			&   &  \texttt{match}~ n ~\texttt{with} \\
+			&   &  ~~| ~0 => f_0 \\
+			&	&  ~~| ~S~m => f_S~m~(F~m) \\
+			&	&  \texttt{end} \\
+			& : &  \forall P : \texttt{nat} \rightarrow \sortprop,\\
+			&   & P~\texttt{0} \rightarrow (\forall n : \texttt{nat},~ P~n \rightarrow P~(\texttt{S}~n)) \rightarrow \forall n : \texttt{nat},~ P~n \\
+		\\
+		\texttt{plus\_0\_r} & \objdef & \texttt{eq\_sym}
+							~~(\texttt{nat\_ind}~(\lambda x~.~\texttt{plus}~x~0)\\
+							& & \texttt{eq\_refl}~(\lambda x~\texttt{IH}~.~\texttt{f\_equal}~S~\texttt{IH})~x) \\
+							& : & \forall x : \texttt{nat},~ \texttt{plus}~x~0 = x \\
+	\end{array}
+$$
+\end{frame}
+
+\begin{frame}{\pcic: terms}
+	\vspace{-0.7em}
+	\begin{tabular}{ll}
+		$\emptyterm$                                        & Empty term \\
+		$\text{Rel}(i:\nat)$                       & Variables as De Bruijn index \\
+		$\text{Var}(n:\names)$                     & Named (local) variables \\
+		$\text{Evar}(xs:\listtype{\terms}) $        & Existential quantification \\
+		$\text{Sort}(n:\names)$                    & Named Sort of types \\
+		$\text{Cast}(t:\terms,~ A:\types)$ & Type casting check \\
+		$\text{Prods}(x:\names,~ A:\types,~ B:\types$ & $\prod x:A ~.~ B$ \\
+		$\text{Lambdas}(x:\names,~ A:\types,~ t:\terms)$   & $\lambda x:A ~.~ t$ \\
+		$\text{LetIns}(n:\names,~ t:\terms,~ A:\types)$    & $\text{let~} n := t : A \text{~in~} t$ \\
+		$\text{App}(x:\terms,~ ys:\listtype{\terms})$ & Application $x~ys_0 \ldots ys_n$ \\
+		$\text{Const}(n:\names,~ S:\sorts)$ & Constant \\
+		$\text{Ind}(n:\names,~ S:\sorts)$  & Inductive definition \\
+		$\text{Construct}(n:\names,~ S:\sorts)$ & Constructor (of ind. def.) \\
+		$\text{Case}(n:\terms,~ t:\terms,~ ys:\listtype{\terms})$ & Deconstruction (of ind. types) \\
+		$\text{Fix}(n:\listtype{\names},~ A:\listtype{\types},~ ts:\listtype{\terms})$ & Fixpoint functions \\
+		$\text{CoFix}(n:\listtype{\names},~ AS:\listtype{\types},~ ts:\listtype{\terms})$ & Co-fixpoint functions \\
+	\end{tabular}
+\end{frame}
+
+\begin{frame}{\pcic: objects}
+	\begin{tabular}{l}
+		$\text{Constant}(n:\names,~ t:\terms,~ A:\types)$ \\
+		$\text{Variable}(n:\names,~ t:\terms,~ A:\types)$ \\
+		$\text{CurrentProof}(n:\names,~ \text{hyps}:\listtype{\listtype{\types} \times \terms}, t:\terms, A:\types)$ \\
+		$\text{InductiveConstructor}(n:\names,~ A:\types)$ \\
+		$\text{InductiveDefinition}(n:\names,~ A:\types,~ cs:\listtype{\text{InductiveConstructor}})$
+	\end{tabular}
+\end{frame}
+
+\begin{frame}{\xml}
+	\lstinline{COQ_XML=-xml COQ_XML_LIBRARY_ROOT=<dest>}
+	\lstinputlisting[language=xml,basicstyle=\tiny]{figures/plus.con.xml}
+\end{frame}
+
+\begin{frame}{Parsing}
+	\lstinputlisting[language=caml,basicstyle=\tiny]{figures/plus.con.types.txt}
+\end{frame}
+
+\begin{frame}{Extraction}
+	\vspace{-2.55em}
+	\[c : \terms \rightarrow \nat \rightarrow \listtype{\names \times \nat} \]
+	\bigskip
+	\hspace{-1.7em}
+	\begin{tabularx}{\textwidth}{ll}
+		$c(\emptyterm, d)$              & $ = \nil $ \\
+		$c(\text{ARel}(\cdots), d)$     & $ = \nil $ \\
+		$c(\text{AVar}(u), d)$          & $ = \singleton{(u, d)} $ \\
+		$c(\text{AEvar}(l), d)$         & $ = \flattenlist{\map{l}{\lambda x . c(x, d+1)}} $ \\
+		$c(\text{ASort}(\cdots), d)$    & $ = \nil $ \\
+		$c(\text{ACast}(t, A), d)$      & $ = \concat{c(t, d+1)}{c(A, d+1)} $ \\
+		$c(\text{AProds}(l, t), d)$     & $ = c_{\times}(l, t, d) $ \\
+		$c(\text{ALambdas}(l, t), d)$   & $ = c_{\times}(l, t, d) $ \\
+		$c(\text{ALetIns}(l, t), d)$    & $ = c_{\times}(l, t, d) $ \\
+		$c(\text{AApp}(l), d)$  & $ = \left(
+		  \begin{array}{l}
+			\singleton{(\text{special:app}, d)} ~\concatsymbol \\
+			\map{l}{ \lambda a . c(a, d+1) }
+		  \end{array}
+		  \right)
+		  $ \\
+		$c(\text{AConst}(\cdots, u), d)$  & $ = \singleton{(u, d)} $ \\
+		$c(\text{AInd}(\cdots, u), d)$  & $ = \singleton{(u, d)} $ \\
+		$c(\text{AConstruct}(\cdots, u), d)$  & $ = \singleton{(u, d)} $ \\
+		$c(\text{ACase}(u, A, i, l), d)$  &
+		  $= \left(
+			\begin{array}{l}
+			  \concat{\singleton{(u, d)}}{
+				\concat{c(A, d+1)}{c(i, d+1)}
+			  }
+			  ~\concatsymbol \\
+			  \flattenlist{ \map{l}{\lambda x . c(x, d+1)} } \\
+			\end{array}
+			\right)
+		  $ \\
+		$c(\text{AFix}(l), d)$        & $ = c_{\text{fix}}(l, d) $ \\
+		$c(\text{ACoFix}(l), d)$      & $ = c_{\text{fix}}(l, d) $ \\
+	\end{tabularx}
+\end{frame}
+
+\begin{frame}{Extraction}
+	$$
+		\rowcolors{0}{}{}
+		\begin{array}{lcl}
+		c_{\times}(l, t, d) & = &
+			c(t, d+1) ~\concatsymbol \\
+			& & \map{l}{ \lambda (n, a) ~.~ \cons{(\text{special:prod}, d)}{c(a, d+1)}} \\
+		c_{\text{fix}}(l, d) & = & \flattenlist{ \map{l}{ \lambda (A, t) ~.~ \concat{c(A, d+1)}{c(t, d+1)} } }
+		\end{array}
+	$$
+\end{frame}
+
+\begin{frame}{Extraction}
+	\hspace{-1em}\vbox{\begin{tabular}{ll}
+		$c_{\text{type}}(\text{AConstant}(n, A, t))$ & $= c(A, 0)$ \\
+		$c_{\text{type}}(\text{AIndDef}(n, l))$ & $= \flattenlist{
+			\map{l}{
+				\hspace{-0.5em}\begin{array}{l}
+					\lambda (A, m) ~.~ c(A, 0) ~\concatsymbol\\
+					\flattenlist{\text{map}(m, \lambda x . c(x, 0))}
+				\end{array}
+			}
+		} $\\
+		$c_{\text{type}}(-)$ & $= \nil $ \\
+		$c_{\text{term}}(\text{AConstant}(n, A, t))$ & $= c(t, 0)$ \\
+		$c_{\text{term}}(-)$ & $= \nil $ \\
+	\end{tabular}}
 \end{frame}
 
 \end{document}
