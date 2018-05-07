@@ -4,12 +4,24 @@ mkdir -p "build"
 
 cp *.tex "build"
 cp *.cls "build"
+cp *.sty "build"
+cp ../thesis/*.bib "build"
 cp -R backgrounds "build"
+cp -R figures "build"
 
 pushd "build" 1>/dev/null
 rm -f "*.aux"
 
-echo -e "\033[32mBuilding latex [Pass 1/1: xelatex preprocess]\033[0m"
+echo -e "\033[32mBuilding latex [Pass 1/4: xelatex preprocess]\033[0m"
 xelatex -halt-on-error -file-line-error "presentation.tex" 1>&2 || exit 1
+
+echo -e "\033[32mBuilding latex [Pass 2/4: bibtex]\033[0m"
+bibtex "presentation" 1>/dev/null || exit 1
+
+echo -e "\033[32mBuilding latex [Pass 3/4: xelatex references]\033[0m"
+xelatex -halt-on-error -file-line-error "presentation.tex" | grep -i ".*:[0-9]*:.*\|warning"
+
+echo -e "\033[32mBuilding latex [Pass 4/4: xelatex cross-references]\033[0m"
+xelatex -halt-on-error -file-line-error "presentation.tex" | grep -i ".*:[0-9]*:.*\|warning"
 
 popd 1>/dev/null
