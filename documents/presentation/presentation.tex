@@ -46,7 +46,13 @@
 \usepackage{prooftree}
 
 \usepackage{pgfplots}
-\usepackage{pgfplotstable}
+\pgfplotsset{compat=newest}
+\usetikzlibrary{pgfplots.colorbrewer}
+\usetikzlibrary{pgfplots.colormaps}
+\usepgfplotslibrary{colorbrewer}
+\usepgfplotslibrary{colormaps}
+
+\pgfplotsset{cycle list/Set1-5}
 
 \usepackage{bibentry}
 
@@ -454,27 +460,49 @@ $$
 	\end{tabular}}
 \end{frame}
 
-\begin{frame}{Counting}
-	\[ \flattensym : \terms \rightarrow 2^{\names} \]
-	\[ \flatten{t} = \foldr{\lambda (n, d)~s ~.~ \{n\} \cup s}{\varnothing}{c(t, 0)} \]
+\begin{frame}{Extraction}
+	\begin{definition}[Flatten symbols $\flattensym$]
+	$
+		\rowcolors{0}{}{}
+		\arraycolsep=0.2em
+		\begin{array}{lcl}
+		\flattensym & : & \terms \rightarrow 2^{\names} \\
+		\flatten{t} & = & \foldr{\lambda (n, d)~s ~.~ \{n\} \cup s}{\varnothing}{c(t, 0)}
+		\end{array}
+	$
+	\end{definition}
 \end{frame}
 
-\begin{frame}{Counting}
-	\[ \countoccursym : \terms \rightarrow \nat^{\names} \]
-	\[ \countoccur{t} = \lambda n ~.~ \foldr{\lambda (m, d)~s ~.~ \text{if~} n = m \text{~then~} s+1 \text{~else~} s}{0}{c(t, 0)} \]
+\begin{frame}{Extraction}
+	\begin{definition}[Count symbols $\countoccursym$]
+	$
+	\rowcolors{0}{}{}
+	\arraycolsep=0.2em
+	\begin{array}{lcl}
+		\countoccursym & : & \terms \rightarrow \nat^{\names} \\
+		\countoccur{t} & = & \lambda n ~.~ \foldr{\lambda (m, d)~s ~.~ \text{if~} n = m \text{~then~} s+1 \text{~else~} s}{0}{c(t, 0)}
+	\end{array}
+	$\\
+	\end{definition}
 	\bigskip
-	\[ \depthoccursym : \terms \rightarrow \names \rightharpoonup \nat \]
-	\[
+	\begin{definition}[Depth of symbols $\depthoccursym$]
+	$
 		\rowcolors{0}{}{}
-		\begin{array}{l}
-		\depthoccur{t} = \lambda n ~.~ \foldr{\lambda (m, d)~s ~.~ \text{if~} n = m \text{~then~} f(d, s) \text{~else~} s}{\infimum}{c(t, 0)} \\
-		\\
+		\arraycolsep=0.2em
+		\begin{array}{lcl}
+		\depthoccursym & : & \terms \rightarrow \names \rightharpoonup \nat \\
+		\depthoccur{t} & = & \lambda n ~.~ \foldr{\lambda (m, d)~s ~.~ \text{if~} n = m \text{~then~} f(d, s) \text{~else~} s}{\infimum}{c(t, 0)} \\
+		\end{array}
+	$\\
+	\bigskip
+	$
+		\rowcolors{0}{}{}
 		\text{with~} \begin{array}{l}
 			f(d, \infimum) = d \\
 			f(d, s) = \text{min}(d, s) \\
 		\end{array}
-		\end{array}
-	\]
+	$
+	\end{definition}
 \end{frame}
 
 \begin{frame}{Theorems and definitions}
@@ -525,6 +553,211 @@ Notation "'CProp'" := Type.
 		For object $s$ yield whether theorem $x \in \thms$ is used in the term of $s$.
 		\[ \deps{s}(x) = \flatten{\term[s]}(x) \]
 	\end{definition}
+\end{frame}
+
+\begin{frame}{Predictors}
+	\begin{definition}[Ranking $r \in \rankings$]
+		$ r : \depset \rightharpoonup \mathbb{R} $
+	\end{definition}
+	\bigskip
+	\begin{definition}[Predictor $p \in \predictors$]
+		$ p : \types \rightarrow \rankings $
+	\end{definition}
+\end{frame}
+
+\begin{frame}{Example: \knn}
+	\begin{definition}[Euclidean distance]
+		$ \text{dist}(x, y) = \left( \sum_{i \in \featurekeys} \left( \features{}{x}(i) - \features{}{y}(i) \right)^2 \right)^{\frac{1}{2}} $
+	\end{definition}
+	\bigskip
+	\begin{definition}[Predicate $x$ is closer to $\phi$ than $y$]
+	$ \text{closer}_\phi(x, y) = \text{dist}(x, \phi) \leq \text{dist}(y, \phi) $
+	\end{definition}
+	\bigskip
+	\begin{definition}[Yield the $n^{\text{th}}$ element]
+	$
+	\rowcolors{0}{}{}
+    \nth{n}{X} = \left\{
+      \begin{array}{ll}
+        \infimum_X & \text{if}~n = 0 \\
+        \nth{n-1}{X \cap \infimum_X} & \text{if}~n > 0 \\
+      \end{array}
+    \right.
+	$
+	\end{definition}
+	\bigskip
+	\begin{definition}[Yield the closest $K$ elements to $c$]
+	$
+    \text{closest}_K(c) = \downset{S}{\nth{K}{(S, \text{closer}_c)}}
+	$
+	\end{definition}
+	\pause
+	\bigskip
+	\begin{definition}[\knn]
+	$
+    	P^K_\text{knn}(c, \phi) = \sum_{x \in \text{closest}_K(c)} \deps{x}(\phi) \times \text{dist}(c, x)
+	$
+	\end{definition}
+\end{frame}
+
+\begin{frame}{Estimating performance}
+	10-fold \crossvalidation (same as source)\\
+	\bigskip
+	\textbf{Problem}: A predictor might use a theorem that can not yet be proven.\\
+	\bigskip
+	Implemented 3 different schemes: canonical, pessimistic and optimistic.
+\end{frame}
+
+\begin{frame}{Estimating performance: canonical method}
+	Construct a poset from $\objs$ using the dependency relation for $x, y \in \objs$:
+	\[ x <_D y ~~\leftrightarrow~~ \depstrans[x] \cap (\parentstrans[y] \cup \{y\}) \neq \emptyset \]\\
+	Linearize with Depth-first topological sort using $<_D$ to provide extra context.\\
+	\bigskip
+	Given a conjecture $\phi \in \testset$,
+	\[ \trainset^{\phi} = \{ x \in \trainset | x < \phi \} \]
+\end{frame}
+
+\begin{frame}{Metrics}
+	Given $r \in \rankings$,\\
+	\bigskip
+	\begin{definition}[Suggestions]
+	$ \suggestions{r} = \{ d \in \depset ~|~ r(d) ~\text{is defined} \} $
+	\end{definition}
+	\bigskip
+	\begin{definition}[Best suggestions]
+	$ \topn{n}{r} = \downset{\depset}{\nth{n}{(\suggestions{r}, \lambda x~y. r(x) > r(y))}} $
+	\end{definition}
+	\bigskip
+	\begin{definition}[\oocover]
+	$\oocoverf{r}{s} = \frac{ |\topn{100}{r} \bigcap \deps{s}| } { |\deps{s}| } $
+	\end{definition}
+\end{frame}
+
+\begin{frame}{Metrics}
+	\begin{definition}[Index]
+		$
+		\rowcolors{0}{}{}
+		\findindex{X}{x} = \left\{
+		\begin{array}{ll}
+			0 & \text{if~} x = \infimum_X \\
+			\findindex{X \cap \infimum_X}{x}+1 & \text{if~} x \neq \infimum_X \\
+		\end{array}
+		\right.
+		$
+	\end{definition}
+	\bigskip
+	\begin{definition}[Area Under Curve (AUC)]
+	$
+	\aucf{r}{s} = \frac{
+		\sum_x^X \sum_y^Y {\findindex{\suggestions{s}}{x} < \findindex{\suggestions{s}}{y}}
+	}{
+		|X| \times |Y|
+	}
+	$ \\
+	\bigskip
+	$
+	\rowcolors{0}{}{}
+	\begin{array}{ll}
+		\text{where~} & X = \suggestions{r} \bigcap \required[s] \\
+		& Y = \suggestions{r} - \required[s] \\
+	\end{array}
+	$
+	\end{definition}
+\end{frame}
+
+\begin{frame}{Contributions}
+	\begin{itemize}
+		\item Application to multiple corpora
+		\item Experiments with various features
+		\item Novel adaptation of method Adarank
+		\item Implementation in C++
+		\item Varying estimations of performance
+		\item Investigated the importance of prior knowledge
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Case: Adarank}
+\end{frame}
+
+\begin{frame}{Results (\knn)}
+	\vbox{
+	\begin{tikzpicture}
+		\begin{axis}[
+			xlabel=$k$,
+			ylabel=\oocover,
+			legend pos=outer north east,
+			thick,
+			cycle list name=Set1-5,
+			width=\textwidth,
+			height=5cm,
+			width=10cm,
+			legend style={at={(0,-0.45)},anchor=north west},
+		  ]
+	
+		  \addplot+[smooth, no markers] table [y index=1] {data/knn-coq-frequency-canonical.dat};
+		  \addlegendentry{\coq}
+	
+		  \addplot+[smooth, no markers] table [y index=1] {data/knn-ch2o-frequency-canonical.dat};
+		  \addlegendentry{\formalin}
+	
+		  \addplot+[smooth, no markers] table [y index=1] {data/knn-mathclasses-frequency-canonical.dat};
+		  \addlegendentry{\mathclasses}
+	
+		  \addplot+[smooth, no markers] table [y index=1] {data/knn-corn-frequency-canonical.dat};
+		  \addlegendentry{\corn}
+	
+		  \addplot+[smooth, no markers] table [y index=1] {data/knn-mathcomp-frequency-canonical.dat};
+		  \addlegendentry{\mathcomp}
+		\end{axis}
+	\end{tikzpicture}
+	}
+\end{frame}
+
+\begin{frame}{Results (Corpora)}
+	\vspace{-0.3cm}
+	\hspace{-1.1cm}
+	\vbox{
+	\begin{tikzpicture}
+		\begin{axis}[
+			width=13cm,
+			height=5cm,
+			ymajorgrids,
+			ybar,
+			every axis plot/.append style={fill},
+			ylabel={\oocover},
+			symbolic x coords={{coq},{corn},{formalin},{mathclasses},{mathcomp}},
+			xtick=data,
+			xticklabels={{\coq},{\corn},{\formalin},{\mathclasses},{\mathcomp}},
+			x tick label style={rotate=45,anchor=east},
+			legend style={at={(0,-0.45)},anchor=north west},
+			cycle list name=Set1-5
+		]
+		\addplot table[header=false] {data/best-knn-canonical.dat};
+		\addlegendentry{\knn}
+		\addplot table[header=false] {data/best-knn_adaptive-canonical.dat};
+		\addlegendentry{\knnadaptive}
+		\addplot table[header=false] {data/best-naive_bayes-canonical.dat};
+		\addlegendentry{\nb}
+		\addplot table[header=false] {data/best-ensemble-canonical.dat};
+		\addlegendentry{\ensemble}
+		\addplot table[header=false] {data/best-adarank-canonical.dat};
+		\addlegendentry{\adarank}
+		\end{axis}
+	\end{tikzpicture}
+	}
+\end{frame}
+
+\begin{frame}{Results (relative to Kaliszyk)}
+	\small
+	\tabcolsep=0.2em
+	\begin{tabular}{lcccccc}
+		 & \oocover & (ours) & & \auc & (ours) & \\
+		\hline
+		\input{data/relative}
+	\end{tabular}
+\end{frame}
+
+\begin{frame}{Reproducibility}
 \end{frame}
 
 \end{document}
