@@ -5,6 +5,7 @@
 \usepackage[english]{babel}
 \usepackage{lmodern}
 \usepackage[T1]{fontenc}
+\usepackage{textcomp}
 \usepackage[babel=true]{microtype}
 
 \title{Roerei}
@@ -451,6 +452,79 @@ $$
 		$c_{\text{term}}(\text{AConstant}(n, A, t))$ & $= c(t, 0)$ \\
 		$c_{\text{term}}(-)$ & $= \nil $ \\
 	\end{tabular}}
+\end{frame}
+
+\begin{frame}{Counting}
+	\[ \flattensym : \terms \rightarrow 2^{\names} \]
+	\[ \flatten{t} = \foldr{\lambda (n, d)~s ~.~ \{n\} \cup s}{\varnothing}{c(t, 0)} \]
+\end{frame}
+
+\begin{frame}{Counting}
+	\[ \countoccursym : \terms \rightarrow \nat^{\names} \]
+	\[ \countoccur{t} = \lambda n ~.~ \foldr{\lambda (m, d)~s ~.~ \text{if~} n = m \text{~then~} s+1 \text{~else~} s}{0}{c(t, 0)} \]
+	\bigskip
+	\[ \depthoccursym : \terms \rightarrow \names \rightharpoonup \nat \]
+	\[
+		\rowcolors{0}{}{}
+		\begin{array}{l}
+		\depthoccur{t} = \lambda n ~.~ \foldr{\lambda (m, d)~s ~.~ \text{if~} n = m \text{~then~} f(d, s) \text{~else~} s}{\infimum}{c(t, 0)} \\
+		\\
+		\text{with~} \begin{array}{l}
+			f(d, \infimum) = d \\
+			f(d, s) = \text{min}(d, s) \\
+		\end{array}
+		\end{array}
+	\]
+\end{frame}
+
+\begin{frame}{Theorems and definitions}
+	\begin{definition}[Theorem]
+		A type that has been proven, along with the term that proves it.
+	\end{definition}
+	\bigskip
+	\begin{definition}[Definition]
+		A term (which has a type) that is not a theorem.
+		Thus it can only be transformative or a simple constant.
+	\end{definition}
+\end{frame}
+
+\begin{frame}[fragile]{Theorems and definitions}
+	\coq has a sort for theorems: \sortprop.
+	\pause
+	\bigskip
+\begin{lstlisting}[language=Coq, mathescape]
+Notation "'CProp'" := Type.
+\end{lstlisting}
+	\bigskip
+	Thus for \corn the sort of a theorem is \sorttype{}$(n+1)$.
+\end{frame}
+
+\begin{frame}{Heuristic}
+	Premise: a theorem concerning theorems in \coq is not useful.
+	\bigskip
+	\begin{definition}[$\defs$]
+		All names occuring in types cannot be theorems, and thus must be definitions.
+		\[ \defs = \bigcup_{s \in \objs} \typeset{s} \]
+	\end{definition}
+	\bigskip
+	\begin{definition}[$\thms$]
+		Theorems build upon eachother, thus what is used in terms, except the definitions, must be theorems.
+		\[ \thms = (\bigcup_{s \in \objs} \termset{s}) \setminus \defs \]
+	\end{definition}
+\end{frame}
+
+\begin{frame}{Features and dependencies}
+	We are going to do machine learning, thus we need to define our dataset.
+	\bigskip
+	\begin{definition}[Features]
+		For object $s$ yield whether definition $x \in \defs$ is used in the type of $s$.
+		\[ \features{}{s}(x) = \flatten{\type[s]}(x) \]
+	\end{definition}
+	\bigskip
+	\begin{definition}[Dependencies]
+		For object $s$ yield whether theorem $x \in \thms$ is used in the term of $s$.
+		\[ \deps{s}(x) = \flatten{\term[s]}(x) \]
+	\end{definition}
 \end{frame}
 
 \end{document}
