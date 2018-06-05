@@ -141,6 +141,7 @@ A specific flatten operation $\flattensym$ can transform this list of occurances
   We define a count function $c$ on \acic constructor terms yielding tuples of names and their depth in the \acic expression:
   \[c : \terms \rightarrow \nat \rightarrow \listtype{\names \times \nat} \]
 
+  \footnotesize
   \begin{tabularx}{\textwidth}{lll}
     $c(\emptyterm, d)$              & $ = \nil $ & Empty term \\
     $c(\text{ARel}(\cdots), d)$     & $ = \nil $ & Context reference, unused \\
@@ -192,6 +193,7 @@ A specific flatten operation $\flattensym$ can transform this list of occurances
   We define the counting of types and terms for top level \coqobjs to be:
 
   \vspace{1em}
+  \footnotesize
   \begin{tabular}{ll}
     $c_{\text{type}}(\text{AConstant}(n, A, t))$ & $= c(A, 0)$ \\
     $c_{\text{type}}(\text{AInductiveDefinition}(n, l))$ & $= \flattenlist{\map{l}{ \lambda (A, m) ~.~ \concat{c(A, 0)}{\flattenlist{\text{map}(m, \lambda x . c(x, 0))}}} } $\\
