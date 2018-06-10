@@ -1,12 +1,32 @@
 In this master thesis an approach to premise selection for Coq using machine learning is described.
 This approach is based upon the work by Kaliszyk et al \cite{kaliszyk2014machine}.
 It consists of methods for extracting the relevant data from the Coq system, to learn
-machine learning models based on this data, and to evaluate the performance of these methods.
-We evaluate the performance of various models on multiple Coq corpora.
+machine learning models based on this data, and to evaluate the performance of these models.
+
+We concisely describe how \coq internally represents theorems, and how we can extract this representation in order to perform premise selection.
+First we let the \coq compiler export the definitions and derived terms to XML.
+In a small \texttt{preloader} application these XML objects are read and summarized using three similar flatten-like operations.
+We then use a heuristic as defined by Kaliszyk \cite{kaliszyk2014machine} to derive from these summaries
+the set of definitions and the set of theorems.
+Several machine learning methods (predictors) are then defined and explored.
+We also discus how to apply common machine learning practices of preventing overfitting and bias to the premise selection problem.
+The corpora discussed in this thesis are briefly highlighted, and all performance metrics used are defined.
+Finally the performance is measured for these various machine learning methods and features for multiple \coq corpora.
+This thesis closes with an enumeration of these results,
+and an analysis where we try to gain insight into the characteristics of varying corpora from the results of these experiments.
+At the end you will also find a personal reflection on writing this thesis, as well as a glossary of used terminology.
+
 The goal of this thesis is to first validate the previous experiments done by Kaliszyk et al,
 and then improve upon these experiments with new machine learning methods.
-We also hope to gain insight into the characteristics of varying corpora from the results of these experiments.
-The validation of the work by Kaliszyk however does not succeed.
-The confidence concerning the results of this thesis are therefor in doubt.
-Assuming that our implementation is correct, we succesfully implement slightly better machine learning methods.
+Our results differ from those as produced by Kaliszyk.
+Assuming that our implementation is correct, we succesfully implement machine learning methods that have not been used within
+this context prior to this.
+Particularly the \adarank method performs slightly better in relation to the prior methods.
 The insight gained into characteristics of the various corpora however is limited.
+However, we learn that using knowledge of prior datasets (i.e. using the \coq standard library to predict theorems in \corn, etc.)
+does not yield a better result.
+We also see consistent results concerning the complexity of certain corpora, and how it reflects on the performance
+of relatively simple machine learning methods.
+For example, \knnadaptive does not perform well on complex corpora such as \corn, but yields competitive results for
+simpler corpora such as \formalin.
+ 
