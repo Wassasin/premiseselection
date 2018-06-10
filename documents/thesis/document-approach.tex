@@ -83,7 +83,10 @@ The premise selection tool works as follows, and can be summarised as in Figure 
 					\typeset{\texttt{plus\_0\_r}} & = & \{ \texttt{nat}, \texttt{eq}, \texttt{plus}, 0 \} \\
 					& & \\
 					\termset{\texttt{nat\_id}} & = & \emptyset \\
-					\termset{\texttt{plus\_0\_r}} & = & \{ \texttt{eq\_sym}, \texttt{nat\_ind}, \texttt{eq\_refl}, \texttt{f\_equal}, \texttt{S} \}
+					\termset{\texttt{plus\_0\_r}} & = & \left \{ \begin{array}{l}
+						\texttt{eq}, =, \texttt{eq\_sym}, \texttt{eq\_refl}, \texttt{f\_equal}, \texttt{nat\_ind}, \\
+						\texttt{nat}, 0, \texttt{S}, \texttt{plus}
+					\end{array} \right \}
 				\end{array}
 			\]
 			\caption{Summaries yielded for the natural number example in Figure \ref{figure:natexample}}
