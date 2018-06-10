@@ -24,9 +24,28 @@ Comparatively the prototype OCaml implementation took hours for the same operati
 
 We use the \texttt{boost} libraries and the \texttt{filesystem} en \texttt{threads} components to integrate with Linux.
 All machine learning components and mathematical operations, and matrix datastructures are custom implementations in \roerei.
-These implementations are optimized to make proper use of CPU cachelines.
-In the future we would make better use of custom allocators, to minimize the number of allocations and consequent system calls and/or pagefaults.
-On normal hardware this might be a small performance issue, but on machines with a high number of CPU's the number of pagefaults overwhelm the kernel.
+We do not use existing open source implementations of machine learning methods due to performance considerations.
+
+Theoretically we could use standard classification techniques.
+For regression analysis to be applicable, we would need to know the potential usefulness of a dependency to a theorem.
+In our trainingset we only know when a dependency was used to prove a theorem, which we know with full confidence.
+Thus instead of a set of regressors, we can only usefully train a set of classifiers.
+In this set of classifiers any one classifier expresses whether a single dependency would be useful for a given theorem.
+We can then use the confidence expressed by the classifier for each dependency in the trainingset to create a ranking.
+
+Due to how we use various methods of making the trainingset consistent (see Section \ref{section:estimating-performance}), effectively
+all classifiers need to learn a slightly different trainingset for each single theorem from the testset.
+Given the cardinality of the dataset it would not be feasible to do the analysis
+we have performed for this thesis when this learning step involves a significant computation.
+
+For the implementation of \roerei we therefor were careful to make sure that learning a variant of a trainingset would be trivial.
+For example adding a new theorem to the trainingset as with the canonical method does not involve a single memory allocation.
+All allocations and as much work as possible is done beforehand, whilst also taking care that nothing of the trainingset is used
+in an illegal manner.
+
+We also took care to make proper use of CPU cachelines in our implementations.
+In the future we would make better use of custom allocators, to minimize the number of allocations and subsequent system calls throughout the application.
+On normal hardware this might be a small performance issue, but on machines with a high number of CPU's the number of syscalls overwhelm the kernel.
 Heavy use is made of the \texttt{boost} component \texttt{fusion} and the strict C++14 type system in order to provide a measure of
 confidence in the correctness of the code.
 Also a small number of unit tests were implemented using libcheck \footnote{\url{https://libcheck.github.io/check/}}.
