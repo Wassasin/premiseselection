@@ -18,11 +18,17 @@ Notable ITP's include ACL2, Coq \cite{bertot2013interactive}, HOL (Light), Isabe
 Conversely fully automated theorem provers are just called automated theorem provers (ATP's), and need not have a (graphical) user interface.
 Fully automated ATP's include Alt-Ergo, E, Prover9 and Vampire.
 
-Interestingly tooling has been developed to combine various theorem proving systems.
+Interestingly tooling has been developed to combine various (automated) theorem proving systems.
 Specifically Sledgehammer \cite{meng2006automation} is a tool included in Isabelle that converts a subgoal into first order logic clause form and
 hands this expression to the first order automatic theorem provers E, Spass and Vampire.
 Asynchronically this expression is solved, and the first yielded proof is converted back into an Isabelle script.
 This is called the `hammer approach', and can similarly be applied to other proof systems.
+
+\begin{figure}[H]
+  \centerline{\includegraphics[height=10em]{assets/hammer-approach.pdf}}
+  \caption{Hammer approach as illustrated by Cezary Kaliszyk in his presentation at Helmut Verth Workshop, Obergurgl.}
+  \label{figure:hammer-approach}
+\end{figure}
 
 MaSH \cite{kuhlwein2013mash} improves upon Sledgehammer using machine learning and replaces the relevance filter, a key component of Sledgehammer.
 Whereas the standard MePo filter \cite{meng2009lightweight} selects and ranks fact similar to the current goal,
@@ -33,7 +39,7 @@ HOL(y)Hammer \cite{kaliszyk2013hol} is an online theorem proving service for the
 Users of HOL(y)Hammer can upload their projects to the service and attempt to solve them.
 If these projects use concepts from previously uploaded projects, the system is more likely to solve them.
 
-Full automation for \coq does not exist, as it has one of the more complex and expressive logical languages.
+Full automation for \coq has not existed until very recently, as it has one of the more complex and expressive logical languages.
 As \coq is very popular in the field of formalization, creating more or even full automation for the system would help significantly.
 Currently automation for \coq is limited to the following tactics:
 \begin{description}
@@ -90,6 +96,10 @@ Currently automation for \coq is limited to the following tactics:
   An automatic decision procedure for Presburger arithmetic \cite{stansifer1984presburger}.
 \end{description}
 
+Since januari of 2018 a Hammer for \coq named CoqHammer has been in development. \cite{czajka2018hammer}
+It implements the \texttt{Hammer} tactic for Coq,
+and is currently capable of completely solving 40.8\% of the \coq standard library.
+
 Ideally we would like to make a new tactic which solves the current proof goal using statistical ATP techniques like machine learning.
 This differs from existing tactics that employ symbolical ATP,
 which use symbolic operations such as applying, introducing and unfolding
@@ -107,11 +117,13 @@ in the hope that these new proof goals are easier to prove.
 
 Because this endeavour is quite sizeable, we limit the research to implementing a \premiseselection tool.
 In essence this work is very similar to that performed for the MaSH relevance filter.
+Thus this work can also be used in place of the relevance filter in MaSH, preselecting which
+theorems are translated to ITP and sent to the various automated theorem provers.
 Early experiments have already been performed by Kaliszyk et al. \cite{kaliszyk2014machine}.
 They developed and evaluated premise selection techniques for \coq on the Constructive \coq Repository at Nijmegen (\corn) dataset.
 Specifically they implemented \knn, \nb, \mepo, and created weighted harmonic ensembles.
 
-For our premise selection we wish to validate and improve upon their research.
+For our premise selection tooling we wish to validate and improve upon their research.
 The improvements will consist of implementing variants and additional kinds of machine learning algorithms.
 We will also test our algorithms on a variety of existing \coq corpora.
 With this research we hope to answer the following questions:
