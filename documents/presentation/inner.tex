@@ -21,14 +21,13 @@
 		\item What is Premise Selection?
 		\item How to do Premise Selection for Coq?
 		\item Contributions
-		\item Showcase: adaptation of Learning to Rank
 		\item Results
     \end{itemize}
     
     \pnote{
         First I'll explain what this thesis is about.\\
         Then how it is done for the ITP Coq, known by our bachelor students.\\
-        I'll show an interesting example of something novel implemented by me.\\
+        I'll quickly summarize the contributions made in this thesis.
         And finally I'll finish with an overview of the achieved results.\\
         This will take approximately 30 minutes, and then I'll open up the floor for questions.\\
     }
@@ -119,6 +118,7 @@
     \end{block}
     
     \pnote{
+		------------\\
         And to prove this, we have several derivation rules.\\
         We can apply these rules to form a proof.\\
         Something is proven if these rules are correctly applied, and all subderivations are closed.
@@ -209,15 +209,6 @@
     }
 \end{frame}
 
-% For a (unproven) theorem, find proof consisting of these proof steps.\\
-% 	\bigskip
-% 	\begin{itemize}
-% 		\item Premise selection: finding useful theorems
-% 		\item Proof construction: applying (deduction) steps
-% 		\item Proof verification: checking correctness
-% 	\end{itemize}
-% 	\bigskip
-
 \begin{frame}{Successes of Automated Theorem Proving}
 	\begin{block}{Kepler Conjecture}
 		What is the best way to stack cannonballs?
@@ -250,7 +241,8 @@
         and converts the proof back to the ITP system.\\
         \\
         This approach has been applied to various ITP's, such as HOL and Isabelle.\\
-        \\
+		\\
+		------------\\
         SEG: and, yes, also Coq!
     }
     \uncover<2->{
@@ -271,8 +263,10 @@
         \\
         For an ATP, before you can start constructing a proof, you need to know which premises
         are relevant to your proof goal.\\
-        Premise selection does just that, it gives advice on what can be used best.\\
-        SEG: and how does this translate to an ITP like Coq?
+		Premise selection does just that, it gives advice on what can be used best.\\
+		\\
+		SEG: and how does this translate to an ITP like Coq?\\
+		What other tool makes nice suggestions whilst your editing your document?
     }
 \end{frame}
 
@@ -284,8 +278,10 @@
         Exactly, Clippy.\\
         \\
         But instead on giving advice on how to layout your document,\\
-        it sees that you want to prove some property on natural numbers,\\
-        and thus it suggests that you use induction on natural numbers, for example.
+		our premise selection tool sees that you want to prove some property.\\
+		\\
+		For example, if you're proving a property concerning natural numbers,\\
+        it will suggest	 that you use induction on natural numbers.
     }
 \end{frame}
 
@@ -295,8 +291,11 @@
     \end{center}
     \pnote{
         The work in this thesis is based on the work by Cesary Kaliszyk.\\
-        Basically I read their research, implemented their methods, reproduced their results,\\
-        and then attempted to implement various likely improvements and other approaches \\
+		Basically I\\
+		- read their research,\\
+		- implemented their methods,\\
+		- reproduced their results,\\
+        - and then attempted to implement various likely improvements and other approaches \\
         which could then be compared to the baseline performance of their work.
     }
 \end{frame}
@@ -323,6 +322,32 @@
 \end{frame}
 
 \begin{frame}{How to do Premise Selection for Coq?}
+	\begin{center}
+		\scalebox{0.4}{
+			\begin{tikzpicture}[auto, node distance=2.5cm, main/.style={draw,align=center}]
+				\node[main] (coq) {\coqobj[s]\\inside coq};
+				\node[main] (xml) [below of=coq] {XML\\representation};
+				\node[main] (term) [below of=xml] {\coqobj[s]\\$\name \objdef \term : \type$};
+				\node[main] (summary) [below of=term] {Summary\\$<\name[s], \termset{s}, \typeset{s}>$};
+				\node[main] (definitions) [below right=2cm and 0cm of summary] {Definitions\\$\defs$};
+				\node[main] (theorems) [below left=2cm and 0cm of summary] {Theorems\\$\thms$};
+				\node[main] (features) [below of=definitions] {Features\\of theorems\\$\features{}{s}$};
+				\node[main] (dependencies) [below of=theorems] {Dependencies\\of theorems\\$\deps{s}$};
+				\node[main] (predictor) [below=7.0cm of summary] {Predictor};
+		
+				\draw[->] (coq) edge node {(1) Coq XML export} (xml);
+				\draw[->] (xml) edge node {(2) Parser} (term);
+				\draw[->] (term) edge node {(3) Resolver} (summary);
+				\draw[->] (summary) edge node [right] {(4) $\bigcup_{s \in S} \typeset{s}$} (definitions);
+				\draw[->] (summary) edge node [left] {$\bigcup_{s \in S} \termset{s} \setminus \defs$ (4)} (theorems);
+				\draw[dashed] (definitions) edge node {(4)} (theorems);
+				\draw[->] (theorems) edge node {(5)} (dependencies);
+				\draw[->] (definitions) edge node {(5)} (features);
+				\draw[->] (features) edge node [left] {(6)} (predictor);
+				\draw[->] (dependencies) edge node [right] {(6)} (predictor);
+			\end{tikzpicture}
+		}
+	\end{center}
     \pnote{
         So how do we do this premise selection?\\
         I'll not be able to explain in full detail everything.\\
@@ -355,6 +380,14 @@ apply f_equal.
 exact IHx.
 Qed.
 \end{lstlisting}
+\pnote{
+	First, a proof written in Coq is actually written in the language called 'Gallina'.\\
+	You may recognize this from the screenshot from earlier.\\
+	\\
+	It is a small proof concerning natural numbers and that adding 0 to a natural number
+	results in the same number.\\
+	This example is used throughout this presentation, but also throughout my thesis.
+}
 \end{frame}
 
 \begin{frame}{\pcic: terms}
@@ -369,10 +402,18 @@ Qed.
 	\begin{definition}[name]
 		A name is an element in the set of names $\names$, and is bound to a term.
 	\end{definition}
+	\pnote{
+		However Coq uses another representation internally called 'pCic', or
+		the predicative calculus of (co)inductive constructions.\\
+		This is the language on which we are going to base our Premise Selection.\\
+		Hence I'll quickly try to show what it looks like.\\
+		\\
+		In it you have terms (the proofs and transformations).\\
+		A term can have a name.
+	}
 \end{frame}
 
 \begin{frame}{\pcic: types}
-
 	\begin{definition}[type]
 		A type is denoted by the semantic subclass of types inside the syntactic class term.
 		A type is typically denoted by $\type$, with $\types$ being the set of all types.
@@ -383,6 +424,11 @@ Qed.
 	Therefor a type is inside the syntactic class term, and all types can also be considered to be terms.
 	\[ \types \subseteq \terms \]
 	\end{lemma}
+	\pnote{
+		Each term has a type.\\
+		Because Coq is based on the Curry-Howard isomorphism, each type is a term by itself.\\
+		Each proof is a term, but the premise it proves is the type of that term.
+	}
 \end{frame}
 
 \begin{frame}{\pcic: sorts}
@@ -404,9 +450,19 @@ Qed.
 			\end{array}
 		\]
 	\end{definition}
+	\pnote{
+		A type is also typed.\\
+		pCic uses an infinite well-founded typing hierarchy of so-called sorts.\\
+		Typically a premise is of sort 'prop', a definition of sort 'set', and
+		both are again of sort 'type'.\\
+		\\
+		Question: why well-founded. Due to Russell's Paradox, where a set can not
+		be part of itself., hence the number-tagging.\\
+		Classically this was a flaw in Cantor's naive set theory.
+	}
 \end{frame}
 
-\begin{frame}{\pcic: example}
+\begin{frame}{\gallina: example}
 From our natural numbers example the following terms are of sort \sortset:
 $$
 	\rowcolors{0}{}{}
@@ -422,9 +478,15 @@ $$
 		\texttt{plus} & \objdef & \texttt{fix}~\ldots & : & \texttt{nat} \rightarrow \texttt{nat} \rightarrow \texttt{nat} \\
 	\end{array}
 $$
+\pnote{
+	So if we quickly look back at our natural-numbers example,\\
+	and convert \pcic back to \gallina (such that it still is human readable),\\
+	we can see the constructors and their types.\\
+	But also the operations.
+}
 \end{frame}
 
-\begin{frame}{\pcic: example}
+\begin{frame}{\gallina: example}
 From our natural numbers example the following terms are of sort \sortprop:
 $$
 	\rowcolors{0}{}{}
@@ -443,6 +505,10 @@ $$
 							& : & \forall x : \texttt{nat},~ \texttt{plus}~x~0 = x \\
 	\end{array}
 $$
+\pnote{
+	The premises look like this.
+	The representation of plus_0_r follows from Coq tactics.
+}
 \end{frame}
 
 \begin{frame}{\pcic: terms}
@@ -465,6 +531,12 @@ $$
 		$\text{Fix}(n:\listtype{\names},~ A:\listtype{\types},~ ts:\listtype{\terms})$ & Fixpoint functions \\
 		$\text{CoFix}(n:\listtype{\names},~ AS:\listtype{\types},~ ts:\listtype{\terms})$ & Co-fixpoint functions \\
 	\end{tabular}
+	\pnote{
+		But what does pCic actually look like?\\
+		A term in pCic is comprised of the following constructors.\\
+		\\
+		An application, half-way as 'app', is a constructor that takes a term, and several other terms are applied.
+	}
 \end{frame}
 
 \begin{frame}{\pcic: objects}
@@ -475,15 +547,26 @@ $$
 		$\text{InductiveConstructor}(n:\names,~ A:\types)$ \\
 		$\text{InductiveDefinition}(n:\names,~ A:\types,~ cs:\listtype{\text{InductiveConstructor}})$
 	\end{tabular}
+	\pnote{
+		A term, can be used to define constants, variables, but also proofs in progress.
+	}
 \end{frame}
 
 \begin{frame}{\xml}
 	\lstinline{COQ_XML=-xml COQ_XML_LIBRARY_ROOT=<dest>}
 	\lstinputlisting[language=xml,basicstyle=\tiny]{figures/plus.con.xml}
+	\pnote{
+		And old versions of Coq (currently no longer) supported exporting these\\
+		pCic versions to XML, which looks like this.\\
+		As a very first step, my tool exports Gallina scripts to this XML using the Coq compiler as seen above.
+	}
 \end{frame}
 
 \begin{frame}{Parsing}
 	\lstinputlisting[language=caml,basicstyle=\tiny]{figures/plus.con.types.txt}
+	\pnote{
+		Then this XML is converted to something like this.
+	}
 \end{frame}
 
 \begin{frame}{Extraction}
@@ -525,6 +608,13 @@ $$
 		$c(\text{AFix}(l), d)$        & $ = c_{\text{fix}}(l, d) $ \\
 		$c(\text{ACoFix}(l), d)$      & $ = c_{\text{fix}}(l, d) $ \\
 	\end{tabularx}
+	\pnote{
+		And then I throw everything away.\\
+		\\
+		\\
+		Well, all the structure at least.\\
+		The names used in each term are kept and counted.
+	}
 \end{frame}
 
 \begin{frame}{Extraction}
@@ -537,6 +627,9 @@ $$
 		c_{\text{fix}}(l, d) & = & \flattenlist{ \map{l}{ \lambda (A, t) ~.~ \concat{c(A, d+1)}{c(t, d+1)} } }
 		\end{array}
 	$$
+	\pnote{
+		I'll not go into detail.
+	}
 \end{frame}
 
 \begin{frame}{Extraction}
@@ -554,6 +647,9 @@ $$
 		$c_{\text{term}}(\text{AConstant}(n, A, t))$ & $= c(t, 0)$ \\
 		$c_{\text{term}}(-)$ & $= \nil $ \\
 	\end{tabular}}
+	\pnote{
+		And then you can count everything for just terms and just the types.
+	}
 \end{frame}
 
 \begin{frame}{Extraction}
@@ -567,6 +663,9 @@ $$
 		\end{array}
 	$
 	\end{definition}
+	\pnote{
+		You can record just the occurance of terms and types.
+	}
 \end{frame}
 
 \begin{frame}{Extraction}
@@ -599,6 +698,27 @@ $$
 		\end{array}
 	$
 	\end{definition}
+	\pnote{
+		But you can also count the number of occurances, or record the depth of their occurance.
+	}
+\end{frame}
+
+\begin{frame}{What do we currently have?}
+	A summary with for each named term
+	\begin{itemize}
+		\item which other named terms have been used to define it.
+		\item the frequency of the occurance.
+		\item the depth of the occurance.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{What do we want?}
+	Given a proof goal, which premises will help me prove the goal.
+	\pnote{
+		So we're not quite there yet.\\
+		\\
+		We've only made all the information Coq has more accessible.
+	}
 \end{frame}
 
 \begin{frame}{Theorems and definitions}
@@ -610,6 +730,13 @@ $$
 		A term (which has a type) that is not a theorem.
 		Thus it can only be transformative or a simple constant.
 	\end{definition}
+	\pnote{
+		Let's make a distinction.\\
+		\\
+		We have named terms which form a proof: theorems.\\
+		But we also have terms which are just mechanisms which help us:\\
+		we'll call those definitions.
+	}
 \end{frame}
 
 \begin{frame}[fragile]{Theorems and definitions}
@@ -621,6 +748,14 @@ Notation "'CProp'" := Type.
 \end{lstlisting}
 	\bigskip
 	Thus for \corn the sort of a theorem is \sorttype{}$(n+1)$.
+	\pnote{
+		I have a great idea!\\
+		Let's use that sort, Prop!\\
+		--------\\
+		However some Coq libraries, such as CoRN (Coq Constructive Repository at Nijmegen), which originated right here,
+		do not use the sort Prop at all.\\
+		Thus that will not work.
+	}
 \end{frame}
 
 \begin{frame}{Heuristic}
@@ -635,11 +770,35 @@ Notation "'CProp'" := Type.
 		Theorems build upon eachother, thus what is used in terms, except the definitions, must be theorems.
 		\[ \thms = (\bigcup_{s \in \objs} \termset{s}) \setminus \defs \]
 	\end{definition}
+	\pnote{
+		Kaliszyk uses a heuristic to solve this issue.\\
+		Theorems prove stuff concerning definitions, mechanisms, not concerning other theorems.\\
+		And because the type of a proof is the proposition of the proof, only definitions may occur in those types.\\
+		\\
+		Theorems build upon eachother, thus theorems will occur in the terms of proofs.\\
+		And anything that is a definition can never be a theorem.\\
+		\\
+		This heuristic works really well.
+	}
+\end{frame}
+
+\begin{frame}{What do we currently have?}
+	\begin{itemize}
+		\item Definitions: the subjects of proofs.
+		\item Theorems: the objects of proofs and proofs themselves.
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{What do we want?}
+	Given a proof goal, which premises will help me prove the goal, and how likely?
+	\pnote{
+		How are we going to do Premise Selection?\\
+		I've changed it a bit.\\
+		This sounds like something involving statistics...
+	}
 \end{frame}
 
 \begin{frame}{Features and dependencies}
-	We are going to do machine learning, thus we need to define our dataset.
-	\bigskip
 	\begin{definition}[Features]
 		For object $s$ yield whether definition $x \in \defs$ is used in the type of $s$.
 		\[ \features{}{s}(x) = \flatten{\type[s]}(x) \]
@@ -649,15 +808,35 @@ Notation "'CProp'" := Type.
 		For object $s$ yield whether theorem $x \in \thms$ is used in the term of $s$.
 		\[ \deps{s}(x) = \flatten{\term[s]}(x) \]
 	\end{definition}
+
+	\pnote{
+		We are going to do machine learning, thus we need to define our dataset.\\
+		...\\
+		Yes, you are in a machine learning talk.\\
+		Actually, there is a separate field of ATP's using machine learning.\\
+		The Hammers are an example of that.\\
+		\\
+		Anyway,\\
+		Our features are our definitions, as they describe how premises look (i.e. what they prove)\\
+		\\
+		Now, our classes in our ranking, to use machine learning terms, are the premises that
+		can be used to prove the goal. \\
+		These premises are called dependencies, as their theorems are dependant on these premises
+		to form their proofs.
+	}
 \end{frame}
 
 \begin{frame}{Predictors}
+	Given a proof goal $\in \types$, 
+
 	\begin{definition}[Ranking $r \in \rankings$]
-		$ r : \depset \rightharpoonup \mathbb{R} $
+		We want to yield a ranking of dependencies.
+		\[ r : \depset \rightharpoonup \mathbb{R} \]
 	\end{definition}
 	\bigskip
 	\begin{definition}[Predictor $p \in \predictors$]
-		$ p : \types \rightarrow \rankings $
+		And we generate rankings using a predictor.
+		\[ p : \types \rightarrow \rankings \]
 	\end{definition}
 \end{frame}
 
@@ -694,14 +873,39 @@ Notation "'CProp'" := Type.
     	P^K_\text{knn}(c, \phi) = \sum_{x \in \text{closest}_K(c)} \deps{x}(\phi) \times \text{dist}(c, x)
 	$
 	\end{definition}
+	\pnote{
+		A simple example of a predictor uses something akin to KNN.\\
+		In the thesis I've defined everything in the following manner.\\
+		\\
+		Naturally the C-code looks quite different.\\
+		-----\\
+		At the bottom you'll see how it is defined in the end.\\
+		\\
+		I've defined several of these predictors in the thesis.\\
+		Now we're done!\\
+		We have premise selection!
+	}
 \end{frame}
 
 \begin{frame}{Estimating performance}
-	10-fold \crossvalidation (same as source)\\
+	Used: 10-fold \crossvalidation (same as source)\\
 	\bigskip
+	\pause
 	\textbf{Problem}: A predictor might use a theorem that can not yet be proven.\\
 	\bigskip
 	Implemented 3 different schemes: canonical, pessimistic and optimistic.
+	\pnote{
+		So given a known library, such as the Coq standard library,\\
+		you can now try to estimate how well your implementation performs.\\
+		\\
+		In Machine Learning you have a cross validation to rule out bias, and to better approximate
+		the performance on an previously unseen dataset.\\
+		\\
+		-----\\
+		However, this is not a simple dataset.\\
+		Using a not yet seen theorem to generate premise selection suggestions can be considered cheating.\\
+		To solve this...
+	}
 \end{frame}
 
 \begin{frame}{Estimating performance: canonical method}
@@ -711,6 +915,13 @@ Notation "'CProp'" := Type.
 	\bigskip
 	Given a conjecture $\phi \in \testset$,
 	\[ \trainset^{\phi} = \{ x \in \trainset | x < \phi \} \]
+	\pnote{
+		The canonical method best approximates using a directed acyclic graph as
+		often seen in import strategies of most programming languages and indeed Gallina.\\
+		\\
+		However this method also supports randomizing this import order, and still be able to
+		create separate train and testsets.
+	}
 \end{frame}
 
 \begin{frame}{Metrics}
@@ -727,6 +938,13 @@ Notation "'CProp'" := Type.
 	\begin{definition}[\oocover]
 	$\oocoverf{r}{s} = \frac{ |\topn{100}{r} \bigcap \deps{s}| } { |\deps{s}| } $
 	\end{definition}
+	\pnote{
+		Next up is actually gaining performance metrics.\\
+		I've been notified that in other fields these metrics have different names, namely 100cover and recall@100.\\
+		\\
+		The two most commonly used metrics are recall@100 and auc.\\
+		Basically recall@100 is the ratio of how many of the first 100 suggestions/guesses are correct.
+	}
 \end{frame}
 
 \begin{frame}{Metrics}
@@ -759,20 +977,53 @@ Notation "'CProp'" := Type.
 	\end{array}
 	$
 	\end{definition}
+	\pnote{Integral}
 \end{frame}
 
 \begin{frame}{Contributions}
 	\begin{itemize}
-		\item Application to multiple corpora
-		\item Experiments with various features
-		\item Novel adaptation of method Adarank
-		\item Implementation in C++
-		\item Varying estimations of performance
-		\item Investigated the importance of prior knowledge
+		\item Precise definition of approach.
+		\item Fast implementation in C++.
+		\item Application to multiple corpora (libraries).
+		\item Experiments with various features.
+		\item Novel adaptation of method Adarank / Learning to Rank.
+		\item Varying estimations of performance.
+		\item Investigated the importance of prior knowledge.
 	\end{itemize}
+	\pnote{
+		What I've described up until now has also been done by Kaliszyk.\\
+		Here I highlight in what way my thesis distinguises itself from this prior work.\\
+		\\
+		Corpora: Coqstdlib, Formalin (by Robbert Krebbers), CoRN, Mathclasses and Mathcomp.\\
+		\\
+		Question: why own C++ implementation?\\
+		Given differing performance estimators is not feasible to do with python/scikit.\\
+		Cache locality a big factor.\\
+		Cardinality important factor. (matrix 50000 * 10000, 500mil)
+	}
 \end{frame}
 
-\begin{frame}{Case: Adarank}
+\begin{frame}{Corpora}
+	\begin{center}
+		\begin{tikzpicture}[auto, node distance=2.5cm, main/.style={align=center}]
+			\node[main] (coq) {\coq};
+			\node[main] (mathclasses) [right=2cm of coq] {\mathclasses};
+			\node[main] (formalin) [above=0.5cm of mathclasses] {\formalin};
+				\node[main] (mathcomp) [below=0.5cm of mathclasses] {\mathcomp};
+			\node[main] (corn) [right=1.5cm of mathclasses] {\corn};
+
+			\draw[->] (coq) to [out=0,in=180] (formalin);
+			\draw[->] (coq) to [out=0,in=180] (mathcomp);
+			
+			\draw[->] (coq) to [out=0,in=180] (mathclasses);
+			\draw[->] (mathclasses) to [out=0,in=180] (corn);
+		\end{tikzpicture}
+	\end{center}
+	\pnote{
+		Coq libraries are dependant on eachother.\\
+		I've investigated whether it helps to include or exclude parts of dependant corpora.\\
+		Surprisingly, it is better to leave out as much of prior data as possible.
+	}
 \end{frame}
 
 \begin{frame}{Results (\knn)}
@@ -806,6 +1057,16 @@ Notation "'CProp'" := Type.
 		  \addlegendentry{\mathcomp}
 		\end{axis}
 	\end{tikzpicture}
+	}
+	\pnote{
+		To show you some differences in how Roerei behaves for each corpus,
+		here is the performance for KNN for each corpus.\\
+		Not that Formalin performance is highest, and CoRN performance is lowest.\\
+		\\
+		This is probably due to the fact that Formalin has less complex proofs, mostly
+		deconstructing inductive definitions.\\
+		Whereas CoRN is a collection of formalized mathmatical proofs,
+		which ought to be less straight-forward.
 	}
 \end{frame}
 
@@ -841,6 +1102,33 @@ Notation "'CProp'" := Type.
 		\end{axis}
 	\end{tikzpicture}
 	}
+	\pnote{
+		This is the same graph, but instead of just for KNN it is for all predictors I've implemented.\\
+		Note that Adarank performs best in all cases.\\
+		Unfortunately it is also computationally a lot more expensive.\\
+		\\
+		The same behaviour can be seen across all predictors with regards to performance
+		for each corpus.
+	}
+\end{frame}
+
+\begin{frame}{Results (prior knowledge)}
+	\begin{figure}[H]
+		\centering
+		\footnotesize
+		\begin{tabular}{r|cll}
+		Method & mode & \oocover & \auc \\\hline
+		\input{prior-vs-nonprior-corn-frequency-canonical}
+		\end{tabular}
+		\caption{Results for the \corn (frequency) dataset with canonical strategy, with prior knowledge compared to without}
+	\end{figure}
+	\pnote{
+		Also interesting is the effect on including knowledge from prior corpora.\\
+		So for example including results from the Coq stdlib when testing the performance
+		of Formalin, or in this case, CoRN.\\
+		Surprisingly, not including this prior knowledge improves the performance.\\
+		So maybe a filter that detects irrelevant data can help the performance a lot.
+	}
 \end{frame}
 
 \begin{frame}{Results (relative to Kaliszyk)}
@@ -851,9 +1139,38 @@ Notation "'CProp'" := Type.
 		\hline
 		\input{data/relative}
 	\end{tabular}
+	\pnote{
+		Finally, how did we do?\\
+		As you can see, across the board we have worse performance compared to Kaliszyk.\\
+		\\
+		This is odd, as I've set out to reproduce their work in the first place.\\
+		\\
+		I am not able to give a proper explanation as to why this is.\\
+		Unfortunately the source code of their tooling is no longer available, so I am not able
+		to investigate this further in a constructive manner.
+	}
 \end{frame}
 
 \begin{frame}{Reproducibility}
+	\begin{center}
+        \includegraphics[width=0.7\textwidth]{figures/github.png}
+    \end{center}
+
+	\pnote{
+		Luckily nowadays it is required at the RU to publish your dataset and code in a repository.\\
+		I've written documentation and provide docker images to enable the continuation of my research.
+	}
+\end{frame}
+
+\begin{frame}{Thank you!}
+	\begin{center}
+        \includegraphics[width=0.6\textwidth]{figures/vigor.png}
+    \end{center}
+
+	\pnote{
+		Luckily nowadays it is required at the RU to publish your dataset and code in a repository.\\
+		I've written documentation and provide docker images to enable others to continue with my research.
+	}
 \end{frame}
 
 \end{document}
