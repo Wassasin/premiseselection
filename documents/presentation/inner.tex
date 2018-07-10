@@ -1,0 +1,859 @@
+\begin{document}
+\renewcommand{\dept}{icis}
+
+\bibliographystyle{plain}
+
+% Load literature in temporary savebox to prevent generation of new frame
+\newsavebox\mytempbib
+\savebox\mytempbib{\parbox{\textwidth}{\nobibliography{literature}}}
+\pagecolor{white}
+\begin{frame}
+    \titlepage
+    
+    \pnote{
+        Welcome to my thesis presentation.\\
+        Today I'll present my work on developing a system for premise selection for the ITP Coq.
+    }
+\end{frame}
+
+\begin{frame}{Outline}
+	\begin{itemize}
+		\item What is Premise Selection?
+		\item How to do Premise Selection for Coq?
+		\item Contributions
+		\item Showcase: adaptation of Learning to Rank
+		\item Results
+    \end{itemize}
+    
+    \pnote{
+        First I'll explain what this thesis is about.\\
+        Then how it is done for the ITP Coq, known by our bachelor students.\\
+        I'll show an interesting example of something novel implemented by me.\\
+        And finally I'll finish with an overview of the achieved results.\\
+        This will take approximately 30 minutes, and then I'll open up the floor for questions.\\
+    }
+\end{frame}
+
+\begin{frame}{Proofs}
+	\begin{minipage}{0.5\textwidth}
+		\begin{itemize}
+			\item All men are mortal.
+			\item Socrates is a man.
+			\item Therefore, Socrates is mortal.
+		\end{itemize}
+	\end{minipage}
+	\hspace{2em}
+	\begin{minipage}{0.4\textwidth}
+		\includegraphics[width=1.0\textwidth]{figures/socrates.jpg}\\
+		\centering \color{gray}{Eric Gaba (CC by-nc-sa 2.5)}
+    \end{minipage}
+
+    \pnote{
+        First off, let's look at some fundamentals.\\
+        Some mathematicians concern themselves with proofs.\\
+        A proof is an argument for a mathematical statement to be true.\\
+        In this example, Socrates is mortal is a premise, that follows logically from the two base truths.\\
+        These base truths are called axioms.\\
+        A premise is assumed to be true, but need not be proven (yet).\\
+        Truths based on other truths are called theorems, thus when proven, this premise will become a theorem.\\
+        In this case, the argument itself is considered to be an informal proof, as it is dependant upon informal language.\\
+        Actually the entire argument is contained in the word 'therefore', which is an implication that the latter follows from the former.\\
+        Informal proofs are sometimes error prone, and mathematicians try to vigorously check such informal proofs.
+    }
+\end{frame}
+
+\begin{frame}{Propositional logic}
+	\begin{block}{Primitives}
+			Atomic values: $P, Q$\\
+			Operations: $\rightarrow$\\
+			Term: $P \rightarrow Q$\\
+			Derivation: $H_1, \dots, H_n \vdash P$
+    \end{block}
+    
+    \pnote{
+        Alternatively, mathematicians have developed systems for formal proofs.\\
+        In this case, we have a simple logic, propositional logic.\\
+        \\
+        There are values, say 'Socrates' and 'man'.\\
+        Operations, such as the implication.\\
+        A term is either a value, or composed out of other terms and operations.\\
+        And from that we can derive truths, in this case, P follows from several hypothesis.
+    }
+
+	\uncover<2->{
+	\begin{block}{Proof rules}
+			\begin{center}
+					\begin{minipage}{.4\textwidth}
+					\[
+							\begin{prooftree}
+									\justifies
+									H, P \vdash P
+									\using \text{hyp}
+							\end{prooftree}
+					\]
+					\end{minipage}
+					\begin{minipage}{.4\textwidth}
+							\[
+									\begin{prooftree}
+											H, P \vdash Q
+											\justifies
+											H \vdash P \rightarrow Q
+											\using \rightarrow \text{intro}
+									\end{prooftree}
+							\]
+					\end{minipage}\\
+					\vspace{1em}
+					\begin{minipage}{1.0\textwidth}
+					\[
+							\begin{prooftree}
+											H, \vdash P \rightarrow Q
+											\hspace{1em}
+											H \vdash P
+											\justifies
+											H \vdash Q
+											\using \rightarrow \text{elim}_{[P]}
+							\end{prooftree}
+					\]
+					\end{minipage}
+			\end{center}
+    \end{block}
+    
+    \pnote{
+        And to prove this, we have several derivation rules.\\
+        We can apply these rules to form a proof.\\
+        Something is proven if these rules are correctly applied, and all subderivations are closed.
+    }
+	}
+\end{frame}
+
+\begin{frame}[fragile]{Propositional logic \small{example}}
+	\begin{block}{Theorem}
+			\[ (P \rightarrow Q) \rightarrow P \rightarrow Q \]
+	\end{block}
+	\begin{block}{Proof}
+			\[
+					\begin{prooftree}
+							\begin{prooftree}
+									\begin{prooftree}
+											\justifies
+											P \rightarrow Q, \dots \vdash P \rightarrow Q
+											\using \text{hyp}
+									\end{prooftree}
+									\hspace{1em}
+									\begin{prooftree}
+											\justifies
+											\dots, P \vdash P
+											\using \text{hyp}
+									\end{prooftree}
+									\justifies
+									P \rightarrow Q, P \vdash Q
+									\using \rightarrow \text{elim}_{[P]}
+							\end{prooftree}
+							\justifies
+							\vdash (P \rightarrow Q) \rightarrow P \rightarrow Q
+							\using \rightarrow \text{intros}
+					\end{prooftree}
+			\]
+    \end{block}
+    \pnote{
+        Here you can see an example of a proof derivation.\\
+        I'll not go into this proof in detail, but you can imagine that for a complex premise
+        writing such a derivation will take effort and a lot of paper.\\
+        \\
+        This is generally true for any formal proof.\\
+        Compared to an informal proof, a lot more small details need to be completely worked out.\\
+        No wonder mathematicians typically favor informal proofs.\\
+        Often the details are not very relevant.
+    }
+\end{frame}
+
+\begin{frame}{Interactive Theorem Proving}
+	\begin{center}
+		\includegraphics[height=0.78\textheight]{figures/coqide.png}
+    \end{center}
+    \pnote{
+        A computer program can be helpful to prove something formally.\\
+        At least you don't need as much paper, and the computer will check every step of the proof.\\
+        As probably all of you know, this is a screenshot from the Interactive Theorem Prover Coq.\\
+        \\
+        It assists the user step-by-step in formulating a proof by checking the validity of each step.\\
+        Hence the 'interactive', it requires a user to actually enter the proof steps.
+    }
+\end{frame}
+
+\begin{frame}{Automated Theorem Proving}
+	\begin{center}
+        \includegraphics[width=0.2\textwidth]{figures/alt-ergo.png}\hspace{1em}
+        \includegraphics[width=0.2\textwidth]{figures/eicon.png}\hspace{1em}
+        \includegraphics[width=0.2\textwidth]{figures/prover9t.png}
+    \end{center}
+    \vspace{5em}
+    \bigskip
+    First ATP guided proof: Davis, 1957.
+    
+    \pnote{
+        Even better would be when formal proofs can be constructed automatically.\\
+        Automated Theorem Provers are capable of doing that.\\
+        \\
+        In fact, it could be argued that the field of Computing Science was conceived for
+        the sake of developing ATP's.\\
+        \\
+        Several notably ATP's are Alt-Ergo, E, Prover9 and Vampire.\\
+        ATP's are however not perfect, and many complex theorems can not be formally proven with just ATP's.\\
+        \\
+        For Coq there exists some automation in the form of tactics, but these do not ensure full automation.\\
+        This is because the logic underpinning Coq is quite expressive and complex, making it difficult to develop an ATP.\\
+        \\
+        SEG: ATP's are great at proving simple premises, such as proving the correctness of programs.\\
+        However, there are also some novel premises being solely proven formally.
+    }
+\end{frame}
+
+% For a (unproven) theorem, find proof consisting of these proof steps.\\
+% 	\bigskip
+% 	\begin{itemize}
+% 		\item Premise selection: finding useful theorems
+% 		\item Proof construction: applying (deduction) steps
+% 		\item Proof verification: checking correctness
+% 	\end{itemize}
+% 	\bigskip
+
+\begin{frame}{Successes of Automated Theorem Proving}
+	\begin{block}{Kepler Conjecture}
+		What is the best way to stack cannonballs?
+		\bigskip
+		\begin{center}
+				\includegraphics[width=0.5\textwidth]{figures/balls.jpg}\\
+				\centering \color{gray}{Nedral (CC by-nc-sa 2.5)}
+		\end{center}
+		
+		\small{
+				No arrangement of equally sized spheres has a greater average than $\frac{\pi}{3\sqrt{2}}$.
+				Formalized in 2014 by Flyspeck using Isabelle and HOL Light.
+        }
+        
+        \pnote{
+            Such as the Kepler Conjecture, \\
+            in short a theorem describing the absolute optimal bound to stack cannonballs.
+        }
+	\end{block}
+\end{frame}
+
+\begin{frame}{Hammer Theorem Proving}
+	\begin{center}
+		\includegraphics[width=1.0\textheight]{figures/hammer-approach.pdf}
+    \end{center}
+    \pnote{
+        You might ask, why not both?!\\
+        That is exactly what the Hammer-approach tries to do.\\
+        It translates the theorems and proof goals from an ITP system to that of an ATP system,\\
+        and converts the proof back to the ITP system.\\
+        \\
+        This approach has been applied to various ITP's, such as HOL and Isabelle.\\
+        \\
+        SEG: and, yes, also Coq!
+    }
+    \uncover<2->{
+        First paper just published!
+        \begin{center}
+            \bibentry{czajka2018hammer}
+        \end{center}
+    }
+\end{frame}
+
+\begin{frame}{Interactive Theorem Proving}
+	\begin{center}
+		\includegraphics[height=0.78\textheight]{figures/coqide.png}
+    \end{center}
+    \pnote{
+        But this thesis was started a while back, and let's not get ahead of ourselves.\\
+        This thesis is about premise selection after all.\\
+        \\
+        For an ATP, before you can start constructing a proof, you need to know which premises
+        are relevant to your proof goal.\\
+        Premise selection does just that, it gives advice on what can be used best.\\
+        SEG: and how does this translate to an ITP like Coq?
+    }
+\end{frame}
+
+\begin{frame}{Premise Selection in ITP}
+	\begin{center}
+		\includegraphics[height=0.78\textheight]{figures/coqide-clippy.png}
+    \end{center}
+    \pnote{
+        Exactly, Clippy.\\
+        \\
+        But instead on giving advice on how to layout your document,\\
+        it sees that you want to prove some property on natural numbers,\\
+        and thus it suggests that you use induction on natural numbers, for example.
+    }
+\end{frame}
+
+\begin{frame}{Source research}
+	\begin{center}
+		\bibentry{kaliszyk2014machine}
+    \end{center}
+    \pnote{
+        The work in this thesis is based on the work by Cesary Kaliszyk.\\
+        Basically I read their research, implemented their methods, reproduced their results,\\
+        and then attempted to implement various likely improvements and other approaches \\
+        which could then be compared to the baseline performance of their work.
+    }
+\end{frame}
+
+\begin{frame}{Roerei}
+	Open source and is available from:
+	\begin{center}
+		\url{https://github.com/Wassasin/roerei}
+	\end{center}
+	\bigskip
+	Design goals of this tool were to:
+	\begin{itemize}
+		\item Support offline learning and analysis of \machinelearning on the various corpora.
+		\item Enable integration in the \coqide GUI.
+		\item Enable merging of the premise selection tool in the \coq main branch as a plugin.
+    \end{itemize}
+    
+    \pnote{
+        The implementation I made is called Roerei.\\
+        Whether the name is a pun I leave as an exercise to the listener.\\
+        And the design goal of the implementation is to have a little egg in the corner of your
+        Coq IDE giving you suggestions.
+    }
+\end{frame}
+
+\begin{frame}{How to do Premise Selection for Coq?}
+    \pnote{
+        So how do we do this premise selection?\\
+        I'll not be able to explain in full detail everything.\\
+        I'll also quickly skip through the slides.\\
+        If you feel that it goes too quickly, I have written a thesis.\\
+        My apologies beforehand.
+    }
+\end{frame}
+
+
+\begin{frame}[fragile]{Gallina}
+\begin{lstlisting}[language=Coq, mathescape,basicstyle=\footnotesize,frame=none]
+Inductive nat : Set :=
+| O : nat
+| S : nat -> nat.
+Fixpoint plus (n m : nat) : nat :=
+match n with
+| O => m
+| S p => S (plus p m)
+end.
+Lemma plus_0_r : $\forall$ x , plus x 0 = x.
+Proof.
+intro x.
+apply eq_sym.
+induction x.
+unfold plus.
+apply eq_refl.
+unfold plus.
+apply f_equal.
+exact IHx.
+Qed.
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}{\pcic: terms}
+	Language on which \coq operates internally.\\
+	\bigskip
+	\begin{definition}[term]
+		A term is a noun or compound word of \pcic.
+		A term is typically denoted by $\term$,
+		with $\terms$ being the set of all terms.
+	\end{definition}
+	\bigskip
+	\begin{definition}[name]
+		A name is an element in the set of names $\names$, and is bound to a term.
+	\end{definition}
+\end{frame}
+
+\begin{frame}{\pcic: types}
+
+	\begin{definition}[type]
+		A type is denoted by the semantic subclass of types inside the syntactic class term.
+		A type is typically denoted by $\type$, with $\types$ being the set of all types.
+	\end{definition}
+	\bigskip
+	\begin{lemma}
+	\coq is based on the Curry-Howard isomorphism.
+	Therefor a type is inside the syntactic class term, and all types can also be considered to be terms.
+	\[ \types \subseteq \terms \]
+	\end{lemma}
+\end{frame}
+
+\begin{frame}{\pcic: sorts}
+	\begin{definition}[sort]
+		The type of a type when manipulated as a term is called a sort.
+		\pcic uses an infinite well-founded typing hierarchy of sorts,
+		with base sorts \sortprop and \sortset,
+		and with a family of sorts \sorttype[{i}].
+		The set of sorts named $\sorts$ is defined by
+		\[\sorts \equiv \{ \sortprop, \sortset, \sorttype[{i}] ~|~ i \in \mathbb{N} \} \]
+	
+		Their types are defined as
+		\[
+			\rowcolors{0}{}{}
+			\begin{array}{rcl}
+				\sortprop & : & \sorttype[1] \\
+				\sortset & : & \sorttype[1] \\
+				\forall_{i \in \mathbb{N}}~ \sorttype[i] & : & \sorttype[{i+1}]
+			\end{array}
+		\]
+	\end{definition}
+\end{frame}
+
+\begin{frame}{\pcic: example}
+From our natural numbers example the following terms are of sort \sortset:
+$$
+	\rowcolors{0}{}{}
+	\begin{array}{rcl}
+		\texttt{0} & : & \texttt{nat} \\
+		\texttt{S} & : & \texttt{nat} \rightarrow \texttt{nat}
+	\end{array}
+$$
+$$
+	\rowcolors{0}{}{}
+	\begin{array}{rclcl}
+		\texttt{nat\_id} & \objdef & \lambda x : \texttt{nat}~.~x & : & \texttt{nat} \rightarrow \texttt{nat} \\
+		\texttt{plus} & \objdef & \texttt{fix}~\ldots & : & \texttt{nat} \rightarrow \texttt{nat} \rightarrow \texttt{nat} \\
+	\end{array}
+$$
+\end{frame}
+
+\begin{frame}{\pcic: example}
+From our natural numbers example the following terms are of sort \sortprop:
+$$
+	\rowcolors{0}{}{}
+	\begin{array}{rcl}
+		\texttt{nat\_ind} & \objdef & \lambda~P~f_0~f_S ~.~ \texttt{fix}~F~n ~:~ P~n ~:= \\
+			&   &  \texttt{match}~ n ~\texttt{with} \\
+			&   &  ~~| ~0 => f_0 \\
+			&	&  ~~| ~S~m => f_S~m~(F~m) \\
+			&	&  \texttt{end} \\
+			& : &  \forall P : \texttt{nat} \rightarrow \sortprop,\\
+			&   & P~\texttt{0} \rightarrow (\forall n : \texttt{nat},~ P~n \rightarrow P~(\texttt{S}~n)) \rightarrow \forall n : \texttt{nat},~ P~n \\
+		\\
+		\texttt{plus\_0\_r} & \objdef & \texttt{eq\_sym}
+							~~(\texttt{nat\_ind}~(\lambda x~.~\texttt{plus}~x~0)\\
+							& & \texttt{eq\_refl}~(\lambda x~\texttt{IH}~.~\texttt{f\_equal}~S~\texttt{IH})~x) \\
+							& : & \forall x : \texttt{nat},~ \texttt{plus}~x~0 = x \\
+	\end{array}
+$$
+\end{frame}
+
+\begin{frame}{\pcic: terms}
+	\vspace{-0.7em}
+	\begin{tabular}{ll}
+		$\emptyterm$                                        & Empty term \\
+		$\text{Rel}(i:\nat)$                       & Variables as De Bruijn index \\
+		$\text{Var}(n:\names)$                     & Named (local) variables \\
+		$\text{Evar}(xs:\listtype{\terms}) $        & Existential quantification \\
+		$\text{Sort}(n:\names)$                    & Named Sort of types \\
+		$\text{Cast}(t:\terms,~ A:\types)$ & Type casting check \\
+		$\text{Prods}(x:\names,~ A:\types,~ B:\types$ & $\prod x:A ~.~ B$ \\
+		$\text{Lambdas}(x:\names,~ A:\types,~ t:\terms)$   & $\lambda x:A ~.~ t$ \\
+		$\text{LetIns}(n:\names,~ t:\terms,~ A:\types)$    & $\text{let~} n := t : A \text{~in~} t$ \\
+		$\text{App}(x:\terms,~ ys:\listtype{\terms})$ & Application $x~ys_0 \ldots ys_n$ \\
+		$\text{Const}(n:\names,~ S:\sorts)$ & Constant \\
+		$\text{Ind}(n:\names,~ S:\sorts)$  & Inductive definition \\
+		$\text{Construct}(n:\names,~ S:\sorts)$ & Constructor (of ind. def.) \\
+		$\text{Case}(n:\terms,~ t:\terms,~ ys:\listtype{\terms})$ & Deconstruction (of ind. types) \\
+		$\text{Fix}(n:\listtype{\names},~ A:\listtype{\types},~ ts:\listtype{\terms})$ & Fixpoint functions \\
+		$\text{CoFix}(n:\listtype{\names},~ AS:\listtype{\types},~ ts:\listtype{\terms})$ & Co-fixpoint functions \\
+	\end{tabular}
+\end{frame}
+
+\begin{frame}{\pcic: objects}
+	\begin{tabular}{l}
+		$\text{Constant}(n:\names,~ t:\terms,~ A:\types)$ \\
+		$\text{Variable}(n:\names,~ t:\terms,~ A:\types)$ \\
+		$\text{CurrentProof}(n:\names,~ \text{hyps}:\listtype{\listtype{\types} \times \terms}, t:\terms, A:\types)$ \\
+		$\text{InductiveConstructor}(n:\names,~ A:\types)$ \\
+		$\text{InductiveDefinition}(n:\names,~ A:\types,~ cs:\listtype{\text{InductiveConstructor}})$
+	\end{tabular}
+\end{frame}
+
+\begin{frame}{\xml}
+	\lstinline{COQ_XML=-xml COQ_XML_LIBRARY_ROOT=<dest>}
+	\lstinputlisting[language=xml,basicstyle=\tiny]{figures/plus.con.xml}
+\end{frame}
+
+\begin{frame}{Parsing}
+	\lstinputlisting[language=caml,basicstyle=\tiny]{figures/plus.con.types.txt}
+\end{frame}
+
+\begin{frame}{Extraction}
+	\vspace{-2.55em}
+	\[c : \terms \rightarrow \nat \rightarrow \listtype{\names \times \nat} \]
+	\bigskip
+	\hspace{-1.7em}
+	\begin{tabularx}{\textwidth}{ll}
+		$c(\emptyterm, d)$              & $ = \nil $ \\
+		$c(\text{ARel}(\cdots), d)$     & $ = \nil $ \\
+		$c(\text{AVar}(u), d)$          & $ = \singleton{(u, d)} $ \\
+		$c(\text{AEvar}(l), d)$         & $ = \flattenlist{\map{l}{\lambda x . c(x, d+1)}} $ \\
+		$c(\text{ASort}(\cdots), d)$    & $ = \nil $ \\
+		$c(\text{ACast}(t, A), d)$      & $ = \concat{c(t, d+1)}{c(A, d+1)} $ \\
+		$c(\text{AProds}(l, t), d)$     & $ = c_{\times}(l, t, d) $ \\
+		$c(\text{ALambdas}(l, t), d)$   & $ = c_{\times}(l, t, d) $ \\
+		$c(\text{ALetIns}(l, t), d)$    & $ = c_{\times}(l, t, d) $ \\
+		$c(\text{AApp}(l), d)$  & $ = \left(
+		  \begin{array}{l}
+			\singleton{(\text{special:app}, d)} ~\concatsymbol \\
+			\map{l}{ \lambda a . c(a, d+1) }
+		  \end{array}
+		  \right)
+		  $ \\
+		$c(\text{AConst}(\cdots, u), d)$  & $ = \singleton{(u, d)} $ \\
+		$c(\text{AInd}(\cdots, u), d)$  & $ = \singleton{(u, d)} $ \\
+		$c(\text{AConstruct}(\cdots, u), d)$  & $ = \singleton{(u, d)} $ \\
+		$c(\text{ACase}(u, A, i, l), d)$  &
+		  $= \left(
+			\begin{array}{l}
+			  \concat{\singleton{(u, d)}}{
+				\concat{c(A, d+1)}{c(i, d+1)}
+			  }
+			  ~\concatsymbol \\
+			  \flattenlist{ \map{l}{\lambda x . c(x, d+1)} } \\
+			\end{array}
+			\right)
+		  $ \\
+		$c(\text{AFix}(l), d)$        & $ = c_{\text{fix}}(l, d) $ \\
+		$c(\text{ACoFix}(l), d)$      & $ = c_{\text{fix}}(l, d) $ \\
+	\end{tabularx}
+\end{frame}
+
+\begin{frame}{Extraction}
+	$$
+		\rowcolors{0}{}{}
+		\begin{array}{lcl}
+		c_{\times}(l, t, d) & = &
+			c(t, d+1) ~\concatsymbol \\
+			& & \map{l}{ \lambda (n, a) ~.~ \cons{(\text{special:prod}, d)}{c(a, d+1)}} \\
+		c_{\text{fix}}(l, d) & = & \flattenlist{ \map{l}{ \lambda (A, t) ~.~ \concat{c(A, d+1)}{c(t, d+1)} } }
+		\end{array}
+	$$
+\end{frame}
+
+\begin{frame}{Extraction}
+	\hspace{-1em}\vbox{\begin{tabular}{ll}
+		$c_{\text{type}}(\text{AConstant}(n, A, t))$ & $= c(A, 0)$ \\
+		$c_{\text{type}}(\text{AIndDef}(n, l))$ & $= \flattenlist{
+			\map{l}{
+				\hspace{-0.5em}\begin{array}{l}
+					\lambda (A, m) ~.~ c(A, 0) ~\concatsymbol\\
+					\flattenlist{\text{map}(m, \lambda x . c(x, 0))}
+				\end{array}
+			}
+		} $\\
+		$c_{\text{type}}(-)$ & $= \nil $ \\
+		$c_{\text{term}}(\text{AConstant}(n, A, t))$ & $= c(t, 0)$ \\
+		$c_{\text{term}}(-)$ & $= \nil $ \\
+	\end{tabular}}
+\end{frame}
+
+\begin{frame}{Extraction}
+	\begin{definition}[Flatten symbols $\flattensym$]
+	$
+		\rowcolors{0}{}{}
+		\arraycolsep=0.2em
+		\begin{array}{lcl}
+		\flattensym & : & \terms \rightarrow 2^{\names} \\
+		\flatten{t} & = & \foldr{\lambda (n, d)~s ~.~ \{n\} \cup s}{\varnothing}{c(t, 0)}
+		\end{array}
+	$
+	\end{definition}
+\end{frame}
+
+\begin{frame}{Extraction}
+	\begin{definition}[Count symbols $\countoccursym$]
+	$
+	\rowcolors{0}{}{}
+	\arraycolsep=0.2em
+	\begin{array}{lcl}
+		\countoccursym & : & \terms \rightarrow \nat^{\names} \\
+		\countoccur{t} & = & \lambda n ~.~ \foldr{\lambda (m, d)~s ~.~ \text{if~} n = m \text{~then~} s+1 \text{~else~} s}{0}{c(t, 0)}
+	\end{array}
+	$\\
+	\end{definition}
+	\bigskip
+	\begin{definition}[Depth of symbols $\depthoccursym$]
+	$
+		\rowcolors{0}{}{}
+		\arraycolsep=0.2em
+		\begin{array}{lcl}
+		\depthoccursym & : & \terms \rightarrow \names \rightharpoonup \nat \\
+		\depthoccur{t} & = & \lambda n ~.~ \foldr{\lambda (m, d)~s ~.~ \text{if~} n = m \text{~then~} f(d, s) \text{~else~} s}{\infimum}{c(t, 0)} \\
+		\end{array}
+	$\\
+	\bigskip
+	$
+		\rowcolors{0}{}{}
+		\text{with~} \begin{array}{l}
+			f(d, \infimum) = d \\
+			f(d, s) = \text{min}(d, s) \\
+		\end{array}
+	$
+	\end{definition}
+\end{frame}
+
+\begin{frame}{Theorems and definitions}
+	\begin{definition}[Theorem]
+		A type that has been proven, along with the term that proves it.
+	\end{definition}
+	\bigskip
+	\begin{definition}[Definition]
+		A term (which has a type) that is not a theorem.
+		Thus it can only be transformative or a simple constant.
+	\end{definition}
+\end{frame}
+
+\begin{frame}[fragile]{Theorems and definitions}
+	\coq has a sort for theorems: \sortprop.
+	\pause
+	\bigskip
+\begin{lstlisting}[language=Coq, mathescape]
+Notation "'CProp'" := Type.
+\end{lstlisting}
+	\bigskip
+	Thus for \corn the sort of a theorem is \sorttype{}$(n+1)$.
+\end{frame}
+
+\begin{frame}{Heuristic}
+	Premise: a theorem concerning theorems in \coq is not useful.
+	\bigskip
+	\begin{definition}[$\defs$]
+		All names occuring in types cannot be theorems, and thus must be definitions.
+		\[ \defs = \bigcup_{s \in \objs} \typeset{s} \]
+	\end{definition}
+	\bigskip
+	\begin{definition}[$\thms$]
+		Theorems build upon eachother, thus what is used in terms, except the definitions, must be theorems.
+		\[ \thms = (\bigcup_{s \in \objs} \termset{s}) \setminus \defs \]
+	\end{definition}
+\end{frame}
+
+\begin{frame}{Features and dependencies}
+	We are going to do machine learning, thus we need to define our dataset.
+	\bigskip
+	\begin{definition}[Features]
+		For object $s$ yield whether definition $x \in \defs$ is used in the type of $s$.
+		\[ \features{}{s}(x) = \flatten{\type[s]}(x) \]
+	\end{definition}
+	\bigskip
+	\begin{definition}[Dependencies]
+		For object $s$ yield whether theorem $x \in \thms$ is used in the term of $s$.
+		\[ \deps{s}(x) = \flatten{\term[s]}(x) \]
+	\end{definition}
+\end{frame}
+
+\begin{frame}{Predictors}
+	\begin{definition}[Ranking $r \in \rankings$]
+		$ r : \depset \rightharpoonup \mathbb{R} $
+	\end{definition}
+	\bigskip
+	\begin{definition}[Predictor $p \in \predictors$]
+		$ p : \types \rightarrow \rankings $
+	\end{definition}
+\end{frame}
+
+\begin{frame}{Example: \knn}
+	\begin{definition}[Euclidean distance]
+		$ \text{dist}(x, y) = \left( \sum_{i \in \featurekeys} \left( \features{}{x}(i) - \features{}{y}(i) \right)^2 \right)^{\frac{1}{2}} $
+	\end{definition}
+	\bigskip
+	\begin{definition}[Predicate $x$ is closer to $\phi$ than $y$]
+	$ \text{closer}_\phi(x, y) = \text{dist}(x, \phi) \leq \text{dist}(y, \phi) $
+	\end{definition}
+	\bigskip
+	\begin{definition}[Yield the $n^{\text{th}}$ element]
+	$
+	\rowcolors{0}{}{}
+    \nth{n}{X} = \left\{
+      \begin{array}{ll}
+        \infimum_X & \text{if}~n = 0 \\
+        \nth{n-1}{X \cap \infimum_X} & \text{if}~n > 0 \\
+      \end{array}
+    \right.
+	$
+	\end{definition}
+	\bigskip
+	\begin{definition}[Yield the closest $K$ elements to $c$]
+	$
+    \text{closest}_K(c) = \downset{S}{\nth{K}{(S, \text{closer}_c)}}
+	$
+	\end{definition}
+	\pause
+	\bigskip
+	\begin{definition}[\knn]
+	$
+    	P^K_\text{knn}(c, \phi) = \sum_{x \in \text{closest}_K(c)} \deps{x}(\phi) \times \text{dist}(c, x)
+	$
+	\end{definition}
+\end{frame}
+
+\begin{frame}{Estimating performance}
+	10-fold \crossvalidation (same as source)\\
+	\bigskip
+	\textbf{Problem}: A predictor might use a theorem that can not yet be proven.\\
+	\bigskip
+	Implemented 3 different schemes: canonical, pessimistic and optimistic.
+\end{frame}
+
+\begin{frame}{Estimating performance: canonical method}
+	Construct a poset from $\objs$ using the dependency relation for $x, y \in \objs$:
+	\[ x <_D y ~~\leftrightarrow~~ \depstrans[x] \cap (\parentstrans[y] \cup \{y\}) \neq \emptyset \]\\
+	Linearize with Depth-first topological sort using $<_D$ to provide extra context.\\
+	\bigskip
+	Given a conjecture $\phi \in \testset$,
+	\[ \trainset^{\phi} = \{ x \in \trainset | x < \phi \} \]
+\end{frame}
+
+\begin{frame}{Metrics}
+	Given $r \in \rankings$,\\
+	\bigskip
+	\begin{definition}[Suggestions]
+	$ \suggestions{r} = \{ d \in \depset ~|~ r(d) ~\text{is defined} \} $
+	\end{definition}
+	\bigskip
+	\begin{definition}[Best suggestions]
+	$ \topn{n}{r} = \downset{\depset}{\nth{n}{(\suggestions{r}, \lambda x~y. r(x) > r(y))}} $
+	\end{definition}
+	\bigskip
+	\begin{definition}[\oocover]
+	$\oocoverf{r}{s} = \frac{ |\topn{100}{r} \bigcap \deps{s}| } { |\deps{s}| } $
+	\end{definition}
+\end{frame}
+
+\begin{frame}{Metrics}
+	\begin{definition}[Index]
+		$
+		\rowcolors{0}{}{}
+		\findindex{X}{x} = \left\{
+		\begin{array}{ll}
+			0 & \text{if~} x = \infimum_X \\
+			\findindex{X \cap \infimum_X}{x}+1 & \text{if~} x \neq \infimum_X \\
+		\end{array}
+		\right.
+		$
+	\end{definition}
+	\bigskip
+	\begin{definition}[Area Under Curve (AUC)]
+	$
+	\aucf{r}{s} = \frac{
+		\sum_x^X \sum_y^Y {\findindex{\suggestions{s}}{x} < \findindex{\suggestions{s}}{y}}
+	}{
+		|X| \times |Y|
+	}
+	$ \\
+	\bigskip
+	$
+	\rowcolors{0}{}{}
+	\begin{array}{ll}
+		\text{where~} & X = \suggestions{r} \bigcap \required[s] \\
+		& Y = \suggestions{r} - \required[s] \\
+	\end{array}
+	$
+	\end{definition}
+\end{frame}
+
+\begin{frame}{Contributions}
+	\begin{itemize}
+		\item Application to multiple corpora
+		\item Experiments with various features
+		\item Novel adaptation of method Adarank
+		\item Implementation in C++
+		\item Varying estimations of performance
+		\item Investigated the importance of prior knowledge
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Case: Adarank}
+\end{frame}
+
+\begin{frame}{Results (\knn)}
+	\vbox{
+	\begin{tikzpicture}
+		\begin{axis}[
+			xlabel=$k$,
+			ylabel=\oocover,
+			legend pos=outer north east,
+			thick,
+			cycle list name=Set1-5,
+			width=\textwidth,
+			height=5cm,
+			width=10cm,
+			legend style={at={(0,-0.45)},anchor=north west},
+		  ]
+	
+		  \addplot+[smooth, no markers] table [y index=1] {data/knn-coq-frequency-canonical.dat};
+		  \addlegendentry{\coq}
+	
+		  \addplot+[smooth, no markers] table [y index=1] {data/knn-ch2o-frequency-canonical.dat};
+		  \addlegendentry{\formalin}
+	
+		  \addplot+[smooth, no markers] table [y index=1] {data/knn-mathclasses-frequency-canonical.dat};
+		  \addlegendentry{\mathclasses}
+	
+		  \addplot+[smooth, no markers] table [y index=1] {data/knn-corn-frequency-canonical.dat};
+		  \addlegendentry{\corn}
+	
+		  \addplot+[smooth, no markers] table [y index=1] {data/knn-mathcomp-frequency-canonical.dat};
+		  \addlegendentry{\mathcomp}
+		\end{axis}
+	\end{tikzpicture}
+	}
+\end{frame}
+
+\begin{frame}{Results (Corpora)}
+	\vspace{-0.3cm}
+	\hspace{-1.1cm}
+	\vbox{
+	\begin{tikzpicture}
+		\begin{axis}[
+			width=13cm,
+			height=5cm,
+			ymajorgrids,
+			ybar,
+			every axis plot/.append style={fill},
+			ylabel={\oocover},
+			symbolic x coords={{coq},{corn},{formalin},{mathclasses},{mathcomp}},
+			xtick=data,
+			xticklabels={{\coq},{\corn},{\formalin},{\mathclasses},{\mathcomp}},
+			x tick label style={rotate=45,anchor=east},
+			legend style={at={(0,-0.45)},anchor=north west},
+			cycle list name=Set1-5
+		]
+		\addplot table[header=false] {data/best-knn-canonical.dat};
+		\addlegendentry{\knn}
+		\addplot table[header=false] {data/best-knn_adaptive-canonical.dat};
+		\addlegendentry{\knnadaptive}
+		\addplot table[header=false] {data/best-naive_bayes-canonical.dat};
+		\addlegendentry{\nb}
+		\addplot table[header=false] {data/best-ensemble-canonical.dat};
+		\addlegendentry{\ensemble}
+		\addplot table[header=false] {data/best-adarank-canonical.dat};
+		\addlegendentry{\adarank}
+		\end{axis}
+	\end{tikzpicture}
+	}
+\end{frame}
+
+\begin{frame}{Results (relative to Kaliszyk)}
+	\small
+	\tabcolsep=0.2em
+	\begin{tabular}{lcccccc}
+		 & \oocover & (ours) & & \auc & (ours) & \\
+		\hline
+		\input{data/relative}
+	\end{tabular}
+\end{frame}
+
+\begin{frame}{Reproducibility}
+\end{frame}
+
+\end{document}
