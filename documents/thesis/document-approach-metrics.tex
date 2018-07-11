@@ -34,10 +34,10 @@ can be computed by averaging the values of a metric for all elements in $\testse
 
 In this thesis we use the following metrics:
 \begin{definition}[\oocover]
-  The coverage of the set of proof dependencies by the first 100 suggestions is defined as
+  The recall of the set of proof dependencies by the first 100 suggestions is defined as
   \[ \oocoverf{r}{s} = \frac{ |\topn{100}{r} \bigcap \required[s]| } { |\required[s]| } \]
   This is our primary metric for evaluating the performance of our premise selection algorithms.
-  An higher cover is better.
+  An higher recall is better.
 \end{definition}
 
 \begin{definition}[\ooprecision]
@@ -50,16 +50,16 @@ In this thesis we use the following metrics:
 \end{definition}
 
 \begin{definition}[\recall]
-  The recall is defined to be the number of guesses that were made until the entire set of required dependencies is suggested.
+  The \recall is defined to be the number of guesses that were made until the entire set of required dependencies is suggested.
   When the set of guesses does not include all required dependencies $\recallf{r}{s}$ yields $|\suggestions{r}|+1$,
   or the number of suggestions plus one.
   The function `$\firstsym$' is defined in Definition \ref{def:first}.
   \[ \recallf{r}{s} = \firstsym(\lambda i. (i \leq |\suggestions{r}|) \rightarrow \required[s] \subseteq \topn{i}{r}) \]
-  A lower recall is better.
+  A lower \recall is better.
 \end{definition}
 
 \begin{definition}[\rank]
-  The rank is defined to be the average position of an actual proof dependency in the sequence of suggestions ordered by predicted relevance.
+  The \rank is defined to be the average position of an actual proof dependency in the sequence of suggestions ordered by predicted relevance.
   \[ \rankf{r}{s} = \frac{
       \sum\limits_{r \in \required[s]} \left\{
         \begin{array}{ll}
@@ -71,7 +71,7 @@ In this thesis we use the following metrics:
       |\suggestions{r} \bigcap \required[s]|
     }
   \]
-  A lower rank is better.
+  A lower \rank is better.
 \end{definition}
 
 \begin{definition}[Area Under Curve (AUC)]
@@ -85,4 +85,13 @@ In this thesis we use the following metrics:
     }
   \]
   An higher AUC indicates a better performance.
+\end{definition}
+
+\begin{definition}[\volume]
+  The volume is defined to be the number of suggestions made by a predictor.
+  From a runtime performance standpoint it is better to make less suggestions, with the risk of missing relevant facts.
+  When just the first 100 suggestions are looked at, this metric is of limited importance.
+  \[
+    \volumef{r}{s} = |\suggestions{s}|
+  \]
 \end{definition}
