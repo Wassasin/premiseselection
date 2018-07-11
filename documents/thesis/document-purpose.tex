@@ -119,11 +119,25 @@ Because this endeavour is quite sizeable, we limit the research to implementing 
 In essence this work is very similar to that performed for the MaSH relevance filter.
 Thus this work can also be used in place of the relevance filter in MaSH, preselecting which
 theorems are translated to ITP and sent to the various automated theorem provers.
+
 Early experiments have already been performed by Kaliszyk et al. \cite{kaliszyk2014machine}.
 They developed and evaluated premise selection techniques for \coq on the Constructive \coq Repository at Nijmegen (\corn) dataset.
 Specifically they implemented \knn, \nb, \mepo, and created weighted harmonic ensembles.
 
-For our premise selection tooling we wish to validate and improve upon their research.
+More recently some work has gone done by Alasdair et al \cite{hill2018automation} to perform premise selection for
+\coq by extracting features using \emph{Machine Learning for Proof General} (ML4PG).
+Then using Machine Learning toolkits Matlab and Weka usable proof families are derived using techniques like clustering.
+These proof families are then used to suggest useful premises.
+They actually implemented showing these suggestions directly in \coqide.
+
+\begin{figure}[H]
+  \centerline{\includegraphics[width=1.0\textwidth]{assets/coqanalogy.png}}
+  \caption{Coq by Analogy as illustrated by Alasdair et al in their presentation
+    at the 3rd Conference on Artificial Intelligence and Theorem Proving AITP 2018, Assois France.}
+  \label{figure:coq-analogy}
+\end{figure}
+
+For our premise selection tooling we wish to validate and improve upon the research by Kaliszyk.
 The improvements will consist of implementing variants and additional kinds of machine learning algorithms.
 We will also test our algorithms on a variety of existing \coq corpora.
 With this research we hope to answer the following questions:
