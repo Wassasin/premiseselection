@@ -95,3 +95,28 @@ In this thesis we use the following metrics:
     \volumef{r}{s} = |\suggestions{s}|
   \]
 \end{definition}
+
+When reporting these metrics for the entire testset \testset~the average is taken for every computed prediction.
+Technically we are then refering to the Mean \recall and Mean \rank, but for simplicity sake we will refer to
+just '\recall' in the following sections when talking about the results for entire testsets.
+
+\subsubsection{Varying terminology}
+This thesis uses concepts from both the \ltr academic field (such as with \adarank)
+as the premise selection / ATP with machine learning fields (as with the work by Kaliszyk).
+However between these fields the terminology used is not always consistent.
+This is especially the case for the metrics used, as some cross polination has occurred between the fields,
+but where differing concepts have ended up with the same name.
+To clarify this I've tabularized the terms used:
+
+\begin{figure}[H]
+  \centering
+  \begin{tabular}{l|l}
+  \ltr          & \emph{ATP with Machine Learning} \\\hline
+  \oocover      & 100Cover \\
+  \ooprecision  & 100Precision \\
+  \recall       & Recall \\
+  \rank         & Rank \\
+  \auc          & \auc \\
+  \end{tabular}
+  \caption{The varying terminology used between academic fields.}
+\end{figure}
